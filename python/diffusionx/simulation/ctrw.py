@@ -16,29 +16,29 @@ class CTRW(StochasticProcess):
         start_position: real = 0.0,
     ):
         """
-        初始化连续时间随机游走对象。
+        Continuous Time Random Walk
 
-        参数:
-            alpha (real, optional): 等待时间分布的指数，在 0 到 1 之间。当 alpha = 1 时，等待时间为指数分布，否则为幂律分布，尾指数为 alpha。默认为 1.0。
-            beta (real, optional): 跳跃长度分布的指数，在 0 到 2 之间。当 beta = 2 时，跳跃长度为正态分布，否则为幂律分布，尾指数为 beta。默认为 2.0。
-            start_position (real, optional): 连续时间随机游走的起始位置。默认为 0.0。
+        Args:
+            alpha (real, optional): The exponent of the waiting time distribution, between 0 and 1. When alpha = 1, the waiting time is exponential, otherwise it is power-law, with tail index alpha. Default is 1.0.
+            beta (real, optional): The exponent of the jump length distribution, between 0 and 2. When beta = 2, the jump length is normal, otherwise it is power-law, with tail index beta. Default is 2.0.
+            start_position (real, optional): The starting position of the continuous time random walk. Default is 0.0.
 
-        异常:
-            ValueError: 如果 alpha 不在 (0, 1] 范围内。
-            ValueError: 如果 beta 不在 (0, 2] 范围内。
-            ValueError: 如果值不是数字。
+        Raises:
+            ValueError: If alpha is not in the range (0, 1].
+            ValueError: If beta is not in the range (0, 2].
+            ValueError: If the value is not a number.
 
-        返回:
-            CTRW: 连续时间随机游走对象。
+        Returns:
+            CTRW: The continuous time random walk object.
         """
         alpha = check_transform(alpha)
         beta = check_transform(beta)
         start_position = check_transform(start_position)
 
         if alpha <= 0 or alpha > 1:
-            raise ValueError("alpha 必须在 (0, 1] 范围内")
+            raise ValueError("alpha must be in the range (0, 1]")
         if beta <= 0 or beta > 2:
-            raise ValueError("beta 必须在 (0, 2] 范围内")
+            raise ValueError("beta must be in the range (0, 2]")
 
         self.alpha = alpha
         self.beta = beta
@@ -51,18 +51,18 @@ class CTRW(StochasticProcess):
         self, duration: real, step_size: real = 0.01
     ) -> tuple[np.ndarray, np.ndarray]:
         """
-        模拟连续时间随机游走。
+        Simulate the continuous time random walk.
 
-        参数:
-            duration (real): 模拟的持续时间。
-            step_size (real, optional): 步长，在此模拟中不使用，但为了与其他随机过程接口一致而保留。默认为 0.01。
+        Args:
+            duration (real): The duration of the simulation.
+            step_size (real, optional): The step size, which is not used in this simulation, but is kept for consistency with other stochastic process interfaces. Default is 0.01.
 
-        返回:
-            tuple[np.ndarray, np.ndarray]: 包含连续时间随机游走的时间和位置的元组。
+        Returns:
+            tuple[np.ndarray, np.ndarray]: A tuple containing the time and position of the continuous time random walk.
         """
         duration = check_transform(duration)
         if duration <= 0:
-            raise ValueError("duration 必须为正数")
+            raise ValueError("duration must be positive, got {}".format(duration))
         return _core.ctrw_simulate_duration(
             self.alpha,
             self.beta,
@@ -72,18 +72,18 @@ class CTRW(StochasticProcess):
 
     def simulate_with_step(self, num_step: int) -> tuple[np.ndarray, np.ndarray]:
         """
-        使用指定步数模拟连续时间随机游走。
+        Simulate the continuous time random walk with a specified number of steps.
 
-        参数:
-            num_step (int): 模拟的步数。
+        Args:
+            num_step (int): The number of steps in the simulation.
 
-        返回:
-            tuple[np.ndarray, np.ndarray]: 包含连续时间随机游走的时间和位置的元组。
+        Returns:
+            tuple[np.ndarray, np.ndarray]: A tuple containing the time and position of the continuous time random walk.
         """
         if not isinstance(num_step, int):
-            raise ValueError("num_step 必须为整数")
+            raise ValueError("num_step must be an integer")
         if num_step <= 0:
-            raise ValueError("num_step 必须为正数")
+            raise ValueError("num_step must be positive")
         return _core.ctrw_simulate_step(
             self.alpha,
             self.beta,
@@ -97,22 +97,22 @@ class CTRW(StochasticProcess):
         max_duration: real = 1000,
     ):
         """
-        计算连续时间随机游走的首次通过时间。
+        Calculate the first passage time of the continuous time random walk.
 
-        参数:
-            domain (tuple[real, real]): 连续时间随机游走的区域。
-            max_duration (real, optional): 最大持续时间。默认为 1000。
+        Args:
+            domain (tuple[real, real]): The domain of the continuous time random walk.
+            max_duration (real, optional): The maximum duration. Default is 1000.
 
-        返回:
-            real: 连续时间随机游走的首次通过时间。
+        Returns:
+            real: The first passage time of the continuous time random walk.
         """
         a = check_transform(domain[0])
         b = check_transform(domain[1])
         if a >= b:
-            raise ValueError("domain 必须是有效区间")
+            raise ValueError("domain must be a valid interval")
         max_duration = check_transform(max_duration)
         if max_duration <= 0:
-            raise ValueError("max_duration 必须为正数")
+            raise ValueError("max_duration must be positive")
         return _core.ctrw_fpt(
             self.alpha,
             self.beta,
@@ -123,29 +123,29 @@ class CTRW(StochasticProcess):
 
     def raw_moment(self, duration: real, order: int, particles: int) -> float:
         """
-        计算连续时间随机游走的原始矩。
+        Calculate the raw moment of the continuous time random walk.
 
-        参数:
-            duration (real): 持续时间。
-            order (int): 矩的阶数。
-            particles (int): 粒子数量。
+        Args:
+            duration (real): The duration of the simulation.
+            order (int): The order of the moment.
+            particles (int): The number of particles.
 
-        返回:
-            real: 连续时间随机游走的原始矩。
+        Returns:
+            real: The raw moment of the continuous time random walk.
         """
         if not isinstance(order, int):
-            raise ValueError("order 必须为整数")
+            raise ValueError("order must be an integer")
         elif order < 0:
-            raise ValueError("order 必须为非负数")
+            raise ValueError("order must be non-negative")
         elif order == 0:
             return 1
         if not isinstance(particles, int):
-            raise ValueError("particles 必须为整数")
+            raise ValueError("particles must be an integer")
         elif particles <= 0:
-            raise ValueError("particles 必须为正数")
+            raise ValueError("particles must be positive")
         duration = check_transform(duration)
         if duration <= 0:
-            raise ValueError("duration 必须为正数")
+            raise ValueError("duration must be positive")
         return _core.ctrw_raw_moment(
             self.alpha,
             self.beta,
@@ -157,36 +157,36 @@ class CTRW(StochasticProcess):
 
     def central_moment(self, duration: real, order: int, particles: int):
         """
-        计算连续时间随机游走的中心矩。
+        Calculate the central moment of the continuous time random walk.
 
-        参数:
-            duration (real): 持续时间。
-            order (int): 矩的阶数。
-            particles (int): 粒子数量。
+        Args:
+            duration (real): The duration of the simulation.
+            order (int): The order of the moment.
+            particles (int): The number of particles.
 
-        异常:
-            ValueError: 如果阶数不是整数。
-            ValueError: 如果阶数为负数。
-            ValueError: 如果阶数为零。
-            ValueError: 如果粒子数量不是整数。
-            ValueError: 如果粒子数量不是正数。
+        Raises:
+            ValueError: If the order is not an integer.
+            ValueError: If the order is negative.
+            ValueError: If the order is zero.
+            ValueError: If the particles number is not an integer.
+            ValueError: If the particles number is not positive.
 
-        返回:
-            real: 连续时间随机游走的中心矩。
+        Returns:
+            real: The central moment of the continuous time random walk.
         """
         if not isinstance(order, int):
-            raise ValueError("order 必须为整数")
+            raise ValueError("order must be an integer")
         elif order < 0:
-            raise ValueError("order 必须为非负数")
+            raise ValueError("order must be non-negative")
         elif order == 0:
             return 1
         if not isinstance(particles, int):
-            raise ValueError("particles 必须为整数")
+            raise ValueError("particles must be an integer")
         elif particles <= 0:
-            raise ValueError("particles 必须为正数")
+            raise ValueError("particles must be positive")
         duration = check_transform(duration)
         if duration <= 0:
-            raise ValueError("duration 必须为正数")
+            raise ValueError("duration must be positive")
         return _core.ctrw_central_moment(
             self.alpha,
             self.beta,
@@ -202,22 +202,22 @@ class CTRW(StochasticProcess):
         duration: real,
     ):
         """
-        计算连续时间随机游走的占据时间。
+        Calculate the occupation time of the continuous time random walk.
 
-        参数:
-            domain (tuple[real, real]): 连续时间随机游走的区域。
-            duration (real): 连续时间随机游走的持续时间。
+        Args:
+            domain (tuple[real, real]): The domain of the continuous time random walk.
+            duration (real): The duration of the continuous time random walk.
 
-        返回:
-            real: 连续时间随机游走的占据时间。
+        Returns:
+            real: The occupation time of the continuous time random walk.
         """
         duration = check_transform(duration)
         if duration <= 0:
-            raise ValueError("duration 必须为正数")
+            raise ValueError("duration must be positive")
         a = check_transform(domain[0])
         b = check_transform(domain[1])
         if a >= b:
-            raise ValueError("domain 必须是有效区间")
+            raise ValueError("domain must be a valid interval")
         return _core.ctrw_occupation_time(
             self.alpha,
             self.beta,
@@ -228,26 +228,26 @@ class CTRW(StochasticProcess):
 
     def mean(self, duration: real, particles: int) -> float:
         """
-        计算连续时间随机游走的均值。
+        Calculate the mean of the continuous time random walk.
 
-        参数:
-            duration (real): 持续时间。
-            particles (int): 粒子数量。
+        Args:
+            duration (real): The duration of the simulation.
+            particles (int): The number of particles.
 
-        返回:
-            float: 连续时间随机游走的均值。
+        Returns:
+            float: The mean of the continuous time random walk.
         """
         return self.raw_moment(duration, 1, particles)
 
     def msd(self, duration: real, particles: int) -> float:
         """
-        计算连续时间随机游走的均方位移。
+        Calculate the mean square displacement of the continuous time random walk.
 
-        参数:
-            duration (real): 持续时间。
-            particles (int): 粒子数量。
+        Args:
+            duration (real): The duration of the simulation.
+            particles (int): The number of particles.
 
-        返回:
-            float: 连续时间随机游走的均方位移。
+        Returns:
+            float: The mean square displacement of the continuous time random walk.
         """
         return self.central_moment(duration, 2, particles)
