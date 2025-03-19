@@ -52,7 +52,7 @@ def bm_fpt(
     step_size: float,
     domain: tuple[float, float],
     max_duration: float,
-) -> float: ...
+) -> float | None: ...
 def levy_simulate(
     start_position: float,
     alpha: float,
@@ -65,7 +65,7 @@ def levy_fpt(
     step_size: float,
     domain: tuple[float, float],
     max_duration: float,
-) -> float: ...
+) -> float | None: ...
 def bm_occupation_time(
     start_position: float,
     diffusion_coefficient: float,
@@ -104,7 +104,7 @@ def poisson_fpt(
     lambda_: float,
     domain: tuple[float, float],
     max_duration: float,
-) -> float: ...
+) -> float | None: ...
 def poisson_occupation_time(
     lambda_: float,
     domain: tuple[float, float],
@@ -120,7 +120,7 @@ def subordinator_fpt(
     domain: tuple[float, float],
     max_duration: float,
     step_size: float,
-) -> float: ...
+) -> float | None: ...
 def subordinator_occupation_time(
     alpha: float,
     domain: tuple[float, float],
@@ -137,10 +137,88 @@ def inv_subordinator_fpt(
     domain: tuple[float, float],
     max_duration: float,
     step_size: float,
-) -> float: ...
+) -> float | None: ...
 def inv_subordinator_occupation_time(
     alpha: float,
     domain: tuple[float, float],
     duration: float,
     step_size: float,
+) -> float: ...
+def fbm_simulate(
+    start_position: float,
+    hurst_exponent: float,
+    duration: float,
+    step_size: float,
+) -> tuple[np.ndarray, np.ndarray]: ...
+def fbm_raw_moment(
+    start_position: float,
+    hurst_exponent: float,
+    duration: float,
+    step_size: float,
+    order: int,
+    particles: int,
+) -> float: ...
+def fbm_central_moment(
+    start_position: float,
+    hurst_exponent: float,
+    duration: float,
+    step_size: float,
+    order: int,
+    particles: int,
+) -> float: ...
+def fbm_fpt(
+    start_position: float,
+    hurst_exponent: float,
+    step_size: float,
+    domain: tuple[float, float],
+    max_duration: float,
+) -> float | None: ...
+def fbm_occupation_time(
+    start_position: float,
+    hurst_exponent: float,
+    step_size: float,
+    domain: tuple[float, float],
+    duration: float,
+) -> float: ...
+def ctrw_simulate_duration(
+    alpha: float,
+    beta: float,
+    start_position: float,
+    duration: float,
+) -> tuple[np.ndarray, np.ndarray]: ...
+def ctrw_simulate_step(
+    alpha: float,
+    beta: float,
+    start_position: float,
+    num_step: int,
+) -> tuple[np.ndarray, np.ndarray]: ...
+def ctrw_raw_moment(
+    alpha: float,
+    beta: float,
+    start_position: float,
+    duration: float,
+    order: int,
+    particles: int,
+) -> float: ...
+def ctrw_central_moment(
+    alpha: float,
+    beta: float,
+    start_position: float,
+    duration: float,
+    order: int,
+    particles: int,
+) -> float: ...
+def ctrw_fpt(
+    alpha: float,
+    beta: float,
+    start_position: float,
+    domain: tuple[float, float],
+    max_duration: float,
+) -> float | None: ...
+def ctrw_occupation_time(
+    alpha: float,
+    beta: float,
+    start_position: float,
+    domain: tuple[float, float],
+    duration: float,
 ) -> float: ...
