@@ -4,6 +4,9 @@ authors = ["xiangong tang <tangxiangong@gmail.com>"]
 edition = "2024"
 version = "0.1.7"
 
+[[bench]]
+name = "randoms"
+harness = false
 
 [lib]
 name = "_core"
@@ -20,3 +23,6 @@ thiserror = "2"
 rayon = "1.9.2"
 num_cpus = "1.16.0"
 rand = "0.9"
+
+[dev-dependencies]
+criterion = "0.5.1"
