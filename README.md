@@ -63,7 +63,7 @@ Generating random array of length `10_000_000`
 |          Julia           |  27.671 ms   |     12.755 ms      | 570.260 ms |
 |      NumPy / SciPy       |    199 ms    |      66.6 ms      |   1.67 s   |
 |          Numba           |      -       |         -         |   1.15 s   |
-
+|   Baltamatic  |    160.7 ms     |     64.6 ms    | 564.3 ms   |
 
 ### Test Environment
 
@@ -79,6 +79,7 @@ Generating random array of length `10_000_000`
 - Julia: 1.11
 - NumPy: 2
 - SciPy: 1.15.1
+- Baltamatic: 4.0.0
 
 ## Tech Stack & Features
 
