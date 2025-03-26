@@ -5,7 +5,7 @@ description = "A library for random number/stochastic process simulation with hi
 readme = "README.md"
 authors = [{ name = "tangxiangong", email = "tangxiangong@gmail.com" }]
 requires-python = ">=3.9"
-dependencies = ["jupyterlab>=4.3.5", "numpy>=2.0.0"]
+dependencies = ["jupyterlab>=4.3.5", "matplotlib>=3.9.4", "numpy>=2.0.0"]
 
 [tool.maturin]
 features = ["pyo3/extension-module"]

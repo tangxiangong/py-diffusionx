@@ -1,6 +1,8 @@
 use crate::XPyResult;
 use diffusionx::simulation::{
-    Bm, CTRW, Fbm, InvSubordinator, Levy, Poisson, Subordinator, prelude::*,
+    continuous::{Bm, Fbm, InvSubordinator, Levy, Subordinator},
+    jump::{CTRW, Poisson},
+    prelude::*,
 };
 use numpy::{IntoPyArray, Ix1, PyArray};
 use pyo3::prelude::*;
