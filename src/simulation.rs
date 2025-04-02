@@ -1,15 +1,293 @@
+#![allow(clippy::too_many_arguments)]
+#![allow(dead_code)]
+
 use crate::XPyResult;
 use diffusionx::simulation::{
-    continuous::{Bm, Fbm, InvSubordinator, Levy, Subordinator},
+    continuous::{Bm, Fbm, GeneralizedLangevin, InvSubordinator, Langevin, Levy, Subordinator},
     jump::{CTRW, Poisson},
     prelude::*,
 };
 use numpy::{IntoPyArray, Ix1, PyArray};
 use pyo3::prelude::*;
 
+/// 封装从Python调用函数的辅助方法，处理错误情况
+fn call_py_func(func: &PyObject, args: (f64, f64)) -> f64 {
+    Python::with_gil(|py| {
+        func.call1(py, args)
+            .and_then(|result| result.extract::<f64>(py))
+            .unwrap_or(0.0)
+    })
+}
+
 type PyArrayPair<'py> = (Bound<'py, PyArray<f64, Ix1>>, Bound<'py, PyArray<f64, Ix1>>);
 
 type PyArrayPointPair<'py> = (Bound<'py, PyArray<f64, Ix1>>, Bound<'py, PyArray<i64, Ix1>>);
+
+/// 封装Langevin计算所需参数，同时支持模拟和矩计算
+#[pyclass]
+struct LangevinParams {
+    #[pyo3(get, set)]
+    drift_func: PyObject,
+    #[pyo3(get, set)]
+    diffusion_func: PyObject,
+    #[pyo3(get, set)]
+    start_position: f64,
+    #[pyo3(get, set)]
+    duration: f64,
+    #[pyo3(get, set)]
+    order: i32,
+    #[pyo3(get, set)]
+    particles: usize,
+    #[pyo3(get, set)]
+    time_step: f64,
+}
+
+#[pymethods]
+impl LangevinParams {
+    #[new]
+    fn new(
+        drift_func: PyObject,
+        diffusion_func: PyObject,
+        start_position: f64,
+        duration: f64,
+        order: i32,
+        particles: usize,
+        time_step: f64,
+    ) -> Self {
+        Self {
+            drift_func,
+            diffusion_func,
+            start_position,
+            duration,
+            order,
+            particles,
+            time_step,
+        }
+    }
+}
+
+/// 封装GeneralizedLangevin计算所需参数
+#[pyclass]
+struct GeneralizedLangevinParams {
+    #[pyo3(get, set)]
+    drift_func: PyObject,
+    #[pyo3(get, set)]
+    diffusion_func: PyObject,
+    #[pyo3(get, set)]
+    start_position: f64,
+    #[pyo3(get, set)]
+    alpha: f64,
+    #[pyo3(get, set)]
+    duration: f64,
+    #[pyo3(get, set)]
+    order: i32,
+    #[pyo3(get, set)]
+    particles: usize,
+    #[pyo3(get, set)]
+    time_step: f64,
+}
+
+#[pymethods]
+impl GeneralizedLangevinParams {
+    #[new]
+    fn new(
+        drift_func: PyObject,
+        diffusion_func: PyObject,
+        start_position: f64,
+        alpha: f64,
+        duration: f64,
+        order: i32,
+        particles: usize,
+        time_step: f64,
+    ) -> Self {
+        Self {
+            drift_func,
+            diffusion_func,
+            start_position,
+            alpha,
+            duration,
+            order,
+            particles,
+            time_step,
+        }
+    }
+}
+
+/// 封装SubordinatedLangevin矩计算所需参数
+#[pyclass]
+struct SubordinatedLangevinParams {
+    #[pyo3(get, set)]
+    drift_func: PyObject,
+    #[pyo3(get, set)]
+    diffusion_func: PyObject,
+    #[pyo3(get, set)]
+    start_position: f64,
+    #[pyo3(get, set)]
+    duration: f64,
+    #[pyo3(get, set)]
+    order: i32,
+    #[pyo3(get, set)]
+    particles: usize,
+    #[pyo3(get, set)]
+    time_step: f64,
+}
+
+#[pymethods]
+impl SubordinatedLangevinParams {
+    #[new]
+    fn new(
+        drift_func: PyObject,
+        diffusion_func: PyObject,
+        start_position: f64,
+        duration: f64,
+        order: i32,
+        particles: usize,
+        time_step: f64,
+    ) -> Self {
+        Self {
+            drift_func,
+            diffusion_func,
+            start_position,
+            duration,
+            order,
+            particles,
+            time_step,
+        }
+    }
+}
+
+/// 封装Langevin矩计算所需参数
+#[pyclass]
+struct LangevinMomentParams {
+    #[pyo3(get, set)]
+    drift_func: PyObject,
+    #[pyo3(get, set)]
+    diffusion_func: PyObject,
+    #[pyo3(get, set)]
+    start_position: f64,
+    #[pyo3(get, set)]
+    duration: f64,
+    #[pyo3(get, set)]
+    order: i32,
+    #[pyo3(get, set)]
+    particles: usize,
+    #[pyo3(get, set)]
+    time_step: f64,
+}
+
+#[pymethods]
+impl LangevinMomentParams {
+    #[new]
+    fn new(
+        drift_func: PyObject,
+        diffusion_func: PyObject,
+        start_position: f64,
+        duration: f64,
+        order: i32,
+        particles: usize,
+        time_step: f64,
+    ) -> Self {
+        Self {
+            drift_func,
+            diffusion_func,
+            start_position,
+            duration,
+            order,
+            particles,
+            time_step,
+        }
+    }
+}
+
+/// 封装GeneralizedLangevin矩计算所需参数
+#[pyclass]
+struct GeneralizedLangevinMomentParams {
+    #[pyo3(get, set)]
+    drift_func: PyObject,
+    #[pyo3(get, set)]
+    diffusion_func: PyObject,
+    #[pyo3(get, set)]
+    start_position: f64,
+    #[pyo3(get, set)]
+    alpha: f64,
+    #[pyo3(get, set)]
+    duration: f64,
+    #[pyo3(get, set)]
+    order: i32,
+    #[pyo3(get, set)]
+    particles: usize,
+    #[pyo3(get, set)]
+    time_step: f64,
+}
+
+#[pymethods]
+impl GeneralizedLangevinMomentParams {
+    #[new]
+    fn new(
+        drift_func: PyObject,
+        diffusion_func: PyObject,
+        start_position: f64,
+        alpha: f64,
+        duration: f64,
+        order: i32,
+        particles: usize,
+        time_step: f64,
+    ) -> Self {
+        Self {
+            drift_func,
+            diffusion_func,
+            start_position,
+            alpha,
+            duration,
+            order,
+            particles,
+            time_step,
+        }
+    }
+}
+
+/// 封装SubordinatedLangevin矩计算所需参数
+#[pyclass]
+struct SubordinatedLangevinMomentParams {
+    #[pyo3(get, set)]
+    drift_func: PyObject,
+    #[pyo3(get, set)]
+    diffusion_func: PyObject,
+    #[pyo3(get, set)]
+    start_position: f64,
+    #[pyo3(get, set)]
+    duration: f64,
+    #[pyo3(get, set)]
+    order: i32,
+    #[pyo3(get, set)]
+    particles: usize,
+    #[pyo3(get, set)]
+    time_step: f64,
+}
+
+#[pymethods]
+impl SubordinatedLangevinMomentParams {
+    #[new]
+    fn new(
+        drift_func: PyObject,
+        diffusion_func: PyObject,
+        start_position: f64,
+        duration: f64,
+        order: i32,
+        particles: usize,
+        time_step: f64,
+    ) -> Self {
+        Self {
+            drift_func,
+            diffusion_func,
+            start_position,
+            duration,
+            order,
+            particles,
+            time_step,
+        }
+    }
+}
 
 #[pyfunction]
 pub fn bm_simulate(
@@ -411,5 +689,381 @@ pub fn ctrw_occupation_time(
 ) -> XPyResult<f64> {
     let ctrw = CTRW::new(alpha, beta, start_position)?;
     let result = ctrw.occupation_time(domain, duration)?;
+    Ok(result)
+}
+
+/// Py function wrapper for Langevin simulation
+#[pyfunction]
+pub fn langevin_simulate(
+    py: Python,
+    drift_func: PyObject,
+    diffusion_func: PyObject,
+    start_position: f64,
+    duration: f64,
+    time_step: f64,
+) -> XPyResult<PyArrayPair<'_>> {
+    // 创建参数结构体
+    let params = LangevinParams {
+        drift_func,
+        diffusion_func,
+        start_position,
+        duration,
+        order: 0,     // 不使用
+        particles: 0, // 不使用
+        time_step,
+    };
+
+    // 创建 Langevin 实例
+    let langevin = {
+        let drift = |x: f64, t: f64| -> f64 { call_py_func(&params.drift_func, (x, t)) };
+
+        let diffusion = |x: f64, t: f64| -> f64 { call_py_func(&params.diffusion_func, (x, t)) };
+
+        Langevin::new(drift, diffusion, params.start_position)?
+    };
+
+    // 模拟过程
+    let (times, positions) = langevin.simulate(params.duration, params.time_step)?;
+
+    // 转换为 Python 数组
+    let times_array = times.into_pyarray(py);
+    let positions_array = positions.into_pyarray(py);
+
+    Ok((times_array, positions_array))
+}
+
+/// Py function wrapper for GeneralizedLangevin simulation
+#[pyfunction]
+pub fn generalized_langevin_simulate(
+    py: Python,
+    drift_func: PyObject,
+    diffusion_func: PyObject,
+    start_position: f64,
+    alpha: f64,
+    duration: f64,
+    time_step: f64,
+) -> XPyResult<PyArrayPair<'_>> {
+    // 创建参数结构体
+    let params = GeneralizedLangevinParams {
+        drift_func,
+        diffusion_func,
+        start_position,
+        alpha,
+        duration,
+        order: 0,     // 不使用
+        particles: 0, // 不使用
+        time_step,
+    };
+
+    // 创建 GeneralizedLangevin 实例
+    let langevin = {
+        let drift = |x: f64, t: f64| -> f64 { call_py_func(&params.drift_func, (x, t)) };
+
+        let diffusion = |x: f64, t: f64| -> f64 { call_py_func(&params.diffusion_func, (x, t)) };
+
+        GeneralizedLangevin::new(drift, diffusion, params.start_position, params.alpha)?
+    };
+
+    // 模拟过程
+    let (times, positions) = langevin.simulate(params.duration, params.time_step)?;
+
+    // 转换为 Python 数组
+    let times_array = times.into_pyarray(py);
+    let positions_array = positions.into_pyarray(py);
+
+    Ok((times_array, positions_array))
+}
+
+/// Py function wrapper for GeneralizedLangevin raw moment
+#[pyfunction]
+#[pyo3(signature = (drift_func, diffusion_func, start_position, alpha, duration, order, particles, time_step))]
+pub fn generalized_langevin_raw_moment(
+    drift_func: PyObject,
+    diffusion_func: PyObject,
+    start_position: f64,
+    alpha: f64,
+    duration: f64,
+    order: i32,
+    particles: usize,
+    time_step: f64,
+) -> XPyResult<f64> {
+    // 创建参数结构体
+    let params = GeneralizedLangevinMomentParams {
+        drift_func,
+        diffusion_func,
+        start_position,
+        alpha,
+        duration,
+        order,
+        particles,
+        time_step,
+    };
+
+    // 创建 GeneralizedLangevin 实例
+    let langevin = {
+        let drift = |x: f64, t: f64| -> f64 { call_py_func(&params.drift_func, (x, t)) };
+
+        let diffusion = |x: f64, t: f64| -> f64 { call_py_func(&params.diffusion_func, (x, t)) };
+
+        GeneralizedLangevin::new(drift, diffusion, params.start_position, params.alpha)?
+    };
+
+    let result = langevin.raw_moment(
+        params.duration,
+        params.order,
+        params.particles,
+        params.time_step,
+    )?;
+    Ok(result)
+}
+
+/// Py function wrapper for GeneralizedLangevin central moment
+#[pyfunction]
+#[pyo3(signature = (drift_func, diffusion_func, start_position, alpha, duration, order, particles, time_step))]
+pub fn generalized_langevin_central_moment(
+    drift_func: PyObject,
+    diffusion_func: PyObject,
+    start_position: f64,
+    alpha: f64,
+    duration: f64,
+    order: i32,
+    particles: usize,
+    time_step: f64,
+) -> XPyResult<f64> {
+    // 创建参数结构体
+    let params = GeneralizedLangevinMomentParams {
+        drift_func,
+        diffusion_func,
+        start_position,
+        alpha,
+        duration,
+        order,
+        particles,
+        time_step,
+    };
+
+    // 创建 GeneralizedLangevin 实例
+    let langevin = {
+        let drift = |x: f64, t: f64| -> f64 { call_py_func(&params.drift_func, (x, t)) };
+
+        let diffusion = |x: f64, t: f64| -> f64 { call_py_func(&params.diffusion_func, (x, t)) };
+
+        GeneralizedLangevin::new(drift, diffusion, params.start_position, params.alpha)?
+    };
+
+    let result = langevin.central_moment(
+        params.duration,
+        params.order,
+        params.particles,
+        params.time_step,
+    )?;
+    Ok(result)
+}
+
+/// Py function wrapper for Langevin raw moment
+#[pyfunction]
+#[pyo3(signature = (drift_func, diffusion_func, start_position, duration, order, particles, time_step))]
+pub fn langevin_raw_moment(
+    drift_func: PyObject,
+    diffusion_func: PyObject,
+    start_position: f64,
+    duration: f64,
+    order: i32,
+    particles: usize,
+    time_step: f64,
+) -> XPyResult<f64> {
+    // 创建参数结构体
+    let params = LangevinMomentParams {
+        drift_func,
+        diffusion_func,
+        start_position,
+        duration,
+        order,
+        particles,
+        time_step,
+    };
+
+    // 创建 Langevin 实例
+    let langevin = {
+        let drift = |x: f64, t: f64| -> f64 { call_py_func(&params.drift_func, (x, t)) };
+
+        let diffusion = |x: f64, t: f64| -> f64 { call_py_func(&params.diffusion_func, (x, t)) };
+
+        Langevin::new(drift, diffusion, params.start_position)?
+    };
+
+    let result = langevin.raw_moment(
+        params.duration,
+        params.order,
+        params.particles,
+        params.time_step,
+    )?;
+    Ok(result)
+}
+
+/// Py function wrapper for Langevin central moment
+#[pyfunction]
+#[pyo3(signature = (drift_func, diffusion_func, start_position, duration, order, particles, time_step))]
+pub fn langevin_central_moment(
+    drift_func: PyObject,
+    diffusion_func: PyObject,
+    start_position: f64,
+    duration: f64,
+    order: i32,
+    particles: usize,
+    time_step: f64,
+) -> XPyResult<f64> {
+    // 创建参数结构体
+    let params = LangevinMomentParams {
+        drift_func,
+        diffusion_func,
+        start_position,
+        duration,
+        order,
+        particles,
+        time_step,
+    };
+
+    // 创建 Langevin 实例
+    let langevin = {
+        let drift = |x: f64, t: f64| -> f64 { call_py_func(&params.drift_func, (x, t)) };
+
+        let diffusion = |x: f64, t: f64| -> f64 { call_py_func(&params.diffusion_func, (x, t)) };
+
+        Langevin::new(drift, diffusion, params.start_position)?
+    };
+
+    let result = langevin.central_moment(
+        params.duration,
+        params.order,
+        params.particles,
+        params.time_step,
+    )?;
+    Ok(result)
+}
+
+/// Py function wrapper for SubordinatedLangevin simulation
+#[pyfunction]
+#[pyo3(signature = (drift_func, diffusion_func, start_position, duration, time_step))]
+pub fn subordinated_langevin_simulate(
+    py: Python,
+    drift_func: PyObject,
+    diffusion_func: PyObject,
+    start_position: f64,
+    duration: f64,
+    time_step: f64,
+) -> XPyResult<PyArrayPair<'_>> {
+    // 创建参数结构体
+    let params = SubordinatedLangevinParams {
+        drift_func,
+        diffusion_func,
+        start_position,
+        duration,
+        order: 0,     // 不使用
+        particles: 0, // 不使用
+        time_step,
+    };
+
+    // 创建 Langevin 实例
+    let langevin = {
+        let drift = |x: f64, t: f64| -> f64 { call_py_func(&params.drift_func, (x, t)) };
+
+        let diffusion = |x: f64, t: f64| -> f64 { call_py_func(&params.diffusion_func, (x, t)) };
+
+        // 创建 SubordinatedLangevin 实例
+        Langevin::new(drift, diffusion, params.start_position)?
+    };
+
+    // 模拟过程
+    let (times, positions) = langevin.simulate(params.duration, params.time_step)?;
+
+    // 转换为 Python 数组
+    let times_array = times.into_pyarray(py);
+    let positions_array = positions.into_pyarray(py);
+
+    Ok((times_array, positions_array))
+}
+
+/// Py function wrapper for SubordinatedLangevin raw moment
+#[pyfunction]
+#[pyo3(signature = (drift_func, diffusion_func, start_position, duration, order, particles, time_step))]
+pub fn subordinated_langevin_raw_moment(
+    drift_func: PyObject,
+    diffusion_func: PyObject,
+    start_position: f64,
+    duration: f64,
+    order: i32,
+    particles: usize,
+    time_step: f64,
+) -> XPyResult<f64> {
+    // 创建参数结构体
+    let params = SubordinatedLangevinMomentParams {
+        drift_func,
+        diffusion_func,
+        start_position,
+        duration,
+        order,
+        particles,
+        time_step,
+    };
+
+    // 创建 Langevin 实例
+    let langevin = {
+        let drift = |x: f64, t: f64| -> f64 { call_py_func(&params.drift_func, (x, t)) };
+
+        let diffusion = |x: f64, t: f64| -> f64 { call_py_func(&params.diffusion_func, (x, t)) };
+
+        // 创建 SubordinatedLangevin 实例
+        Langevin::new(drift, diffusion, params.start_position)?
+    };
+
+    let result = langevin.raw_moment(
+        params.duration,
+        params.order,
+        params.particles,
+        params.time_step,
+    )?;
+    Ok(result)
+}
+
+/// Py function wrapper for SubordinatedLangevin central moment
+#[pyfunction]
+#[pyo3(signature = (drift_func, diffusion_func, start_position, duration, order, particles, time_step))]
+pub fn subordinated_langevin_central_moment(
+    drift_func: PyObject,
+    diffusion_func: PyObject,
+    start_position: f64,
+    duration: f64,
+    order: i32,
+    particles: usize,
+    time_step: f64,
+) -> XPyResult<f64> {
+    // 创建参数结构体
+    let params = SubordinatedLangevinMomentParams {
+        drift_func,
+        diffusion_func,
+        start_position,
+        duration,
+        order,
+        particles,
+        time_step,
+    };
+
+    // 创建 Langevin 实例
+    let langevin = {
+        let drift = |x: f64, t: f64| -> f64 { call_py_func(&params.drift_func, (x, t)) };
+
+        let diffusion = |x: f64, t: f64| -> f64 { call_py_func(&params.diffusion_func, (x, t)) };
+
+        // 创建 SubordinatedLangevin 实例
+        Langevin::new(drift, diffusion, params.start_position)?
+    };
+
+    let result = langevin.central_moment(
+        params.duration,
+        params.order,
+        params.particles,
+        params.time_step,
+    )?;
     Ok(result)
 }

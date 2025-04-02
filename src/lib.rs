@@ -71,6 +71,15 @@ fn _core(_py: Python, m: &Bound<'_, PyModule>) -> PyResult<()> {
         simulation::ctrw_central_moment,
         simulation::ctrw_fpt,
         simulation::ctrw_occupation_time,
+        simulation::langevin_simulate,
+        simulation::langevin_raw_moment,
+        simulation::langevin_central_moment,
+        simulation::generalized_langevin_simulate,
+        simulation::generalized_langevin_raw_moment,
+        simulation::generalized_langevin_central_moment,
+        simulation::subordinated_langevin_simulate,
+        simulation::subordinated_langevin_raw_moment,
+        simulation::subordinated_langevin_central_moment,
     );
 
     Ok(())
