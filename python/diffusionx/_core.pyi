@@ -1,4 +1,5 @@
 import numpy as np
+from typing import Callable
 
 def exp_rand(scale: float = 1.0) -> float: ...
 def exp_rands(n: int, scale: float = 1.0) -> np.ndarray: ...
@@ -221,4 +222,82 @@ def ctrw_occupation_time(
     start_position: float,
     domain: tuple[float, float],
     duration: float,
+) -> float: ...
+def langevin_simulate(
+    drift_func: Callable[[float, float], float],
+    diffusion_func: Callable[[float, float], float],
+    start_position: float,
+    duration: float,
+    time_step: float,
+) -> tuple[np.ndarray, np.ndarray]: ...
+def langevin_raw_moment(
+    drift_func: Callable[[float, float], float],
+    diffusion_func: Callable[[float, float], float],
+    start_position: float,
+    duration: float,
+    order: int,
+    particles: int,
+    time_step: float,
+) -> float: ...
+def langevin_central_moment(
+    drift_func: Callable[[float, float], float],
+    diffusion_func: Callable[[float, float], float],
+    start_position: float,
+    duration: float,
+    order: int,
+    particles: int,
+    time_step: float,
+) -> float: ...
+def generalized_langevin_simulate(
+    drift_func: Callable[[float, float], float],
+    diffusion_func: Callable[[float, float], float],
+    start_position: float,
+    alpha: float,
+    duration: float,
+    time_step: float,
+) -> tuple[np.ndarray, np.ndarray]: ...
+def generalized_langevin_raw_moment(
+    drift_func: Callable[[float, float], float],
+    diffusion_func: Callable[[float, float], float],
+    start_position: float,
+    alpha: float,
+    duration: float,
+    order: int,
+    particles: int,
+    time_step: float,
+) -> float: ...
+def generalized_langevin_central_moment(
+    drift_func: Callable[[float, float], float],
+    diffusion_func: Callable[[float, float], float],
+    start_position: float,
+    alpha: float,
+    duration: float,
+    order: int,
+    particles: int,
+    time_step: float,
+) -> float: ...
+def subordinated_langevin_simulate(
+    drift_func: Callable[[float, float], float],
+    diffusion_func: Callable[[float, float], float],
+    start_position: float,
+    duration: float,
+    time_step: float,
+) -> tuple[np.ndarray, np.ndarray]: ...
+def subordinated_langevin_raw_moment(
+    drift_func: Callable[[float, float], float],
+    diffusion_func: Callable[[float, float], float],
+    start_position: float,
+    duration: float,
+    order: int,
+    particles: int,
+    time_step: float,
+) -> float: ...
+def subordinated_langevin_central_moment(
+    drift_func: Callable[[float, float], float],
+    diffusion_func: Callable[[float, float], float],
+    start_position: float,
+    duration: float,
+    order: int,
+    particles: int,
+    time_step: float,
 ) -> float: ...

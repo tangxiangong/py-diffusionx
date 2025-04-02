@@ -9,6 +9,9 @@ class Langevin:
 
     dx(t) = f(x(t), t) dt + g(x(t), t) dW(t), x(0) = x0
 
+    The underlying implementation has been optimized with an efficient callback mechanism
+    for interaction between Python functions and Rust code.
+
     Parameters
     ----------
     drift_func : Callable[[float, float], float]
@@ -178,6 +181,9 @@ class GeneralizedLangevin:
     Generalized Langevin equation:
 
     dx(t) = f(x(t), t) dt + g(x(t), t) dL_alpha(t), x(0) = x0
+
+    The underlying implementation has been optimized with an efficient callback mechanism
+    for interaction between Python functions and Rust code.
 
     Parameters
     ----------
@@ -358,6 +364,9 @@ class SubordinatedLangevin:
 
     where E(t) is the inverse subordinator process with stability index subordinator_alpha.
 
+    The underlying implementation has been optimized with an efficient callback mechanism
+    for interaction between Python functions and Rust code.
+
     Parameters
     ----------
     drift_func : Callable[[float, float], float]
@@ -379,7 +388,7 @@ class SubordinatedLangevin:
     ) -> None:
         self.drift_func = drift_func
         self.diffusion_func = diffusion_func
-        # Store but not use in backend calls
+        # Stored but not currently used in backend calls
         self.subordinator_alpha = subordinator_alpha
         self.start_position = start_position
 
