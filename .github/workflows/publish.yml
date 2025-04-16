@@ -55,34 +55,31 @@ jobs:
         with:
           toolchain: stable
           components: rustfmt, clippy
+          target: ${{ matrix.target == 'x86_64' && 'x86_64-unknown-linux-gnu' || 'aarch64-unknown-linux-gnu' }}
 
       - name: Cache Rust dependencies
         uses: Swatinem/rust-cache@v2
         with:
           shared-key: "rust-cache-${{ matrix.target }}"
 
+      - name: Print debugging information
+        run: |
+          pwd
+          echo "GITHUB_WORKSPACE: $GITHUB_WORKSPACE"
+          ls -la $GITHUB_WORKSPACE
+          find $GITHUB_WORKSPACE -name "Cargo.toml" | sort
+          find $GITHUB_WORKSPACE -name "pyproject.toml" | sort
+
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           python -m pip install uv
-          uv pip install pytest numpy matplotlib scipy jupyterlab ipykernel numba
+          uv pip install pytest numpy matplotlib scipy jupyterlab ipykernel numba maturin sccache
 
-      - name: Print working directory and files
+      - name: Build wheels with maturin
         run: |
-          pwd
-          ls -la
-          echo "Current directory: $GITHUB_WORKSPACE"
-
-      - name: Build wheels
-        uses: PyO3/maturin-action@v1
-        env:
-          RUST_BACKTRACE: full
-        with:
-          target: ${{ matrix.target }}
-          args: --release --out dist
-          sccache: 'true'
-          manylinux: auto
-          working-directory: ${{ github.workspace }}
+          mkdir -p dist
+          maturin build --release --out dist ${{ matrix.target == 'aarch64' && format('--target {0}-unknown-linux-gnu', matrix.target) || '' }}
 
       - name: Upload wheels
         uses: actions/upload-artifact@v4
@@ -100,19 +97,28 @@ jobs:
           fetch-depth: 0
           submodules: recursive
 
-      - name: Print working directory and files
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Print debugging information
         run: |
           pwd
-          ls -la
-          echo "Current directory: $GITHUB_WORKSPACE"
-          find $GITHUB_WORKSPACE -name "Cargo.toml" -type f
+          echo "GITHUB_WORKSPACE: $GITHUB_WORKSPACE"
+          ls -la $GITHUB_WORKSPACE
+          find $GITHUB_WORKSPACE -name "Cargo.toml" | sort
+          find $GITHUB_WORKSPACE -name "pyproject.toml" | sort
+
+      - name: Install maturin
+        run: |
+          python -m pip install --upgrade pip
+          pip install maturin
 
       - name: Build sdist
-        uses: PyO3/maturin-action@v1
-        with:
-          command: sdist
-          args: --out dist
-          working-directory: ${{ github.workspace }}
+        run: |
+          mkdir -p dist
+          maturin sdist --out dist
 
       - name: Upload sdist
         uses: actions/upload-artifact@v4
