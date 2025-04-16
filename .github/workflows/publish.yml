@@ -17,7 +17,7 @@ env:
 # 2. Set up trusted publisher in PyPI project settings:
 #    - Owner: [Your GitHub username/org]
 #    - Repository: py-diffusionx
-#    - Workflow name: Publish to PyPI
+#    - Workflow name: Publish
 #    - Environment: pypi
 # 3. Create a 'pypi' environment in GitHub repository settings
 #    Settings -> Environments -> New environment -> Name: pypi
@@ -67,13 +67,19 @@ jobs:
           python -m pip install uv
           uv pip install pytest numpy matplotlib scipy jupyterlab ipykernel numba
 
+      - name: Debug repository structure
+        run: |
+          pwd
+          ls -la
+          ls -la python/ || echo "python directory not found"
+
       - name: Build wheels
         uses: PyO3/maturin-action@v1
         env:
           RUST_BACKTRACE: full
         with:
           target: ${{ matrix.target }}
-          args: --release --out dist --manifest-path Cargo.toml --features "pyo3/extension-module"
+          args: --release --out dist --manifest-path ./Cargo.toml --features "pyo3/extension-module"
           sccache: 'true'
           manylinux: auto
 
@@ -93,11 +99,17 @@ jobs:
           fetch-depth: 0
           submodules: recursive
 
+      - name: Debug repository structure
+        run: |
+          pwd
+          ls -la
+          find . -name "Cargo.toml" -type f
+
       - name: Build sdist
         uses: PyO3/maturin-action@v1
         with:
           command: sdist
-          args: --out dist --manifest-path Cargo.toml
+          args: --out dist --manifest-path ./Cargo.toml
 
       - name: Upload sdist
         uses: actions/upload-artifact@v4
