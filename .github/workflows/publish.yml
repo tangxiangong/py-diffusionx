@@ -67,11 +67,11 @@ jobs:
           python -m pip install uv
           uv pip install pytest numpy matplotlib scipy jupyterlab ipykernel numba
 
-      - name: Debug repository structure
+      - name: Print working directory and files
         run: |
           pwd
           ls -la
-          ls -la python/ || echo "python directory not found"
+          echo "Current directory: $GITHUB_WORKSPACE"
 
       - name: Build wheels
         uses: PyO3/maturin-action@v1
@@ -79,9 +79,10 @@ jobs:
           RUST_BACKTRACE: full
         with:
           target: ${{ matrix.target }}
-          args: --release --out dist --manifest-path ./Cargo.toml --features "pyo3/extension-module"
+          args: --release --out dist
           sccache: 'true'
           manylinux: auto
+          working-directory: ${{ github.workspace }}
 
       - name: Upload wheels
         uses: actions/upload-artifact@v4
@@ -99,17 +100,19 @@ jobs:
           fetch-depth: 0
           submodules: recursive
 
-      - name: Debug repository structure
+      - name: Print working directory and files
         run: |
           pwd
           ls -la
-          find . -name "Cargo.toml" -type f
+          echo "Current directory: $GITHUB_WORKSPACE"
+          find $GITHUB_WORKSPACE -name "Cargo.toml" -type f
 
       - name: Build sdist
         uses: PyO3/maturin-action@v1
         with:
           command: sdist
-          args: --out dist --manifest-path ./Cargo.toml
+          args: --out dist
+          working-directory: ${{ github.workspace }}
 
       - name: Upload sdist
         uses: actions/upload-artifact@v4
