@@ -16,7 +16,7 @@ env:
 # 1. Create a PyPI account and enable two-factor authentication
 # 2. Set up trusted publisher in PyPI project settings:
 #    - Owner: [Your GitHub username/org]
-#    - Repository: DiffusionX
+#    - Repository: py-diffusionx
 #    - Workflow name: Publish to PyPI
 #    - Environment: pypi
 # 3. Create a 'pypi' environment in GitHub repository settings
@@ -30,7 +30,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
-        python-version: ['3.12', '3.11', '3.10']
+        python-version: ['3.12', '3.11', '3.10', '3.9']
         target: [x86_64, aarch64]
         exclude:
           - os: windows-latest
@@ -52,6 +52,9 @@ jobs:
 
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: stable
+          components: rustfmt, clippy
 
       - name: Cache Rust dependencies
         uses: Swatinem/rust-cache@v2
@@ -61,7 +64,8 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install pytest numpy matplotlib scipy
+          python -m pip install uv
+          uv pip install pytest numpy matplotlib scipy jupyterlab ipykernel numba
 
       - name: Build wheels
         uses: PyO3/maturin-action@v1
@@ -69,7 +73,7 @@ jobs:
           RUST_BACKTRACE: full
         with:
           target: ${{ matrix.target }}
-          args: --release --out dist --manifest-path Cargo.toml
+          args: --release --out dist --manifest-path Cargo.toml --features "pyo3/extension-module"
           sccache: 'true'
           manylinux: auto
 
