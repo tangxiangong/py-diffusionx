@@ -21,8 +21,6 @@ fn call_py_func(func: &PyObject, args: (f64, f64)) -> f64 {
 
 type PyArrayPair<'py> = (Bound<'py, PyArray<f64, Ix1>>, Bound<'py, PyArray<f64, Ix1>>);
 
-type PyArrayPointPair<'py> = (Bound<'py, PyArray<f64, Ix1>>, Bound<'py, PyArray<i64, Ix1>>);
-
 /// 封装Langevin计算所需参数，同时支持模拟和矩计算
 #[pyclass]
 struct LangevinParams {
@@ -404,7 +402,7 @@ pub fn poisson_simulate_duration(
     py: Python,
     lambda: f64,
     duration: f64,
-) -> XPyResult<PyArrayPointPair<'_>> {
+) -> XPyResult<PyArrayPair<'_>> {
     let poisson = Poisson::new(lambda)?;
     let (times, positions) = poisson.simulate_with_duration(duration)?;
     let times_array = times.into_pyarray(py);
@@ -417,7 +415,7 @@ pub fn poisson_simulate_step(
     py: Python,
     lambda: f64,
     num_step: usize,
-) -> XPyResult<PyArrayPointPair<'_>> {
+) -> XPyResult<PyArrayPair<'_>> {
     let poisson = Poisson::new(lambda)?;
     let (times, positions) = poisson.simulate_with_step(num_step)?;
     let times_array = times.into_pyarray(py);
