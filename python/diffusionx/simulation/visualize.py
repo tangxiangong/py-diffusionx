@@ -6,7 +6,7 @@ from dataclasses import dataclass, field
 
 # Type aliases
 real = Union[float, int]
-PathData = Tuple[np.ndarray, np.ndarray]
+PathData = tuple[np.ndarray, np.ndarray]
 PlotType = Literal[
     "trajectory", "multiple", "statistics", "msd", "histogram", "density"
 ]
@@ -21,21 +21,21 @@ class PlotConfig:
     title: str = "Stochastic Process Visualization"
     xlabel: str = "Time"
     ylabel: str = "Position"
-    color: Optional[Union[str, List[str]]] = None
-    figsize: Tuple[int, int] = (10, 6)
+    color: Optional[Union[str, list[str]]] = None
+    figsize: tuple[int, int] = (10, 6)
     grid: bool = True
     save_path: Optional[str] = None
     show: bool = True
 
     # Line style and marker configuration
-    linestyle: Optional[Union[str, List[str]]] = None
-    linewidth: Optional[Union[float, List[float]]] = None
-    marker: Optional[Union[str, List[str]]] = None
-    markersize: Optional[Union[float, List[float]]] = None
-    alpha: Optional[Union[float, List[float]]] = None
+    linestyle: Optional[Union[str, list[str]]] = None
+    linewidth: Optional[Union[float, list[float]]] = None
+    marker: Optional[Union[str, list[str]]] = None
+    markersize: Optional[Union[float, list[float]]] = None
+    alpha: Optional[Union[float, list[float]]] = None
 
     # Stochastic process simulation configuration
-    duration: Optional[real] = None
+    duration: real = 10.0
     step_size: real = 0.01
     n_trajectories: int = 100
 
@@ -56,7 +56,7 @@ class PlotConfig:
     n_time_points: int = 5
 
     # Other configuration
-    labels: List[str] = field(default_factory=list)
+    labels: list[str] = field(default_factory=list)
     legend_loc: str = "best"
     ci_color: str = "lightblue"
     theory_color: str = "red"
@@ -71,8 +71,31 @@ class PlotConfig:
     draw_as_steps: bool = False
     step_style: Optional[Literal["pre", "post", "mid"]] = None
 
+    def __post_init__(self):
+        if self.step_size <= 0:
+            raise ValueError("step_size must be positive")
+        if self.duration <= 0:
+            raise ValueError("duration must be positive")
+        if self.n_trajectories <= 0:
+            raise ValueError("n_trajectories must be positive")
+        if self.confidence_interval is not None and not (
+            0 < self.confidence_interval < 1
+        ):
+            raise ValueError("confidence_interval must be between 0 and 1 (exclusive)")
+        if self.bins <= 0:
+            raise ValueError("bins for histogram must be positive")
+        if self.n_time_points <= 0:
+            raise ValueError("n_time_points for density plot must be positive")
+
+        # Validate statistics choice
+        valid_stats = ["mean", "variance", "std"]
+        if self.statistics not in valid_stats:
+            raise ValueError(
+                f"Unsupported statistics type: '{self.statistics}'. Must be one of {valid_stats}"
+            )
+
     def get_style_at_index(
-        self, style_prop: Optional[Union[Any, List[Any]]], idx: int, default: Any
+        self, style_prop: Optional[Union[Any, list[Any]]], idx: int, default: Any
     ) -> Any:
         """Get the style property at the specified index, or return the property itself if not a list"""
         if style_prop is None:
@@ -178,7 +201,7 @@ def _generate_trajectories(
     times = None
 
     for _ in range(config.n_trajectories):
-        t, pos = process.simulate(config.duration, config.step_size)  # type: ignore
+        t, pos = process.simulate(config.duration, config.step_size)
         all_trajectories.append(pos)
         if times is None:
             times = t
@@ -399,7 +422,7 @@ def _collect_positions_at_time(
     positions_at_time = []
 
     for _ in range(config.n_trajectories):
-        _, positions = process.simulate(config.duration, config.step_size)  # type: ignore
+        _, positions = process.simulate(config.duration, config.step_size)
         positions_at_time.append(positions[time_index])
 
     return positions_at_time
@@ -447,7 +470,7 @@ def _plot_density(process: StochasticProcess, config: PlotConfig) -> plt.Figure:
     times = None
 
     for _ in range(config.n_trajectories):
-        t, pos = process.simulate(config.duration, config.step_size)  # type: ignore
+        t, pos = process.simulate(config.duration, config.step_size)
         all_trajectories.append(pos)
         if times is None:
             times = t
@@ -466,7 +489,7 @@ def _plot_density(process: StochasticProcess, config: PlotConfig) -> plt.Figure:
     cmap_colors = plt.cm.get_cmap(config.cmap, config.n_time_points)
 
     for i, time_idx in enumerate(time_indices):
-        positions = [traj[time_idx] for traj in all_trajectories]  # type: ignore
+        positions = [traj[time_idx] for traj in all_trajectories]
 
         axes[i].hist(
             positions,
@@ -529,74 +552,168 @@ def _apply_common_settings(fig: plt.Figure, ax: plt.Axes, config: PlotConfig) ->
 
 
 def plot(
-    data: Union[PathData, List[PathData], StochasticProcess],
+    data: Union[PathData, list[PathData], StochasticProcess],
     config: Optional[PlotConfig] = None,
     **kwargs,
 ) -> plt.Figure:
-    """
-    General visualization function for stochastic processes.
+    """Main plotting function for stochastic processes and trajectories."""
 
-    Args:
-        data: Data source (path data tuple, path data list, or stochastic process object)
-        config: Visualization configuration object, creates default if None
-        **kwargs: Parameters that can override configuration object parameters
-
-    Returns:
-        plt.Figure: Figure object
-    """
-    # Create default configuration if none provided
+    _config: PlotConfig
     if config is None:
-        config = PlotConfig()
-
-    # Override configuration with kwargs
-    for key, value in kwargs.items():
-        if hasattr(config, key):
-            setattr(config, key, value)
-
-    ax = None
-
-    # Select appropriate plotting function based on data type and plot type
-    if config.plot_type == "trajectory" and isinstance(data, tuple):
-        # Single trajectory visualization
-        fig, ax = _plot_trajectory(data, config)
-
-    elif config.plot_type == "multiple" and isinstance(data, list):
-        # Multiple trajectory comparison
-        fig, ax = _plot_multiple_trajectories(data, config)
-
-    elif config.plot_type in [
-        "statistics",
-        "msd",
-        "histogram",
-        "density",
-    ] and isinstance(data, StochasticProcess):
-        # Check required duration parameter
-        if config.duration is None:
-            raise ValueError(
-                "duration parameter is required when using StochasticProcess object"
-            )
-
-        # Choose appropriate function based on plot type
-        if config.plot_type == "statistics":
-            fig, ax = _plot_statistics(data, config)
-
-        elif config.plot_type == "msd":
-            fig, ax = _plot_msd(data, config)
-
-        elif config.plot_type == "histogram":
-            fig, ax = _plot_histogram(data, config)
-
-        elif config.plot_type == "density":
-            fig = _plot_density(data, config)
-            # Density plot handles saving and display internally, return directly
-            return fig
+        _config = PlotConfig(**kwargs)  # Validated by __post_init__
     else:
-        raise ValueError(
-            f"Unsupported plot type and data combination: {config.plot_type}, {type(data)}"
+        if kwargs:  # User provided a base config and overrides via kwargs
+            config_dict = (
+                config.__dict__.copy()
+            )  # Use .copy() to avoid modifying original if it's reused
+            config_dict.update(kwargs)
+            _config = PlotConfig(**config_dict)  # Re-validate with __post_init__
+        else:
+            _config = config  # Already an instance, assume validated if user constructed it properly
+
+    # Auto-determine plot_type if it's the default and data type suggests a better one
+    # Or validate if user-set plot_type is compatible with data.
+    original_user_plot_type = (
+        kwargs.get("plot_type", None) if config is None else config.plot_type
+    )
+    is_plot_type_default_or_from_kwargs = config is None or (
+        _config.plot_type == PlotConfig().plot_type and not original_user_plot_type
+    )
+
+    if isinstance(data, StochasticProcess):
+        # For a StochasticProcess, all plot types are potentially valid as trajectories can be generated.
+        # If plot_type was not explicitly set by user (or was default), and it's something like "multiple",
+        # it might be ambiguous. Defaulting to "trajectory" if not specified seems reasonable.
+        if is_plot_type_default_or_from_kwargs and _config.plot_type not in [
+            "trajectory",
+            "statistics",
+            "msd",
+            "histogram",
+            "density",
+        ]:
+            _config.plot_type = "trajectory"  # Sensible default for a process
+
+    elif (
+        isinstance(data, tuple) and len(data) == 2 and isinstance(data[0], np.ndarray)
+    ):  # PathData
+        if _config.plot_type not in ["trajectory"]:
+            if (
+                original_user_plot_type == _config.plot_type
+            ):  # User explicitly set an incompatible type
+                raise ValueError(
+                    f"Plot type '{_config.plot_type}' is not suitable for single trajectory data (PathData). "
+                    f"Valid type is 'trajectory'."
+                )
+            # If plot_type was default or inferred incorrectly, switch to trajectory
+            _config.plot_type = "trajectory"
+
+    elif isinstance(data, list) and all(
+        isinstance(item, tuple) and len(item) == 2 and isinstance(item[0], np.ndarray)
+        for item in data
+    ):
+        # List[PathData]
+        if _config.plot_type not in ["multiple"]:
+            if original_user_plot_type == _config.plot_type:
+                raise ValueError(
+                    f"Plot type '{_config.plot_type}' is not suitable for a list of trajectories (List[PathData]). "
+                    f"Valid type is 'multiple'."
+                )
+            _config.plot_type = "multiple"
+    else:
+        raise TypeError(
+            "Invalid data type for plotting. Expected StochasticProcess, PathData (tuple[np.ndarray, np.ndarray]), "
+            "or List[PathData]."
         )
 
-    # Apply common settings (density type already handled in its function)
-    if ax is not None:
-        _apply_common_settings(fig, ax, config)
+    # Dispatch to actual plot functions
+    fig: plt.Figure
+    ax: plt.Axes
+
+    # Handle ax from config
+    # If an Axes object is provided in the config, use it directly.
+    # Otherwise, the individual _plot_* functions will create a new figure and axes.
+    # This logic implies _plot_* functions need to handle config.ax being None or an Axes object.
+
+    if _config.plot_type == "trajectory":
+        if isinstance(data, StochasticProcess):
+            # Simulate a single trajectory if a process is given
+            if (
+                _config.duration is None
+            ):  # Should not happen due to PlotConfig default and __post_init__
+                raise ValueError(
+                    "Duration must be specified in PlotConfig for trajectory plot from StochasticProcess"
+                )
+            # The simulate method from basic.StochasticProcess is (self, duration, step_size)
+            # We rely on the specific process's simulate method for actual simulation.
+            path_data = data.simulate(_config.duration, _config.step_size)
+            fig, ax = _plot_trajectory(path_data, _config)
+        elif isinstance(data, tuple):  # PathData
+            fig, ax = _plot_trajectory(data, _config)
+        else:
+            raise ValueError(
+                "For 'trajectory' plot, data must be StochasticProcess or PathData."
+            )
+
+    elif _config.plot_type == "multiple":
+        if isinstance(data, list):  # List[PathData]
+            fig, ax = _plot_multiple_trajectories(data, _config)
+        elif isinstance(data, StochasticProcess):
+            # Generate N trajectories for 'multiple' plot type from a process
+            trajectories_data = []
+            for _ in range(_config.n_trajectories if _config.n_trajectories > 0 else 1):
+                path_data = data.simulate(_config.duration, _config.step_size)
+                trajectories_data.append(path_data)
+            fig, ax = _plot_multiple_trajectories(trajectories_data, _config)
+        else:
+            raise ValueError(
+                "For 'multiple' plot, data must be List[PathData] or StochasticProcess."
+            )
+
+    elif _config.plot_type == "statistics":
+        if not isinstance(data, StochasticProcess):
+            raise ValueError("For 'statistics' plot, data must be a StochasticProcess.")
+        fig, ax = _plot_statistics(data, _config)
+
+    elif _config.plot_type == "msd":
+        if not isinstance(data, StochasticProcess):
+            raise ValueError("For 'msd' plot, data must be a StochasticProcess.")
+        fig, ax = _plot_msd(data, _config)
+
+    elif _config.plot_type == "histogram":
+        if not isinstance(data, StochasticProcess):
+            raise ValueError("For 'histogram' plot, data must be a StochasticProcess.")
+        fig, ax = _plot_histogram(data, _config)
+
+    elif _config.plot_type == "density":
+        if not isinstance(data, StochasticProcess):
+            raise ValueError("For 'density' plot, data must be a StochasticProcess.")
+        # _plot_density returns fig directly
+        fig = _plot_density(data, _config)
+        # For density plots, ax might be an array or specific. _apply_common_settings might need adjustment
+        # or _plot_density handles its own common settings if it's too different.
+        # For now, assume it returns a figure and _apply_common_settings works with its main ax or is skipped.
+        if hasattr(fig, "axes") and len(fig.axes) > 0:
+            _apply_common_settings(
+                fig, fig.axes[0], _config
+            )  # Apply to the first axes for simplicity
+        # else: might need more specific handling if fig from _plot_density has no obvious single ax
+
+    else:
+        raise ValueError(f"Unsupported plot_type: '{_config.plot_type}'")
+
+    # Apply common settings if not a density plot that handles its own, or if ax is available
+    if _config.plot_type != "density" and "ax" in locals():  # ensure ax is defined
+        _apply_common_settings(fig, ax, _config)
+
+    if _config.save_path:
+        fig.savefig(_config.save_path)
+
+    # Handle showing the plot
+    if _config.ax is None and _config.show:
+        plt.show()
+    elif _config.ax is not None and _config.show_with_custom_ax and _config.show:
+        plt.show()  # User explicitly wants to show even if custom ax was used
+
+    plt.close(fig)  # Close the figure to free memory, esp. in loops or scripts
 
     return fig

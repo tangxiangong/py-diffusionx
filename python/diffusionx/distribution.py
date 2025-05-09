@@ -68,31 +68,39 @@ class Normal:
         return random.randn(size, self.mu, self.sigma)
 
     def __neg__(self):
-        return Normal(self.mu, self.sigma)
+        return Normal(-self.mu, self.sigma)
 
     def __add__(self, other):
         if isinstance(other, int) or isinstance(other, float):
             return Normal(self.mu + other, self.sigma)
         else:
-            raise ValueError("Invalid operand type")
+            raise TypeError(
+                f"Unsupported operand type(s) for +: '{type(self).__name__}' and '{type(other).__name__}'"
+            )
 
     def __radd__(self, other):
         if isinstance(other, int) or isinstance(other, float):
             return Normal(other + self.mu, self.sigma)
         else:
-            raise ValueError("Invalid operand type")
+            raise TypeError(
+                f"Unsupported operand type(s) for +: '{type(other).__name__}' and '{type(self).__name__}'"
+            )
 
     def __mul__(self, other):
         if isinstance(other, int) or isinstance(other, float):
-            return Normal(self.mu * other, self.sigma * other)
+            return Normal(self.mu * other, self.sigma * abs(other))
         else:
-            raise ValueError("Invalid operand type")
+            raise TypeError(
+                f"Unsupported operand type(s) for *: '{type(self).__name__}' and '{type(other).__name__}'"
+            )
 
     def __rmul__(self, other):
         if isinstance(other, int) or isinstance(other, float):
-            return Normal(other * self.mu, other * self.sigma)
+            return Normal(other * self.mu, abs(other) * self.sigma)
         else:
-            raise ValueError("Invalid operand type")
+            raise TypeError(
+                f"Unsupported operand type(s) for *: '{type(other).__name__}' and '{type(self).__name__}'"
+            )
 
 
 class Exponential:
@@ -227,25 +235,43 @@ class Stable:
         if isinstance(other, int) or isinstance(other, float):
             return Stable(self.alpha, self.beta, self.sigma, self.mu + other)
         else:
-            raise ValueError(f"Invalid operand type {type(other)}")
+            raise TypeError(
+                f"Unsupported operand type(s) for +: '{type(self).__name__}' and '{type(other).__name__}'"
+            )
 
     def __radd__(self, other):
         if isinstance(other, int) or isinstance(other, float):
             return Stable(self.alpha, self.beta, self.sigma, other + self.mu)
         else:
-            raise ValueError(f"Invalid operand type {type(other)}")
+            raise TypeError(
+                f"Unsupported operand type(s) for +: '{type(other).__name__}' and '{type(self).__name__}'"
+            )
 
     def __mul__(self, other):
         if isinstance(other, int) or isinstance(other, float):
-            return Stable(self.alpha, self.beta, self.sigma * other, self.mu)
+            # When multiplying a stable distribution by a scalar c,
+            # new_sigma = sigma * |c|
+            # new_mu = mu * c if alpha != 1
+            # new_mu = mu * c + sigma * c * beta * (2/pi) * ln|c| if alpha == 1.
+            # Current implementation simplifies for mu, assuming alpha != 1 or ignoring the second term for alpha = 1.
+            new_sigma = self.sigma * abs(other)
+            new_mu = self.mu * other
+            return Stable(self.alpha, self.beta, new_sigma, new_mu)
         else:
-            raise ValueError(f"Invalid operand type {type(other)}")
+            raise TypeError(
+                f"Unsupported operand type(s) for *: '{type(self).__name__}' and '{type(other).__name__}'"
+            )
 
     def __rmul__(self, other):
         if isinstance(other, int) or isinstance(other, float):
-            return Stable(self.alpha, self.beta, other * self.sigma, self.mu)
+            # Similar to __mul__
+            new_sigma = abs(other) * self.sigma
+            new_mu = other * self.mu
+            return Stable(self.alpha, self.beta, new_sigma, new_mu)
         else:
-            raise ValueError(f"Invalid operand type {type(other)}")
+            raise TypeError(
+                f"Unsupported operand type(s) for *: '{type(other).__name__}' and '{type(self).__name__}'"
+            )
 
 
 class SkewStable(Stable):

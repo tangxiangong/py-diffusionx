@@ -1,7 +1,7 @@
 from diffusionx import _core
-from typing import Union
+from typing import Union, Optional
 from .basic import StochasticProcess, Trajectory
-from .utils import check_transform
+from .utils import ensure_float
 import numpy as np
 
 
@@ -18,26 +18,29 @@ class Levy(StochasticProcess):
         Initialize a Lévy process object.
 
         Args:
-            alpha (real): The alpha parameter of the Lévy process, the value must be in the range (0, 2].
+            alpha (real): Stability index of the Lévy process. Must be in the range (0, 2].
             start_position (real, optional): Starting position of the Lévy process. Defaults to 0.0.
 
         Raises:
-            ValueError: If duration is not positive.
-            ValueError: If diffusion coefficient is not positive.
-            ValueError: If value is not a number.
-
-        Returns:
-            Bm: A Brownian motion object.
+            TypeError: If alpha or start_position are not numbers.
+            ValueError: If alpha is not in the range (0, 2].
         """
-        start_position = check_transform(start_position)
-        alpha = check_transform(alpha)
-        if alpha <= 0 or alpha > 2:
-            raise ValueError("alpha must be in the range (0, 2]")
+        try:
+            _start_position = ensure_float(start_position)
+            _alpha = ensure_float(alpha)
+        except TypeError as e:
+            raise TypeError(
+                f"Input parameters alpha and start_position must be numbers. Error: {e}"
+            ) from e
 
-        self.start_position = start_position
-        self.alpha = alpha
+        if not (0 < _alpha <= 2):
+            raise ValueError(f"alpha must be in the range (0, 2], got {_alpha}")
+
+        self.start_position = _start_position
+        self.alpha = _alpha
 
     def __call__(self, duration: real) -> Trajectory:
+        # Duration validation is handled by Trajectory.__init__
         return Trajectory(self, duration)
 
     def simulate(
@@ -47,23 +50,34 @@ class Levy(StochasticProcess):
         Simulate the Lévy process.
 
         Args:
-            duration (real): The duration of the Lévy process.
-            step_size (real, optional): Step size of the Lévy process. Defaults to 0.01.
+            duration (real): Total duration of the simulation.
+            step_size (real, optional): Step size for the simulation. Defaults to 0.01.
+
+        Raises:
+            TypeError: If duration or step_size are not numbers.
+            ValueError: If duration or step_size are not positive.
 
         Returns:
             tuple[np.ndarray, np.ndarray]: A tuple containing the times and positions of the Lévy process.
         """
-        step_size = check_transform(step_size)
-        duration = check_transform(duration)
-        if duration <= 0:
+        try:
+            _duration = ensure_float(duration)
+            _step_size = ensure_float(step_size)
+        except TypeError as e:
+            raise TypeError(
+                f"duration and step_size must be numbers. Error: {e}"
+            ) from e
+
+        if _duration <= 0:
             raise ValueError("duration must be positive")
-        if step_size <= 0:
+        if _step_size <= 0:
             raise ValueError("step_size must be positive")
+
         return _core.levy_simulate(
             self.start_position,
             self.alpha,
-            duration,
-            step_size,
+            _duration,
+            _step_size,
         )
 
     def fpt(
@@ -71,33 +85,51 @@ class Levy(StochasticProcess):
         domain: tuple[real, real],
         step_size: real = 0.01,
         max_duration: real = 1000,
-    ):
+    ) -> Optional[float]:
         """
-        Calculate the first passage time of the Brownian motion.
+        Calculate the first passage time of the Lévy process.
 
         Args:
-            domain (tuple[real, real]): The domain of the Brownian motion.
-            step_size (real, optional): Step size of the Brownian motion. Defaults to 0.01.
+            domain (tuple[real, real]): The domain (a, b) for FPT. a must be less than b.
+            step_size (real, optional): Step size for the simulation. Defaults to 0.01.
+            max_duration (real, optional): Maximum duration to simulate for FPT. Defaults to 1000.
+
+        Raises:
+            TypeError: If domain elements, step_size, or max_duration are not numbers.
+            ValueError: If domain is not a valid interval (a >= b), or if step_size or max_duration are not positive.
 
         Returns:
-            real: The first passage time of the Brownian motion.
+            Optional[float]: The first passage time, or None if max_duration is reached before FPT.
         """
-        step_size = check_transform(step_size)
-        if step_size <= 0:
+        if not (isinstance(domain, tuple) and len(domain) == 2):
+            raise TypeError(
+                f"domain must be a tuple of two real numbers, got {type(domain).__name__}"
+            )
+        try:
+            _step_size = ensure_float(step_size)
+            a = ensure_float(domain[0])
+            b = ensure_float(domain[1])
+            _max_duration = ensure_float(max_duration)
+        except TypeError as e:
+            raise TypeError(
+                f"Domain elements, step_size, and max_duration must be numbers. Error: {e}"
+            ) from e
+
+        if _step_size <= 0:
             raise ValueError("step_size must be positive")
-        a = check_transform(domain[0])
-        b = check_transform(domain[1])
         if a >= b:
-            raise ValueError("domain must be a valid interval")
-        max_duration = check_transform(max_duration)
-        if max_duration <= 0:
+            raise ValueError(
+                f"Invalid domain [{a}, {b}]; domain[0] must be strictly less than domain[1]."
+            )
+        if _max_duration <= 0:
             raise ValueError("max_duration must be positive")
+
         return _core.levy_fpt(
             self.start_position,
             self.alpha,
-            step_size,
+            _step_size,
             (a, b),
-            max_duration,
+            _max_duration,
         )
 
     def occupation_time(
@@ -105,34 +137,51 @@ class Levy(StochasticProcess):
         domain: tuple[real, real],
         duration: real,
         step_size: real = 0.01,
-    ):
+    ) -> float:
         """
-        Calculate the occupation time of the Lévy process.
+        Calculate the occupation time of the Lévy process in a given domain.
 
         Args:
-            domain (tuple[real, real]): The domain of the Lévy process.
-            duration (real): The duration of the Lévy process.
-            step_size (real, optional): Step size of the Lévy process. Defaults to 0.01.
+            domain (tuple[real, real]): The domain (a, b) for occupation time. a must be less than b.
+            duration (real): The total duration of the simulation.
+            step_size (real, optional): Step size for the simulation. Defaults to 0.01.
+
+        Raises:
+            TypeError: If domain elements, duration, or step_size are not numbers.
+            ValueError: If domain is not a valid interval (a >= b), or if duration or step_size are not positive.
 
         Returns:
-            real: The occupation time of the Lévy process.
+            float: The occupation time of the Lévy process in the domain.
         """
-        step_size = check_transform(step_size)
-        if step_size <= 0:
-            raise ValueError("step_size must be positive")
-        duration = check_transform(duration)
-        if duration <= 0:
+        if not (isinstance(domain, tuple) and len(domain) == 2):
+            raise TypeError(
+                f"domain must be a tuple of two real numbers, got {type(domain).__name__}"
+            )
+        try:
+            _duration = ensure_float(duration)
+            _step_size = ensure_float(step_size)
+            a = ensure_float(domain[0])
+            b = ensure_float(domain[1])
+        except TypeError as e:
+            raise TypeError(
+                f"Domain elements, duration, and step_size must be numbers. Error: {e}"
+            ) from e
+
+        if _duration <= 0:
             raise ValueError("duration must be positive")
-        a = check_transform(domain[0])
-        b = check_transform(domain[1])
+        if _step_size <= 0:
+            raise ValueError("step_size must be positive")
         if a >= b:
-            raise ValueError("domain must be a valid interval")
+            raise ValueError(
+                f"Invalid domain [{a}, {b}]; domain[0] must be strictly less than domain[1]."
+            )
+
         return _core.levy_occupation_time(
             self.start_position,
             self.alpha,
-            step_size,
+            _step_size,
             (a, b),
-            duration,
+            _duration,
         )
 
 
@@ -153,11 +202,11 @@ class Subordinator(StochasticProcess):
         Returns:
             Subordinator: A subordinator object.
         """
-        alpha = check_transform(alpha)
-        if alpha <= 0 or alpha > 1:
-            raise ValueError("alpha must be in the range (0, 2]")
+        alpha_transformed = ensure_float(alpha)
+        if alpha_transformed <= 0 or alpha_transformed >= 1:
+            raise ValueError("alpha must be in the range (0, 1) for Subordinator")
 
-        self.alpha = alpha
+        self.alpha = alpha_transformed
 
     def __call__(self, duration: real) -> Trajectory:
         return Trajectory(self, duration)
@@ -165,26 +214,16 @@ class Subordinator(StochasticProcess):
     def simulate(
         self, duration: real, step_size: real = 0.01
     ) -> tuple[np.ndarray, np.ndarray]:
-        """
-        Simulate the subordinator.
-
-        Args:
-            duration (real): The duration of the subordinator.
-            step_size (real, optional): Step size of the subordinator. Defaults to 0.01.
-
-        Returns:
-            tuple[np.ndarray, np.ndarray]: A tuple containing the times and positions of the subordinator.
-        """
-        step_size = check_transform(step_size)
-        duration = check_transform(duration)
-        if duration <= 0:
+        _duration = ensure_float(duration)
+        _step_size = ensure_float(step_size)
+        if _duration <= 0:
             raise ValueError("duration must be positive")
-        if step_size <= 0:
+        if _step_size <= 0:
             raise ValueError("step_size must be positive")
         return _core.subordinator_simulate(
             self.alpha,
-            duration,
-            step_size,
+            _duration,
+            _step_size,
         )
 
     def fpt(
@@ -192,32 +231,22 @@ class Subordinator(StochasticProcess):
         domain: tuple[real, real],
         step_size: real = 0.01,
         max_duration: real = 1000,
-    ):
-        """
-        Calculate the first passage time of the subordinator.
-
-        Args:
-            domain (tuple[real, real]): The domain of the subordinator.
-            step_size (real, optional): Step size of the subordinator. Defaults to 0.01.
-
-        Returns:
-            real: The first passage time of the subordinator.
-        """
-        step_size = check_transform(step_size)
-        if step_size <= 0:
+    ) -> Optional[float]:
+        _step_size = ensure_float(step_size)
+        a = ensure_float(domain[0])
+        b = ensure_float(domain[1])
+        _max_duration = ensure_float(max_duration)
+        if _step_size <= 0:
             raise ValueError("step_size must be positive")
-        a = check_transform(domain[0])
-        b = check_transform(domain[1])
         if a >= b:
             raise ValueError("domain must be a valid interval")
-        max_duration = check_transform(max_duration)
-        if max_duration <= 0:
+        if _max_duration <= 0:
             raise ValueError("max_duration must be positive")
         return _core.subordinator_fpt(
             self.alpha,
             (a, b),
-            max_duration,
-            step_size,
+            _max_duration,
+            _step_size,
         )
 
     def occupation_time(
@@ -225,33 +254,22 @@ class Subordinator(StochasticProcess):
         domain: tuple[real, real],
         duration: real,
         step_size: real = 0.01,
-    ):
-        """
-        Calculate the occupation time of the Lévy process.
-
-        Args:
-            domain (tuple[real, real]): The domain of the subordinator.
-            duration (real): The duration of the subordinator.
-            step_size (real, optional): Step size of the subordinator. Defaults to 0.01.
-
-        Returns:
-            real: The occupation time of the subordinator.
-        """
-        step_size = check_transform(step_size)
-        if step_size <= 0:
-            raise ValueError("step_size must be positive")
-        duration = check_transform(duration)
-        if duration <= 0:
+    ) -> float:
+        _duration = ensure_float(duration)
+        _step_size = ensure_float(step_size)
+        a = ensure_float(domain[0])
+        b = ensure_float(domain[1])
+        if _duration <= 0:
             raise ValueError("duration must be positive")
-        a = check_transform(domain[0])
-        b = check_transform(domain[1])
+        if _step_size <= 0:
+            raise ValueError("step_size must be positive")
         if a >= b:
             raise ValueError("domain must be a valid interval")
         return _core.subordinator_occupation_time(
             self.alpha,
             (a, b),
-            duration,
-            step_size,
+            _duration,
+            _step_size,
         )
 
 
@@ -264,19 +282,12 @@ class InvSubordinator(StochasticProcess):
         Initialize an inverse subordinator object.
 
         Args:
-            alpha (real): The alpha parameter of the inverse subordinator, the value must be in the range (0, 1).
-
-        Raises:
-            ValueError: If alpha is not in the range (0, 1).
-
-        Returns:
-            InvSubordinator: An inverse subordinator object.
+            alpha (real): The alpha parameter of the inverse subordinator, value must be in (0, 1).
         """
-        alpha = check_transform(alpha)
-        if alpha <= 0 or alpha > 1:
-            raise ValueError("alpha must be in the range (0, 1)")
-
-        self.alpha = alpha
+        alpha_transformed = ensure_float(alpha)
+        if alpha_transformed <= 0 or alpha_transformed >= 1:
+            raise ValueError("alpha must be in the range (0, 1) for InvSubordinator")
+        self.alpha = alpha_transformed
 
     def __call__(self, duration: real) -> Trajectory:
         return Trajectory(self, duration)
@@ -284,19 +295,39 @@ class InvSubordinator(StochasticProcess):
     def simulate(
         self, duration: real, step_size: real = 0.01
     ) -> tuple[np.ndarray, np.ndarray]:
-        return _core.inv_subordinator_simulate(self.alpha, duration, step_size)
+        _duration = ensure_float(duration)
+        _step_size = ensure_float(step_size)
+        if _duration <= 0:
+            raise ValueError("duration must be positive")
+        if _step_size <= 0:
+            raise ValueError("step_size must be positive")
+        return _core.inv_subordinator_simulate(
+            self.alpha,
+            _duration,
+            _step_size,
+        )
 
     def fpt(
         self,
         domain: tuple[real, real],
         step_size: real = 0.01,
         max_duration: real = 1000,
-    ):
+    ) -> Optional[float]:
+        _step_size = ensure_float(step_size)
+        a = ensure_float(domain[0])
+        b = ensure_float(domain[1])
+        _max_duration = ensure_float(max_duration)
+        if _step_size <= 0:
+            raise ValueError("step_size must be positive")
+        if a >= b:
+            raise ValueError("domain must be a valid interval")
+        if _max_duration <= 0:
+            raise ValueError("max_duration must be positive")
         return _core.inv_subordinator_fpt(
             self.alpha,
-            domain,
-            max_duration,
-            step_size,
+            (a, b),
+            _max_duration,
+            _step_size,
         )
 
     def occupation_time(
@@ -304,10 +335,20 @@ class InvSubordinator(StochasticProcess):
         domain: tuple[real, real],
         duration: real,
         step_size: real = 0.01,
-    ):
+    ) -> float:
+        _duration = ensure_float(duration)
+        _step_size = ensure_float(step_size)
+        a = ensure_float(domain[0])
+        b = ensure_float(domain[1])
+        if _duration <= 0:
+            raise ValueError("duration must be positive")
+        if _step_size <= 0:
+            raise ValueError("step_size must be positive")
+        if a >= b:
+            raise ValueError("domain must be a valid interval")
         return _core.inv_subordinator_occupation_time(
             self.alpha,
-            domain,
-            duration,
-            step_size,
+            (a, b),
+            _duration,
+            _step_size,
         )

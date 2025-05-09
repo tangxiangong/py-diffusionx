@@ -3,10 +3,13 @@ from typing import Union
 real = Union[float, int]
 
 
-def check_transform(value: real) -> float:
-    if isinstance(value, int):
-        return float(value)
-    elif isinstance(value, float):
+def ensure_float(value: real) -> float:
+    """Ensure the input value is a float, converting from int if necessary."""
+    if isinstance(value, float):
         return value
+    elif isinstance(value, int):
+        return float(value)
     else:
-        raise ValueError(f"{value} must be a number")
+        # This case should ideally not be reached if type hints are respected,
+        # but as a runtime check for robustness:
+        raise TypeError(f"Expected float or int, got {type(value).__name__}")

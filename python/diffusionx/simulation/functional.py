@@ -1,8 +1,8 @@
 from .basic import StochasticProcess
 from .bm import Bm
 from .levy import Levy
-from typing import Union
-from .utils import check_transform
+from typing import Union, Optional
+from .utils import ensure_float
 
 real = Union[int, float]
 
@@ -16,24 +16,57 @@ class FPT:
         step_size: real = 0.01,
     ):
         if not isinstance(sp, StochasticProcess):
-            raise ValueError("sp must be a StochasticProcess")
-        if not isinstance(domain, tuple) or len(domain) != 2:
-            raise ValueError("domain must be a tuple of two real numbers")
-        a = check_transform(domain[0])
-        b = check_transform(domain[1])
-        self.max_duration = check_transform(max_duration)
-        self.step_size = check_transform(step_size)
+            raise TypeError(
+                f"sp must be an instance of StochasticProcess, got {type(sp).__name__}"
+            )
+
+        if not (isinstance(domain, tuple) and len(domain) == 2):
+            raise TypeError(
+                f"domain must be a tuple of two real numbers, got {type(domain).__name__}"
+            )
+
+        try:
+            a = ensure_float(domain[0])
+            b = ensure_float(domain[1])
+        except TypeError as e:
+            raise TypeError(
+                f"Domain elements must be numbers convertible to float. Error: {e}"
+            ) from e
+
+        if a >= b:
+            raise ValueError(
+                f"Invalid domain [{a}, {b}]; domain[0] must be strictly less than domain[1]."
+            )
+
+        try:
+            self.max_duration = ensure_float(max_duration)
+        except TypeError as e:
+            raise TypeError(f"max_duration must be a number. Error: {e}") from e
+        if self.max_duration <= 0:
+            raise ValueError("max_duration must be positive")
+
+        try:
+            self.step_size = ensure_float(step_size)
+        except TypeError as e:
+            raise TypeError(f"step_size must be a number. Error: {e}") from e
+        if self.step_size <= 0:
+            raise ValueError("step_size must be positive")
+
         self.sp = sp
         self.domain = (a, b)
 
-    def simulate(self) -> float:
+    def simulate(self) -> Optional[float]:
         match self.sp:
             case Bm():
-                return self.sp.fpt(self.domain, self.step_size, self.max_duration)
+                result = self.sp.fpt(self.domain, self.step_size, self.max_duration)
+                return result
             case Levy():
-                return self.sp.fpt(self.domain, self.step_size, self.max_duration)
+                result = self.sp.fpt(self.domain, self.step_size, self.max_duration)
+                return result
             case _:
-                raise ValueError("sp must be a Brownian motion or a Lévy process")
+                raise NotImplementedError(
+                    f"FPT calculation is not implemented for process type {type(self.sp).__name__}"
+                )
 
 
 class OccupationTime:
@@ -45,17 +78,44 @@ class OccupationTime:
         step_size: real = 0.01,
     ):
         if not isinstance(sp, StochasticProcess):
-            raise ValueError("sp must be a StochasticProcess")
-        if not isinstance(domain, tuple) or len(domain) != 2:
-            raise ValueError("domain must be a tuple of two real numbers")
-        a = check_transform(domain[0])
-        b = check_transform(domain[1])
-        duration = check_transform(duration)
-        if duration <= 0:
+            raise TypeError(
+                f"sp must be an instance of StochasticProcess, got {type(sp).__name__}"
+            )
+
+        if not (isinstance(domain, tuple) and len(domain) == 2):
+            raise TypeError(
+                f"domain must be a tuple of two real numbers, got {type(domain).__name__}"
+            )
+
+        try:
+            a = ensure_float(domain[0])
+            b = ensure_float(domain[1])
+        except TypeError as e:
+            raise TypeError(
+                f"Domain elements must be numbers convertible to float. Error: {e}"
+            ) from e
+
+        if a >= b:
+            raise ValueError(
+                f"Invalid domain [{a}, {b}]; domain[0] must be strictly less than domain[1]."
+            )
+
+        try:
+            _duration = ensure_float(duration)
+        except TypeError as e:
+            raise TypeError(f"duration must be a number. Error: {e}") from e
+        if _duration <= 0:
             raise ValueError("duration must be positive")
         else:
-            self.duration = duration
-        self.step_size = check_transform(step_size)
+            self.duration = _duration
+
+        try:
+            self.step_size = ensure_float(step_size)
+        except TypeError as e:
+            raise TypeError(f"step_size must be a number. Error: {e}") from e
+        if self.step_size <= 0:
+            raise ValueError("step_size must be positive")
+
         self.sp = sp
         self.domain = (a, b)
 
@@ -70,4 +130,6 @@ class OccupationTime:
                     self.domain, self.duration, self.step_size
                 )
             case _:
-                raise ValueError("sp must be a Brownian motion or a Lévy process")
+                raise NotImplementedError(
+                    f"OccupationTime calculation is not implemented for process type {type(self.sp).__name__}"
+                )
