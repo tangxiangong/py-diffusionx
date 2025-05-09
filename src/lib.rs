@@ -1,11 +1,12 @@
 use pyo3::prelude::*;
 
 mod error;
-pub mod random;
 pub use error::*;
+
+pub mod random;
+
 pub mod simulation;
 
-/// 用于简化 PyModule 函数注册的宏
 macro_rules! register_functions {
     // 匹配 a::b::c 形式
     ($m:ident, $($p1:ident::$p2:ident::$func:ident),* $(,)?) => {
