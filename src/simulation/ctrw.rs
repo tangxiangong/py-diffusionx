@@ -14,7 +14,7 @@ pub fn ctrw_simulate_duration(
     duration: f64,
 ) -> XPyResult<PyArrayPair<'_>> {
     let ctrw = CTRW::new(alpha, beta, start_position)?;
-    let (times, positions) = ctrw.simulate(duration)?;
+    let (times, positions) = ctrw.simulate_with_duration(duration)?;
     Ok(vec_to_pyarray(py, times, positions))
 }
 
