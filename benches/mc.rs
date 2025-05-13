@@ -8,8 +8,7 @@ fn criterion_benchmark(c: &mut Criterion) {
     c.bench_function("Brownian motion simulation", |b| {
         b.iter(|| {
             let bm = Bm::default();
-            bm.simulate(black_box(5000), black_box(0.01))
-                .unwrap();
+            bm.simulate(black_box(5000), black_box(0.01)).unwrap();
         });
     });
 
