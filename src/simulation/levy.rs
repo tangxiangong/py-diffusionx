@@ -32,6 +32,38 @@ pub fn levy_fpt(
 }
 
 #[pyfunction]
+pub fn levy_fpt_raw_moment(
+    start_position: f64,
+    alpha: f64,
+    domain: (f64, f64),
+    order: i32,
+    particles: usize,
+    max_duration: f64,
+    step_size: f64,
+) -> XPyResult<Option<f64>> {
+    let levy = Levy::new(start_position, alpha)?;
+    let fpt = FirstPassageTime::new(&levy, domain)?;
+    let result = fpt.raw_moment(order, particles, max_duration, step_size)?;
+    Ok(result)
+}
+
+#[pyfunction]
+pub fn levy_fpt_central_moment(
+    start_position: f64,
+    alpha: f64,
+    domain: (f64, f64),
+    order: i32,
+    particles: usize,
+    max_duration: f64,
+    step_size: f64,
+) -> XPyResult<Option<f64>> {
+    let levy = Levy::new(start_position, alpha)?;
+    let fpt = FirstPassageTime::new(&levy, domain)?;
+    let result = fpt.central_moment(order, particles, max_duration, step_size)?;
+    Ok(result)
+}
+
+#[pyfunction]
 pub fn levy_occupation_time(
     start_position: f64,
     alpha: f64,
@@ -41,5 +73,66 @@ pub fn levy_occupation_time(
 ) -> XPyResult<f64> {
     let levy = Levy::new(start_position, alpha)?;
     let result = levy.occupation_time(domain, duration, step_size)?;
+    Ok(result)
+}
+
+#[pyfunction]
+pub fn levy_occupation_time_raw_moment(
+    start_position: f64,
+    alpha: f64,
+    domain: (f64, f64),
+    duration: f64,
+    order: i32,
+    particles: usize,
+    step_size: f64,
+) -> XPyResult<f64> {
+    let levy = Levy::new(start_position, alpha)?;
+    let oc = OccupationTime::new(&levy, domain, duration)?;
+    let result = oc.raw_moment(order, particles, step_size)?;
+    Ok(result)
+}
+
+#[pyfunction]
+pub fn levy_occupation_time_central_moment(
+    start_position: f64,
+    alpha: f64,
+    domain: (f64, f64),
+    duration: f64,
+    order: i32,
+    particles: usize,
+    step_size: f64,
+) -> XPyResult<f64> {
+    let levy = Levy::new(start_position, alpha)?;
+    let oc = OccupationTime::new(&levy, domain, duration)?;
+    let result = oc.central_moment(order, particles, step_size)?;
+    Ok(result)
+}
+
+#[pyfunction]
+pub fn levy_tamsd(
+    start_position: f64,
+    alpha: f64,
+    duration: f64,
+    delta: f64,
+    step_size: f64,
+    quad_order: usize,
+) -> XPyResult<f64> {
+    let levy = Levy::new(start_position, alpha)?;
+    let result = levy.tamsd(duration, delta, step_size, quad_order)?;
+    Ok(result)
+}
+
+#[pyfunction]
+pub fn levy_eatamsd(
+    start_position: f64,
+    alpha: f64,
+    duration: f64,
+    delta: f64,
+    particles: usize,
+    step_size: f64,
+    quad_order: usize,
+) -> XPyResult<f64> {
+    let levy = Levy::new(start_position, alpha)?;
+    let result = levy.eatamsd(duration, delta, particles, step_size, quad_order)?;
     Ok(result)
 }
