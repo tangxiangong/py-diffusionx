@@ -456,6 +456,81 @@ def langevin_central_moment(
     particles: int,
     time_step: float,
 ) -> float: ...
+def langevin_fpt(
+    drift_func: Callable[[float, float], float],
+    diffusion_func: Callable[[float, float], float],
+    start_position: float,
+    domain: tuple[float, float],
+    max_duration: float,
+) -> float | None: ...
+def langevin_fpt_raw_moment(
+    drift_func: Callable[[float, float], float],
+    diffusion_func: Callable[[float, float], float],
+    start_position: float,
+    domain: tuple[float, float],
+    order: int,
+    particles: int,
+    max_duration: float,
+    time_step: float,
+) -> float | None: ...
+def langevin_fpt_central_moment(
+    drift_func: Callable[[float, float], float],
+    diffusion_func: Callable[[float, float], float],
+    start_position: float,
+    domain: tuple[float, float],
+    order: int,
+    particles: int,
+    max_duration: float,
+    time_step: float,
+) -> float | None: ...
+def langevin_occupation_time(
+    drift_func: Callable[[float, float], float],
+    diffusion_func: Callable[[float, float], float],
+    start_position: float,
+    domain: tuple[float, float],
+    duration: float,
+) -> float: ...
+def langevin_occupation_time_raw_moment(
+    drift_func: Callable[[float, float], float],
+    diffusion_func: Callable[[float, float], float],
+    start_position: float,
+    domain: tuple[float, float],
+    duration: float,
+    order: int,
+    particles: int,
+    time_step: float,
+) -> float: ...
+def langevin_occupation_time_central_moment(
+    drift_func: Callable[[float, float], float],
+    diffusion_func: Callable[[float, float], float],
+    start_position: float,
+    domain: tuple[float, float],
+    duration: float,
+    order: int,
+    particles: int,
+    time_step: float,
+) -> float: ...
+def langevin_tamsd(
+    drift_func: Callable[[float, float], float],
+    diffusion_func: Callable[[float, float], float],
+    start_position: float,
+    duration: float,
+    delta: float,
+    time_step: float,
+    quad_order: int,
+) -> float: ...
+def langevin_eatamsd(
+    drift_func: Callable[[float, float], float],
+    diffusion_func: Callable[[float, float], float],
+    start_position: float,
+    duration: float,
+    delta: float,
+    particles: int,
+    time_step: float,
+    quad_order: int,
+) -> float: ...
+
+# Generalized Langevin Process
 def generalized_langevin_simulate(
     drift_func: Callable[[float, float], float],
     diffusion_func: Callable[[float, float], float],
@@ -484,10 +559,97 @@ def generalized_langevin_central_moment(
     particles: int,
     time_step: float,
 ) -> float: ...
+def generalized_langevin_fpt(
+    drift_func: Callable[[float, float], float],
+    diffusion_func: Callable[[float, float], float],
+    start_position: float,
+    alpha: float,
+    domain: tuple[float, float],
+    max_duration: float,
+    time_step: float,
+) -> float | None: ...
+def generalized_langevin_fpt_raw_moment(
+    drift_func: Callable[[float, float], float],
+    diffusion_func: Callable[[float, float], float],
+    start_position: float,
+    alpha: float,
+    domain: tuple[float, float],
+    order: int,
+    particles: int,
+    max_duration: float,
+    time_step: float,
+) -> float | None: ...
+def generalized_langevin_fpt_central_moment(
+    drift_func: Callable[[float, float], float],
+    diffusion_func: Callable[[float, float], float],
+    start_position: float,
+    alpha: float,
+    domain: tuple[float, float],
+    order: int,
+    particles: int,
+    max_duration: float,
+    time_step: float,
+) -> float | None: ...
+def generalized_langevin_occupation_time(
+    drift_func: Callable[[float, float], float],
+    diffusion_func: Callable[[float, float], float],
+    start_position: float,
+    alpha: float,
+    domain: tuple[float, float],
+    duration: float,
+    time_step: float,
+) -> float: ...
+def generalized_langevin_occupation_time_raw_moment(
+    drift_func: Callable[[float, float], float],
+    diffusion_func: Callable[[float, float], float],
+    start_position: float,
+    alpha: float,
+    domain: tuple[float, float],
+    duration: float,
+    order: int,
+    particles: int,
+    time_step: float,
+) -> float: ...
+def generalized_langevin_occupation_time_central_moment(
+    drift_func: Callable[[float, float], float],
+    diffusion_func: Callable[[float, float], float],
+    start_position: float,
+    alpha: float,
+    domain: tuple[float, float],
+    duration: float,
+    order: int,
+    particles: int,
+    time_step: float,
+) -> float: ...
+def generalized_langevin_tamsd(
+    drift_func: Callable[[float, float], float],
+    diffusion_func: Callable[[float, float], float],
+    start_position: float,
+    alpha: float,
+    duration: float,
+    delta: float,
+    particles: int,
+    time_step: float,
+    quad_order: int,
+) -> float: ...
+def generalized_langevin_eatamsd(
+    drift_func: Callable[[float, float], float],
+    diffusion_func: Callable[[float, float], float],
+    start_position: float,
+    alpha: float,
+    duration: float,
+    delta: float,
+    particles: int,
+    time_step: float,
+    quad_order: int,
+) -> float: ...
+
+# Subordinated Langevin Process
 def subordinated_langevin_simulate(
     drift_func: Callable[[float, float], float],
     diffusion_func: Callable[[float, float], float],
     start_position: float,
+    alpha: float,
     duration: float,
     time_step: float,
 ) -> tuple[np.ndarray, np.ndarray]: ...
@@ -495,6 +657,7 @@ def subordinated_langevin_raw_moment(
     drift_func: Callable[[float, float], float],
     diffusion_func: Callable[[float, float], float],
     start_position: float,
+    alpha: float,
     duration: float,
     order: int,
     particles: int,
@@ -504,8 +667,92 @@ def subordinated_langevin_central_moment(
     drift_func: Callable[[float, float], float],
     diffusion_func: Callable[[float, float], float],
     start_position: float,
+    alpha: float,
     duration: float,
     order: int,
     particles: int,
     time_step: float,
+) -> float: ...
+def subordinated_langevin_fpt(
+    drift_func: Callable[[float, float], float],
+    diffusion_func: Callable[[float, float], float],
+    start_position: float,
+    alpha: float,
+    domain: tuple[float, float],
+    max_duration: float,
+) -> float | None: ...
+def subordinated_langevin_fpt_raw_moment(
+    drift_func: Callable[[float, float], float],
+    diffusion_func: Callable[[float, float], float],
+    start_position: float,
+    alpha: float,
+    domain: tuple[float, float],
+    order: int,
+    particles: int,
+    max_duration: float,
+    time_step: float,
+) -> float | None: ...
+def subordinated_langevin_fpt_central_moment(
+    drift_func: Callable[[float, float], float],
+    diffusion_func: Callable[[float, float], float],
+    start_position: float,
+    alpha: float,
+    domain: tuple[float, float],
+    order: int,
+    particles: int,
+    max_duration: float,
+    time_step: float,
+) -> float | None: ...
+def subordinated_langevin_occupation_time(
+    drift_func: Callable[[float, float], float],
+    diffusion_func: Callable[[float, float], float],
+    start_position: float,
+    alpha: float,
+    domain: tuple[float, float],
+    duration: float,
+    time_step: float,
+) -> float: ...
+def subordinated_langevin_occupation_time_raw_moment(
+    drift_func: Callable[[float, float], float],
+    diffusion_func: Callable[[float, float], float],
+    start_position: float,
+    alpha: float,
+    domain: tuple[float, float],
+    duration: float,
+    order: int,
+    particles: int,
+    time_step: float,
+) -> float: ...
+def subordinated_langevin_occupation_time_central_moment(
+    drift_func: Callable[[float, float], float],
+    diffusion_func: Callable[[float, float], float],
+    start_position: float,
+    alpha: float,
+    domain: tuple[float, float],
+    duration: float,
+    order: int,
+    particles: int,
+    time_step: float,
+) -> float: ...
+def subordinated_langevin_tamsd(
+    drift_func: Callable[[float, float], float],
+    diffusion_func: Callable[[float, float], float],
+    start_position: float,
+    alpha: float,
+    duration: float,
+    delta: float,
+    particles: int,
+    time_step: float,
+    quad_order: int,
+) -> float: ...
+def subordinated_langevin_eatamsd(
+    drift_func: Callable[[float, float], float],
+    diffusion_func: Callable[[float, float], float],
+    start_position: float,
+    alpha: float,
+    duration: float,
+    delta: float,
+    particles: int,
+    time_step: float,
+    quad_order: int,
 ) -> float: ...
