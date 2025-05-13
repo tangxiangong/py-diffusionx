@@ -222,6 +222,18 @@ def poisson_occupation_time(
     domain: tuple[float, float],
     duration: float,
 ) -> float: ...
+def poisson_fpt_raw_moment(
+    lambda_: float, domain: tuple[float, float], order: int, particles: int, max_duration: float
+) -> float | None: ...
+def poisson_fpt_central_moment(
+    lambda_: float, domain: tuple[float, float], order: int, particles: int, max_duration: float
+) -> float | None: ...
+def poisson_occupation_time_raw_moment(
+    lambda_: float, domain: tuple[float, float], duration: float, order: int, particles: int
+) -> float: ...
+def poisson_occupation_time_central_moment(
+    lambda_: float, domain: tuple[float, float], duration: float, order: int, particles: int
+) -> float: ...
 
 # Subordinator Process
 def subordinator_simulate(
@@ -241,22 +253,52 @@ def subordinator_occupation_time(
     duration: float,
     step_size: float,
 ) -> float: ...
+def subordinator_fpt_raw_moment(
+    alpha: float, domain: tuple[float, float], order: int, particles: int, max_duration: float, step_size: float
+) -> float | None: ...
+def subordinator_fpt_central_moment(
+    alpha: float, domain: tuple[float, float], order: int, particles: int, max_duration: float, step_size: float
+) -> float | None: ...
+def subordinator_occupation_time_raw_moment(
+    alpha: float, domain: tuple[float, float], duration: float, order: int, particles: int, step_size: float
+) -> float: ...
+def subordinator_occupation_time_central_moment(
+    alpha: float, domain: tuple[float, float], duration: float, order: int, particles: int, step_size: float
+) -> float: ...
 def inv_subordinator_simulate(
     alpha: float,
     duration: float,
     step_size: float,
 ) -> tuple[np.ndarray, np.ndarray]: ...
+def inv_subordinator_raw_moment(
+    alpha: float, duration: float, order: int, particles: int, step_size: float
+) -> float: ...
+def inv_subordinator_central_moment(
+    alpha: float, duration: float, order: int, particles: int, step_size: float
+) -> float: ...
 def inv_subordinator_fpt(
     alpha: float,
     domain: tuple[float, float],
     max_duration: float,
     step_size: float,
 ) -> float | None: ...
+def inv_subordinator_fpt_raw_moment(
+    alpha: float, domain: tuple[float, float], order: int, particles: int, max_duration: float, step_size: float
+) -> float | None: ...
+def inv_subordinator_fpt_central_moment(
+    alpha: float, domain: tuple[float, float], order: int, particles: int, max_duration: float, step_size: float
+) -> float | None: ...
 def inv_subordinator_occupation_time(
     alpha: float,
     domain: tuple[float, float],
     duration: float,
     step_size: float,
+) -> float: ...
+def inv_subordinator_occupation_time_raw_moment(
+    alpha: float, domain: tuple[float, float], duration: float, order: int, particles: int, step_size: float
+) -> float: ...
+def inv_subordinator_occupation_time_central_moment(
+    alpha: float, domain: tuple[float, float], duration: float, order: int, particles: int, step_size: float
 ) -> float: ...
 
 # Fractional Brownian motion
@@ -628,7 +670,6 @@ def generalized_langevin_tamsd(
     alpha: float,
     duration: float,
     delta: float,
-    particles: int,
     time_step: float,
     quad_order: int,
 ) -> float: ...
@@ -741,7 +782,6 @@ def subordinated_langevin_tamsd(
     alpha: float,
     duration: float,
     delta: float,
-    particles: int,
     time_step: float,
     quad_order: int,
 ) -> float: ...
