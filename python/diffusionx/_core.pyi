@@ -25,6 +25,8 @@ def skew_stable_rand(alpha: float) -> float: ...
 def skew_stable_rands(n: int, alpha: float) -> np.ndarray: ...
 def bool_rand(p: float = 0.5) -> bool: ...
 def bool_rands(n: int, p: float = 0.5) -> np.ndarray: ...
+
+# Brownian Motion
 def bm_simulate(
     start_position: float,
     diffusion_coefficient: float,
@@ -54,17 +56,22 @@ def bm_fpt(
     domain: tuple[float, float],
     max_duration: float,
 ) -> float | None: ...
-def levy_simulate(
+def bm_fpt_raw_moment(
     start_position: float,
-    alpha: float,
-    duration: float,
-    step_size: float,
-) -> tuple[np.ndarray, np.ndarray]: ...
-def levy_fpt(
-    start_position: float,
-    alpha: float,
-    step_size: float,
+    diffusion_coefficient: float,
     domain: tuple[float, float],
+    order: int,
+    particles: int,
+    step_size: float,
+    max_duration: float,
+) -> float | None: ...
+def bm_fpt_central_moment(
+    start_position: float,
+    diffusion_coefficient: float,
+    domain: tuple[float, float],
+    order: int,
+    particles: int,
+    step_size: float,
     max_duration: float,
 ) -> float | None: ...
 def bm_occupation_time(
@@ -74,6 +81,55 @@ def bm_occupation_time(
     domain: tuple[float, float],
     duration: float,
 ) -> float: ...
+def bm_occupation_time_raw_moment(
+    start_position: float,
+    diffusion_coefficient: float,
+    domain: tuple[float, float],
+    order: int,
+    particles: int,
+    step_size: float,
+    duration: float,
+) -> float: ...
+def bm_occupation_time_central_moment(
+    start_position: float,
+    diffusion_coefficient: float,
+    domain: tuple[float, float],
+    order: int,
+    particles: int,
+    step_size: float,
+    duration: float,
+) -> float: ...
+def bm_tamsd(
+    start_position: float,
+    diffusion_coefficient: float,
+    duration: float,
+    delta: float,
+    step_size: float,
+    quad_order: int,
+) -> float: ...
+def bm_eatamsd(
+    start_position: float,
+    diffusion_coefficient: float,
+    duration: float,
+    delta: float,
+    particles: int,
+    step_size: float,
+    quad_order: int,
+) -> float: ...
+
+# Levy Process
+def levy_simulate(
+    start_position: float,
+    alpha: float,
+    duration: float,
+) -> tuple[np.ndarray, np.ndarray]: ...
+def levy_fpt(
+    start_position: float,
+    alpha: float,
+    step_size: float,
+    domain: tuple[float, float],
+    max_duration: float,
+) -> float | None: ...
 def levy_occupation_time(
     start_position: float,
     alpha: float,
@@ -81,6 +137,61 @@ def levy_occupation_time(
     domain: tuple[float, float],
     duration: float,
 ) -> float: ...
+def levy_fpt_raw_moment(
+    start_position: float,
+    alpha: float,
+    domain: tuple[float, float],
+    order: int,
+    particles: int,
+    max_duration: float,
+    step_size: float,
+) -> float | None: ...
+def levy_fpt_central_moment(
+    start_position: float,
+    alpha: float,
+    domain: tuple[float, float],
+    order: int,
+    particles: int,
+    max_duration: float,
+    step_size: float,
+) -> float | None: ...
+def levy_occupation_time_raw_moment(
+    start_position: float,
+    alpha: float,
+    domain: tuple[float, float],
+    duration: float,
+    order: int,
+    particles: int,
+    step_size: float,
+) -> float: ...
+def levy_occupation_time_central_moment(
+    start_position: float,
+    alpha: float,
+    domain: tuple[float, float],
+    duration: float,
+    order: int,
+    particles: int,
+    step_size: float,
+) -> float: ...
+def levy_tamsd(
+    start_position: float,
+    alpha: float,
+    duration: float,
+    delta: float,
+    step_size: float,
+    quad_order: int,
+) -> float: ...
+def levy_eatamsd(
+    start_position: float,
+    alpha: float,
+    duration: float,
+    delta: float,
+    particles: int,
+    step_size: float,
+    quad_order: int,
+) -> float: ...
+
+# Poisson Process
 def poisson_simulate_duration(
     lambda_: float,
     duration: float,
@@ -111,6 +222,8 @@ def poisson_occupation_time(
     domain: tuple[float, float],
     duration: float,
 ) -> float: ...
+
+# Subordinator Process
 def subordinator_simulate(
     alpha: float,
     duration: float,
@@ -145,6 +258,8 @@ def inv_subordinator_occupation_time(
     duration: float,
     step_size: float,
 ) -> float: ...
+
+# Fractional Brownian motion
 def fbm_simulate(
     start_position: float,
     hurst_exponent: float,
@@ -174,6 +289,24 @@ def fbm_fpt(
     domain: tuple[float, float],
     max_duration: float,
 ) -> float | None: ...
+def fbm_fpt_raw_moment(
+    start_position: float,
+    hurst_exponent: float,
+    domain: tuple[float, float],
+    order: int,
+    particles: int,
+    step_size: float,
+    max_duration: float,
+) -> float | None: ...
+def fbm_fpt_central_moment(
+    start_position: float,
+    hurst_exponent: float,
+    domain: tuple[float, float],
+    order: int,
+    particles: int,
+    step_size: float,
+    max_duration: float,
+) -> float | None: ...
 def fbm_occupation_time(
     start_position: float,
     hurst_exponent: float,
@@ -181,6 +314,43 @@ def fbm_occupation_time(
     domain: tuple[float, float],
     duration: float,
 ) -> float: ...
+def fbm_occupation_time_raw_moment(
+    start_position: float,
+    hurst_exponent: float,
+    domain: tuple[float, float],
+    duration: float,
+    order: int,
+    particles: int,
+    step_size: float,
+) -> float: ...
+def fbm_occupation_time_central_moment(
+    start_position: float,
+    hurst_exponent: float,
+    domain: tuple[float, float],
+    duration: float,
+    order: int,
+    particles: int,
+    step_size: float,
+) -> float: ...
+def fbm_tamsd(
+    start_position: float,
+    hurst_exponent: float,
+    duration: float,
+    delta: float,
+    step_size: float,
+    quad_order: int,
+) -> float: ...
+def fbm_eatamsd(
+    start_position: float,
+    hurst_exponent: float,
+    duration: float,
+    delta: float,
+    particles: int,
+    step_size: float,
+    quad_order: int,
+) -> float: ...
+
+# Continuous Time Random Walk
 def ctrw_simulate_duration(
     alpha: float,
     beta: float,
@@ -216,6 +386,24 @@ def ctrw_fpt(
     domain: tuple[float, float],
     max_duration: float,
 ) -> float | None: ...
+def ctrw_fpt_raw_moment(
+    alpha: float,
+    beta: float,
+    start_position: float,
+    domain: tuple[float, float],
+    order: int,
+    particles: int,
+    max_duration: float,
+) -> float | None: ...
+def ctrw_fpt_central_moment(
+    alpha: float,
+    beta: float,
+    start_position: float,
+    domain: tuple[float, float],
+    order: int,
+    particles: int,
+    max_duration: float,
+) -> float | None: ...
 def ctrw_occupation_time(
     alpha: float,
     beta: float,
@@ -223,6 +411,26 @@ def ctrw_occupation_time(
     domain: tuple[float, float],
     duration: float,
 ) -> float: ...
+def ctrw_occupation_time_raw_moment(
+    alpha: float,
+    beta: float,
+    start_position: float,
+    domain: tuple[float, float],
+    duration: float,
+    order: int,
+    particles: int,
+) -> float: ...
+def ctrw_occupation_time_central_moment(
+    alpha: float,
+    beta: float,
+    start_position: float,
+    domain: tuple[float, float],
+    duration: float,
+    order: int,
+    particles: int,
+) -> float: ...
+
+# Langevin Process
 def langevin_simulate(
     drift_func: Callable[[float, float], float],
     diffusion_func: Callable[[float, float], float],
