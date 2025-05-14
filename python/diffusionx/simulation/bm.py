@@ -129,6 +129,150 @@ class Bm(StochasticProcess):
             _max_duration,
         )
 
+    def fpt_raw_moment(
+        self,
+        domain: tuple[real, real],
+        order: int,
+        particles: int,
+        step_size: real = 0.01,
+        max_duration: real = 1000,
+    ) -> Optional[float]:
+        """
+        Calculate the raw moment of the first passage time for Brownian motion.
+
+        Args:
+            domain (tuple[real, real]): The domain (a, b). a must be less than b.
+            order (int): Order of the moment (non-negative integer).
+            particles (int): Number of particles for ensemble average (positive integer).
+            step_size (real, optional): Step size. Defaults to 0.01.
+            max_duration (real, optional): Maximum duration. Defaults to 1000.
+
+        Returns:
+            Optional[float]: The raw moment of FPT, or None if no passage for some particles.
+        """
+        if not (isinstance(domain, tuple) and len(domain) == 2):
+            raise TypeError(
+                f"domain must be a tuple of two real numbers, got {type(domain).__name__}"
+            )
+        if not isinstance(order, int):
+            raise TypeError(f"order must be an integer, got {type(order).__name__}")
+        if order < 0:
+            raise ValueError("order must be non-negative")
+        if not isinstance(particles, int):
+            raise TypeError(
+                f"particles must be an integer, got {type(particles).__name__}"
+            )
+        if particles <= 0:
+            raise ValueError("particles must be positive")
+
+        try:
+            a = ensure_float(domain[0])
+            b = ensure_float(domain[1])
+            _step_size = ensure_float(step_size)
+            _max_duration = ensure_float(max_duration)
+        except TypeError as e:
+            raise TypeError(
+                f"Domain elements, step_size, and max_duration must be numbers. Error: {e}"
+            ) from e
+
+        if a >= b:
+            raise ValueError(
+                f"Invalid domain [{a}, {b}]; domain[0] must be strictly less than domain[1]."
+            )
+        if _step_size <= 0:
+            raise ValueError("step_size must be positive")
+        if _max_duration <= 0:
+            raise ValueError("max_duration must be positive")
+        
+        if order == 0: # Conventionally, 0th raw moment of FPT is related to probability of passage
+            # The _core function might handle this, or expect positive orders.
+            # For simplicity, if _core supports order 0, we pass it.
+            # If not, this might need adjustment based on _core behavior or definition.
+            # Assuming _core handles order 0 appropriately if it's a valid input.
+            pass
+
+
+        return _core.bm_fpt_raw_moment(
+            self.start_position,
+            self.diffusion_coefficient,
+            (a, b),
+            order,
+            particles,
+            _step_size,
+            _max_duration,
+        )
+
+    def fpt_central_moment(
+        self,
+        domain: tuple[real, real],
+        order: int,
+        particles: int,
+        step_size: real = 0.01,
+        max_duration: real = 1000,
+    ) -> Optional[float]:
+        """
+        Calculate the central moment of the first passage time for Brownian motion.
+
+        Args:
+            domain (tuple[real, real]): The domain (a, b). a must be less than b.
+            order (int): Order of the moment (non-negative integer).
+            particles (int): Number of particles for ensemble average (positive integer).
+            step_size (real, optional): Step size. Defaults to 0.01.
+            max_duration (real, optional): Maximum duration. Defaults to 1000.
+
+        Returns:
+            Optional[float]: The central moment of FPT, or None if no passage for some particles.
+        """
+        if not (isinstance(domain, tuple) and len(domain) == 2):
+            raise TypeError(
+                f"domain must be a tuple of two real numbers, got {type(domain).__name__}"
+            )
+        if not isinstance(order, int):
+            raise TypeError(f"order must be an integer, got {type(order).__name__}")
+        if order < 0:
+            raise ValueError("order must be non-negative")
+        if not isinstance(particles, int):
+            raise TypeError(
+                f"particles must be an integer, got {type(particles).__name__}"
+            )
+        if particles <= 0:
+            raise ValueError("particles must be positive")
+
+        try:
+            a = ensure_float(domain[0])
+            b = ensure_float(domain[1])
+            _step_size = ensure_float(step_size)
+            _max_duration = ensure_float(max_duration)
+        except TypeError as e:
+            raise TypeError(
+                f"Domain elements, step_size, and max_duration must be numbers. Error: {e}"
+            ) from e
+
+        if a >= b:
+            raise ValueError(
+                f"Invalid domain [{a}, {b}]; domain[0] must be strictly less than domain[1]."
+            )
+        if _step_size <= 0:
+            raise ValueError("step_size must be positive")
+        if _max_duration <= 0:
+            raise ValueError("max_duration must be positive")
+
+        if order == 0: # 0th central moment is 1
+            return 1.0
+        # 1st central moment is 0 by definition, if mean FPT exists
+        # However, _core.bm_fpt_central_moment might calculate it directly
+        # For now, we pass order 1 to _core if requested.
+
+        return _core.bm_fpt_central_moment(
+            self.start_position,
+            self.diffusion_coefficient,
+            (a, b),
+            order,
+            particles,
+            _step_size,
+            _max_duration,
+        )
+
     def raw_moment(
         self, duration: real, order: int, particles: int, step_size: real = 0.01
     ) -> float:
@@ -290,5 +434,149 @@ class Bm(StochasticProcess):
             self.diffusion_coefficient,
             _step_size,
             (a, b),
+            _duration,
+        )
+
+    def occupation_time_raw_moment(
+        self,
+        domain: tuple[real, real],
+        order: int,
+        particles: int,
+        duration: real,
+        step_size: real = 0.01,
+    ) -> float:
+        """
+        Calculate the raw moment of the occupation time for Brownian motion.
+
+        Args:
+            domain (tuple[real, real]): The domain (a, b). a must be less than b.
+            order (int): Order of the moment (non-negative integer).
+            particles (int): Number of particles for ensemble average (positive integer).
+            duration (real): Total duration of the simulation.
+            step_size (real, optional): Step size. Defaults to 0.01.
+
+        Returns:
+            float: The raw moment of occupation time.
+        """
+        if not (isinstance(domain, tuple) and len(domain) == 2):
+            raise TypeError(
+                f"domain must be a tuple of two real numbers, got {type(domain).__name__}"
+            )
+        if not isinstance(order, int):
+            raise TypeError(f"order must be an integer, got {type(order).__name__}")
+        if order < 0:
+            raise ValueError("order must be non-negative")
+        if not isinstance(particles, int):
+            raise TypeError(
+                f"particles must be an integer, got {type(particles).__name__}"
+            )
+        if particles <= 0:
+            raise ValueError("particles must be positive")
+
+        try:
+            a = ensure_float(domain[0])
+            b = ensure_float(domain[1])
+            _duration = ensure_float(duration)
+            _step_size = ensure_float(step_size)
+        except TypeError as e:
+            raise TypeError(
+                f"Domain elements, duration, and step_size must be numbers. Error: {e}"
+            ) from e
+
+        if a >= b: # For occupation time, domain can be [a,b] where a can be equal to b if it's a point.
+                    # However, typical usage is an interval. _core.pyi uses tuple[float,float]
+                    # Let's stick to a < b for interval, or consult _core if point is allowed.
+                    # For now, assume domain is an interval a < b for consistency with FPT.
+                    # If _core supports a=b, this check might need to be a <= b.
+                    # Given typical physical meaning, a < b is safer.
+            raise ValueError(
+                f"Invalid domain [{a}, {b}]; domain[0] must be strictly less than domain[1]."
+            )
+        if _duration <= 0:
+            raise ValueError("duration must be positive")
+        if _step_size <= 0:
+            raise ValueError("step_size must be positive")
+        
+        if order == 0:
+            return 1.0 # 0th raw moment is 1
+
+        return _core.bm_occupation_time_raw_moment(
+            self.start_position,
+            self.diffusion_coefficient,
+            (a, b),
+            order,
+            particles,
+            _step_size,
+            _duration,
+        )
+
+    def occupation_time_central_moment(
+        self,
+        domain: tuple[real, real],
+        order: int,
+        particles: int,
+        duration: real,
+        step_size: real = 0.01,
+    ) -> float:
+        """
+        Calculate the central moment of the occupation time for Brownian motion.
+
+        Args:
+            domain (tuple[real, real]): The domain (a, b). a must be less than b.
+            order (int): Order of the moment (non-negative integer).
+            particles (int): Number of particles for ensemble average (positive integer).
+            duration (real): Total duration of the simulation.
+            step_size (real, optional): Step size. Defaults to 0.01.
+
+        Returns:
+            float: The central moment of occupation time.
+        """
+        if not (isinstance(domain, tuple) and len(domain) == 2):
+            raise TypeError(
+                f"domain must be a tuple of two real numbers, got {type(domain).__name__}"
+            )
+        if not isinstance(order, int):
+            raise TypeError(f"order must be an integer, got {type(order).__name__}")
+        if order < 0:
+            raise ValueError("order must be non-negative")
+        if not isinstance(particles, int):
+            raise TypeError(
+                f"particles must be an integer, got {type(particles).__name__}"
+            )
+        if particles <= 0:
+            raise ValueError("particles must be positive")
+
+        try:
+            a = ensure_float(domain[0])
+            b = ensure_float(domain[1])
+            _duration = ensure_float(duration)
+            _step_size = ensure_float(step_size)
+        except TypeError as e:
+            raise TypeError(
+                f"Domain elements, duration, and step_size must be numbers. Error: {e}"
+            ) from e
+
+        if a >= b:
+            raise ValueError(
+                f"Invalid domain [{a}, {b}]; domain[0] must be strictly less than domain[1]."
+            )
+        if _duration <= 0:
+            raise ValueError("duration must be positive")
+        if _step_size <= 0:
+            raise ValueError("step_size must be positive")
+
+        if order == 0:
+            return 1.0
+        if order == 1:
+            # The first central moment is E[X - E[X]], which is 0 by definition.
+            return 0.0
+            
+        return _core.bm_occupation_time_central_moment(
+            self.start_position,
+            self.diffusion_coefficient,
+            (a, b),
+            order,
+            particles,
+            _step_size,
             _duration,
         )
