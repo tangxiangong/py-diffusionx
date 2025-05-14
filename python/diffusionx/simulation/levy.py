@@ -184,6 +184,225 @@ class Levy(StochasticProcess):
             _duration,
         )
 
+    def fpt_raw_moment(
+        self,
+        domain: tuple[real, real],
+        order: int,
+        particles: int,
+        step_size: real = 0.01,
+        max_duration: real = 1000,
+    ) -> Optional[float]:
+        if not (isinstance(domain, tuple) and len(domain) == 2):
+            raise TypeError(
+                f"domain must be a tuple of two real numbers, got {type(domain).__name__}"
+            )
+        if not isinstance(order, int):
+            raise TypeError(f"order must be an integer, got {type(order).__name__}")
+        if order < 0:
+            raise ValueError("order must be non-negative")
+        if not isinstance(particles, int):
+            raise TypeError(
+                f"particles must be an integer, got {type(particles).__name__}"
+            )
+        if particles <= 0:
+            raise ValueError("particles must be positive")
+
+        try:
+            a = ensure_float(domain[0])
+            b = ensure_float(domain[1])
+            _step_size = ensure_float(step_size)
+            _max_duration = ensure_float(max_duration)
+        except TypeError as e:
+            raise TypeError(
+                f"Domain elements, step_size, and max_duration must be numbers. Error: {e}"
+            ) from e
+
+        if a >= b:
+            raise ValueError(
+                f"Invalid domain [{a}, {b}]; domain[0] must be strictly less than domain[1]."
+            )
+        if _step_size <= 0:
+            raise ValueError("step_size must be positive")
+        if _max_duration <= 0:
+            raise ValueError("max_duration must be positive")
+
+        return _core.levy_fpt_raw_moment(
+            self.start_position,
+            self.alpha,
+            (a, b),
+            order,
+            particles,
+            _step_size,
+            _max_duration,
+        )
+
+    def fpt_central_moment(
+        self,
+        domain: tuple[real, real],
+        order: int,
+        particles: int,
+        step_size: real = 0.01,
+        max_duration: real = 1000,
+    ) -> Optional[float]:
+        if not (isinstance(domain, tuple) and len(domain) == 2):
+            raise TypeError(
+                f"domain must be a tuple of two real numbers, got {type(domain).__name__}"
+            )
+        if not isinstance(order, int):
+            raise TypeError(f"order must be an integer, got {type(order).__name__}")
+        if order < 0:
+            raise ValueError("order must be non-negative")
+        if not isinstance(particles, int):
+            raise TypeError(
+                f"particles must be an integer, got {type(particles).__name__}"
+            )
+        if particles <= 0:
+            raise ValueError("particles must be positive")
+
+        try:
+            a = ensure_float(domain[0])
+            b = ensure_float(domain[1])
+            _step_size = ensure_float(step_size)
+            _max_duration = ensure_float(max_duration)
+        except TypeError as e:
+            raise TypeError(
+                f"Domain elements, step_size, and max_duration must be numbers. Error: {e}"
+            ) from e
+
+        if a >= b:
+            raise ValueError(
+                f"Invalid domain [{a}, {b}]; domain[0] must be strictly less than domain[1]."
+            )
+        if _step_size <= 0:
+            raise ValueError("step_size must be positive")
+        if _max_duration <= 0:
+            raise ValueError("max_duration must be positive")
+
+        if order == 0:
+            return 1.0
+        
+        return _core.levy_fpt_central_moment(
+            self.start_position,
+            self.alpha,
+            (a, b),
+            order,
+            particles,
+            _step_size,
+            _max_duration,
+        )
+
+    def occupation_time_raw_moment(
+        self,
+        domain: tuple[real, real],
+        order: int,
+        particles: int,
+        duration: real,
+        step_size: real = 0.01,
+    ) -> float:
+        if not (isinstance(domain, tuple) and len(domain) == 2):
+            raise TypeError(
+                f"domain must be a tuple of two real numbers, got {type(domain).__name__}"
+            )
+        if not isinstance(order, int):
+            raise TypeError(f"order must be an integer, got {type(order).__name__}")
+        if order < 0:
+            raise ValueError("order must be non-negative")
+        if not isinstance(particles, int):
+            raise TypeError(
+                f"particles must be an integer, got {type(particles).__name__}"
+            )
+        if particles <= 0:
+            raise ValueError("particles must be positive")
+
+        try:
+            a = ensure_float(domain[0])
+            b = ensure_float(domain[1])
+            _duration = ensure_float(duration)
+            _step_size = ensure_float(step_size)
+        except TypeError as e:
+            raise TypeError(
+                f"Domain elements, duration, and step_size must be numbers. Error: {e}"
+            ) from e
+
+        if a >= b:
+            raise ValueError(
+                f"Invalid domain [{a}, {b}]; domain[0] must be strictly less than domain[1]."
+            )
+        if _duration <= 0:
+            raise ValueError("duration must be positive")
+        if _step_size <= 0:
+            raise ValueError("step_size must be positive")
+        
+        if order == 0:
+            return 1.0
+
+        return _core.levy_occupation_time_raw_moment(
+            self.start_position,
+            self.alpha,
+            (a, b),
+            order,
+            particles,
+            _step_size,
+            _duration,
+        )
+
+    def occupation_time_central_moment(
+        self,
+        domain: tuple[real, real],
+        order: int,
+        particles: int,
+        duration: real,
+        step_size: real = 0.01,
+    ) -> float:
+        if not (isinstance(domain, tuple) and len(domain) == 2):
+            raise TypeError(
+                f"domain must be a tuple of two real numbers, got {type(domain).__name__}"
+            )
+        if not isinstance(order, int):
+            raise TypeError(f"order must be an integer, got {type(order).__name__}")
+        if order < 0:
+            raise ValueError("order must be non-negative")
+        if not isinstance(particles, int):
+            raise TypeError(
+                f"particles must be an integer, got {type(particles).__name__}"
+            )
+        if particles <= 0:
+            raise ValueError("particles must be positive")
+
+        try:
+            a = ensure_float(domain[0])
+            b = ensure_float(domain[1])
+            _duration = ensure_float(duration)
+            _step_size = ensure_float(step_size)
+        except TypeError as e:
+            raise TypeError(
+                f"Domain elements, duration, and step_size must be numbers. Error: {e}"
+            ) from e
+
+        if a >= b:
+            raise ValueError(
+                f"Invalid domain [{a}, {b}]; domain[0] must be strictly less than domain[1]."
+            )
+        if _duration <= 0:
+            raise ValueError("duration must be positive")
+        if _step_size <= 0:
+            raise ValueError("step_size must be positive")
+
+        if order == 0:
+            return 1.0
+        if order == 1:
+            return 0.0
+            
+        return _core.levy_occupation_time_central_moment(
+            self.start_position,
+            self.alpha,
+            (a, b),
+            order,
+            particles,
+            _step_size,
+            _duration,
+        )
+
 
 class Subordinator(StochasticProcess):
     def __init__(
@@ -272,6 +491,221 @@ class Subordinator(StochasticProcess):
             _step_size,
         )
 
+    def fpt_raw_moment(
+        self,
+        domain: tuple[real, real],
+        order: int,
+        particles: int,
+        step_size: real = 0.01,
+        max_duration: real = 1000,
+    ) -> Optional[float]:
+        if not (isinstance(domain, tuple) and len(domain) == 2):
+            raise TypeError(
+                f"domain must be a tuple of two real numbers, got {type(domain).__name__}"
+            )
+        if not isinstance(order, int):
+            raise TypeError(f"order must be an integer, got {type(order).__name__}")
+        if order < 0:
+            raise ValueError("order must be non-negative")
+        if not isinstance(particles, int):
+            raise TypeError(
+                f"particles must be an integer, got {type(particles).__name__}"
+            )
+        if particles <= 0:
+            raise ValueError("particles must be positive")
+
+        try:
+            a = ensure_float(domain[0])
+            b = ensure_float(domain[1])
+            _step_size = ensure_float(step_size)
+            _max_duration = ensure_float(max_duration)
+        except TypeError as e:
+            raise TypeError(
+                f"Domain elements, step_size, and max_duration must be numbers. Error: {e}"
+            ) from e
+
+        if a >= b:
+            raise ValueError(
+                f"Invalid domain [{a}, {b}]; domain[0] must be strictly less than domain[1]."
+            )
+        if _step_size <= 0:
+            raise ValueError("step_size must be positive")
+        if _max_duration <= 0:
+            raise ValueError("max_duration must be positive")
+
+        return _core.subordinator_fpt_raw_moment(
+            self.alpha,
+            (a, b),
+            order,
+            particles,
+            _step_size,
+            _max_duration,
+        )
+
+    def fpt_central_moment(
+        self,
+        domain: tuple[real, real],
+        order: int,
+        particles: int,
+        step_size: real = 0.01,
+        max_duration: real = 1000,
+    ) -> Optional[float]:
+        if not (isinstance(domain, tuple) and len(domain) == 2):
+            raise TypeError(
+                f"domain must be a tuple of two real numbers, got {type(domain).__name__}"
+            )
+        if not isinstance(order, int):
+            raise TypeError(f"order must be an integer, got {type(order).__name__}")
+        if order < 0:
+            raise ValueError("order must be non-negative")
+        if not isinstance(particles, int):
+            raise TypeError(
+                f"particles must be an integer, got {type(particles).__name__}"
+            )
+        if particles <= 0:
+            raise ValueError("particles must be positive")
+
+        try:
+            a = ensure_float(domain[0])
+            b = ensure_float(domain[1])
+            _step_size = ensure_float(step_size)
+            _max_duration = ensure_float(max_duration)
+        except TypeError as e:
+            raise TypeError(
+                f"Domain elements, step_size, and max_duration must be numbers. Error: {e}"
+            ) from e
+
+        if a >= b:
+            raise ValueError(
+                f"Invalid domain [{a}, {b}]; domain[0] must be strictly less than domain[1]."
+            )
+        if _step_size <= 0:
+            raise ValueError("step_size must be positive")
+        if _max_duration <= 0:
+            raise ValueError("max_duration must be positive")
+
+        if order == 0:
+            return 1.0
+
+        return _core.subordinator_fpt_central_moment(
+            self.alpha,
+            (a, b),
+            order,
+            particles,
+            _step_size,
+            _max_duration,
+        )
+
+    def occupation_time_raw_moment(
+        self,
+        domain: tuple[real, real],
+        order: int,
+        particles: int,
+        duration: real,
+        step_size: real = 0.01,
+    ) -> float:
+        if not (isinstance(domain, tuple) and len(domain) == 2):
+            raise TypeError(
+                f"domain must be a tuple of two real numbers, got {type(domain).__name__}"
+            )
+        if not isinstance(order, int):
+            raise TypeError(f"order must be an integer, got {type(order).__name__}")
+        if order < 0:
+            raise ValueError("order must be non-negative")
+        if not isinstance(particles, int):
+            raise TypeError(
+                f"particles must be an integer, got {type(particles).__name__}"
+            )
+        if particles <= 0:
+            raise ValueError("particles must be positive")
+
+        try:
+            a = ensure_float(domain[0])
+            b = ensure_float(domain[1])
+            _duration = ensure_float(duration)
+            _step_size = ensure_float(step_size)
+        except TypeError as e:
+            raise TypeError(
+                f"Domain elements, duration, and step_size must be numbers. Error: {e}"
+            ) from e
+
+        if a >= b:
+            raise ValueError(
+                f"Invalid domain [{a}, {b}]; domain[0] must be strictly less than domain[1]."
+            )
+        if _duration <= 0:
+            raise ValueError("duration must be positive")
+        if _step_size <= 0:
+            raise ValueError("step_size must be positive")
+        
+        if order == 0:
+            return 1.0
+
+        return _core.subordinator_occupation_time_raw_moment(
+            self.alpha,
+            (a, b),
+            order,
+            particles,
+            _step_size,
+            _duration,
+        )
+
+    def occupation_time_central_moment(
+        self,
+        domain: tuple[real, real],
+        order: int,
+        particles: int,
+        duration: real,
+        step_size: real = 0.01,
+    ) -> float:
+        if not (isinstance(domain, tuple) and len(domain) == 2):
+            raise TypeError(
+                f"domain must be a tuple of two real numbers, got {type(domain).__name__}"
+            )
+        if not isinstance(order, int):
+            raise TypeError(f"order must be an integer, got {type(order).__name__}")
+        if order < 0:
+            raise ValueError("order must be non-negative")
+        if not isinstance(particles, int):
+            raise TypeError(
+                f"particles must be an integer, got {type(particles).__name__}"
+            )
+        if particles <= 0:
+            raise ValueError("particles must be positive")
+
+        try:
+            a = ensure_float(domain[0])
+            b = ensure_float(domain[1])
+            _duration = ensure_float(duration)
+            _step_size = ensure_float(step_size)
+        except TypeError as e:
+            raise TypeError(
+                f"Domain elements, duration, and step_size must be numbers. Error: {e}"
+            ) from e
+
+        if a >= b:
+            raise ValueError(
+                f"Invalid domain [{a}, {b}]; domain[0] must be strictly less than domain[1]."
+            )
+        if _duration <= 0:
+            raise ValueError("duration must be positive")
+        if _step_size <= 0:
+            raise ValueError("step_size must be positive")
+
+        if order == 0:
+            return 1.0
+        if order == 1:
+            return 0.0
+            
+        return _core.subordinator_occupation_time_central_moment(
+            self.alpha,
+            (a, b),
+            order,
+            particles,
+            _step_size,
+            _duration,
+        )
+
 
 class InvSubordinator(StochasticProcess):
     def __init__(
@@ -351,4 +785,219 @@ class InvSubordinator(StochasticProcess):
             (a, b),
             _duration,
             _step_size,
+        )
+
+    def fpt_raw_moment(
+        self,
+        domain: tuple[real, real],
+        order: int,
+        particles: int,
+        step_size: real = 0.01,
+        max_duration: real = 1000,
+    ) -> Optional[float]:
+        if not (isinstance(domain, tuple) and len(domain) == 2):
+            raise TypeError(
+                f"domain must be a tuple of two real numbers, got {type(domain).__name__}"
+            )
+        if not isinstance(order, int):
+            raise TypeError(f"order must be an integer, got {type(order).__name__}")
+        if order < 0:
+            raise ValueError("order must be non-negative")
+        if not isinstance(particles, int):
+            raise TypeError(
+                f"particles must be an integer, got {type(particles).__name__}"
+            )
+        if particles <= 0:
+            raise ValueError("particles must be positive")
+
+        try:
+            a = ensure_float(domain[0])
+            b = ensure_float(domain[1])
+            _step_size = ensure_float(step_size)
+            _max_duration = ensure_float(max_duration)
+        except TypeError as e:
+            raise TypeError(
+                f"Domain elements, step_size, and max_duration must be numbers. Error: {e}"
+            ) from e
+
+        if a >= b:
+            raise ValueError(
+                f"Invalid domain [{a}, {b}]; domain[0] must be strictly less than domain[1]."
+            )
+        if _step_size <= 0:
+            raise ValueError("step_size must be positive")
+        if _max_duration <= 0:
+            raise ValueError("max_duration must be positive")
+
+        return _core.inv_subordinator_fpt_raw_moment(
+            self.alpha,
+            (a, b),
+            order,
+            particles,
+            _step_size,
+            _max_duration,
+        )
+
+    def fpt_central_moment(
+        self,
+        domain: tuple[real, real],
+        order: int,
+        particles: int,
+        step_size: real = 0.01,
+        max_duration: real = 1000,
+    ) -> Optional[float]:
+        if not (isinstance(domain, tuple) and len(domain) == 2):
+            raise TypeError(
+                f"domain must be a tuple of two real numbers, got {type(domain).__name__}"
+            )
+        if not isinstance(order, int):
+            raise TypeError(f"order must be an integer, got {type(order).__name__}")
+        if order < 0:
+            raise ValueError("order must be non-negative")
+        if not isinstance(particles, int):
+            raise TypeError(
+                f"particles must be an integer, got {type(particles).__name__}"
+            )
+        if particles <= 0:
+            raise ValueError("particles must be positive")
+
+        try:
+            a = ensure_float(domain[0])
+            b = ensure_float(domain[1])
+            _step_size = ensure_float(step_size)
+            _max_duration = ensure_float(max_duration)
+        except TypeError as e:
+            raise TypeError(
+                f"Domain elements, step_size, and max_duration must be numbers. Error: {e}"
+            ) from e
+
+        if a >= b:
+            raise ValueError(
+                f"Invalid domain [{a}, {b}]; domain[0] must be strictly less than domain[1]."
+            )
+        if _step_size <= 0:
+            raise ValueError("step_size must be positive")
+        if _max_duration <= 0:
+            raise ValueError("max_duration must be positive")
+
+        if order == 0:
+            return 1.0
+
+        return _core.inv_subordinator_fpt_central_moment(
+            self.alpha,
+            (a, b),
+            order,
+            particles,
+            _step_size,
+            _max_duration,
+        )
+
+    def occupation_time_raw_moment(
+        self,
+        domain: tuple[real, real],
+        order: int,
+        particles: int,
+        duration: real,
+        step_size: real = 0.01,
+    ) -> float:
+        if not (isinstance(domain, tuple) and len(domain) == 2):
+            raise TypeError(
+                f"domain must be a tuple of two real numbers, got {type(domain).__name__}"
+            )
+        if not isinstance(order, int):
+            raise TypeError(f"order must be an integer, got {type(order).__name__}")
+        if order < 0:
+            raise ValueError("order must be non-negative")
+        if not isinstance(particles, int):
+            raise TypeError(
+                f"particles must be an integer, got {type(particles).__name__}"
+            )
+        if particles <= 0:
+            raise ValueError("particles must be positive")
+
+        try:
+            a = ensure_float(domain[0])
+            b = ensure_float(domain[1])
+            _duration = ensure_float(duration)
+            _step_size = ensure_float(step_size)
+        except TypeError as e:
+            raise TypeError(
+                f"Domain elements, duration, and step_size must be numbers. Error: {e}"
+            ) from e
+
+        if a >= b:
+            raise ValueError(
+                f"Invalid domain [{a}, {b}]; domain[0] must be strictly less than domain[1]."
+            )
+        if _duration <= 0:
+            raise ValueError("duration must be positive")
+        if _step_size <= 0:
+            raise ValueError("step_size must be positive")
+        
+        if order == 0:
+            return 1.0
+
+        return _core.inv_subordinator_occupation_time_raw_moment(
+            self.alpha,
+            (a, b),
+            order,
+            particles,
+            _step_size,
+            _duration,
+        )
+
+    def occupation_time_central_moment(
+        self,
+        domain: tuple[real, real],
+        order: int,
+        particles: int,
+        duration: real,
+        step_size: real = 0.01,
+    ) -> float:
+        if not (isinstance(domain, tuple) and len(domain) == 2):
+            raise TypeError(
+                f"domain must be a tuple of two real numbers, got {type(domain).__name__}"
+            )
+        if not isinstance(order, int):
+            raise TypeError(f"order must be an integer, got {type(order).__name__}")
+        if order < 0:
+            raise ValueError("order must be non-negative")
+        if not isinstance(particles, int):
+            raise TypeError(
+                f"particles must be an integer, got {type(particles).__name__}"
+            )
+        if particles <= 0:
+            raise ValueError("particles must be positive")
+
+        try:
+            a = ensure_float(domain[0])
+            b = ensure_float(domain[1])
+            _duration = ensure_float(duration)
+            _step_size = ensure_float(step_size)
+        except TypeError as e:
+            raise TypeError(
+                f"Domain elements, duration, and step_size must be numbers. Error: {e}"
+            ) from e
+
+        if a >= b:
+            raise ValueError(
+                f"Invalid domain [{a}, {b}]; domain[0] must be strictly less than domain[1]."
+            )
+        if _duration <= 0:
+            raise ValueError("duration must be positive")
+        if _step_size <= 0:
+            raise ValueError("step_size must be positive")
+
+        if order == 0:
+            return 1.0
+        if order == 1:
+            return 0.0
+            
+        return _core.inv_subordinator_occupation_time_central_moment(
+            self.alpha,
+            (a, b),
+            order,
+            particles,
+            _step_size,
+            _duration,
         )
