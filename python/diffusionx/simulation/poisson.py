@@ -290,7 +290,7 @@ class Poisson(StochasticProcess):
 
     def fpt_raw_moment(
         self,
-        domain: tuple[real, real], # (start_count, target_count)
+        domain: tuple[real, real],  # (start_count, target_count)
         order: int,
         particles: int,
         max_duration: real = 1000,
@@ -311,8 +311,8 @@ class Poisson(StochasticProcess):
             raise ValueError("particles must be positive")
 
         try:
-            a = ensure_float(domain[0]) # start_count
-            b = ensure_float(domain[1]) # target_count
+            a = ensure_float(domain[0])  # start_count
+            b = ensure_float(domain[1])  # target_count
             _max_duration = ensure_float(max_duration)
         except TypeError as e:
             raise TypeError(
@@ -324,7 +324,9 @@ class Poisson(StochasticProcess):
         a = int(a)
         b = int(b)
         if a < 0 or b < 0:
-            raise ValueError(f"Domain counts for FPT must be non-negative, got {(a,b)}")
+            raise ValueError(
+                f"Domain counts for FPT must be non-negative, got {(a, b)}"
+            )
         if b <= a:
             raise ValueError(
                 f"Target count domain[1] ({b}) must be greater than start count domain[0] ({a})."
@@ -334,7 +336,7 @@ class Poisson(StochasticProcess):
 
         return _core.poisson_fpt_raw_moment(
             self.lambda_,
-            (float(a), float(b)), # _core expects float tuple
+            (float(a), float(b)),  # _core expects float tuple
             order,
             particles,
             _max_duration,
@@ -342,7 +344,7 @@ class Poisson(StochasticProcess):
 
     def fpt_central_moment(
         self,
-        domain: tuple[real, real], # (start_count, target_count)
+        domain: tuple[real, real],  # (start_count, target_count)
         order: int,
         particles: int,
         max_duration: real = 1000,
@@ -363,8 +365,8 @@ class Poisson(StochasticProcess):
             raise ValueError("particles must be positive")
 
         try:
-            a = ensure_float(domain[0]) # start_count
-            b = ensure_float(domain[1]) # target_count
+            a = ensure_float(domain[0])  # start_count
+            b = ensure_float(domain[1])  # target_count
             _max_duration = ensure_float(max_duration)
         except TypeError as e:
             raise TypeError(
@@ -376,7 +378,9 @@ class Poisson(StochasticProcess):
         a = int(a)
         b = int(b)
         if a < 0 or b < 0:
-            raise ValueError(f"Domain counts for FPT must be non-negative, got {(a,b)}")
+            raise ValueError(
+                f"Domain counts for FPT must be non-negative, got {(a, b)}"
+            )
         if b <= a:
             raise ValueError(
                 f"Target count domain[1] ({b}) must be greater than start count domain[0] ({a})."
@@ -386,7 +390,7 @@ class Poisson(StochasticProcess):
 
         if order == 0:
             return 1.0
-        
+
         return _core.poisson_fpt_central_moment(
             self.lambda_,
             (float(a), float(b)),
@@ -397,7 +401,7 @@ class Poisson(StochasticProcess):
 
     def occupation_time_raw_moment(
         self,
-        domain: tuple[real, real], # (min_count, max_count)
+        domain: tuple[real, real],  # (min_count, max_count)
         order: int,
         particles: int,
         duration: real,
@@ -418,8 +422,8 @@ class Poisson(StochasticProcess):
             raise ValueError("particles must be positive")
 
         try:
-            a = ensure_float(domain[0]) # min_count
-            b = ensure_float(domain[1]) # max_count
+            a = ensure_float(domain[0])  # min_count
+            b = ensure_float(domain[1])  # max_count
             _duration = ensure_float(duration)
         except TypeError as e:
             raise TypeError(
@@ -427,18 +431,22 @@ class Poisson(StochasticProcess):
             ) from e
 
         if not (float(a).is_integer() and float(b).is_integer()):
-            raise ValueError(f"Domain counts for occupation time must be integers, got {domain}")
+            raise ValueError(
+                f"Domain counts for occupation time must be integers, got {domain}"
+            )
         a = int(a)
         b = int(b)
         if a < 0 or b < 0:
-            raise ValueError(f"Domain counts for occupation time must be non-negative, got {(a,b)}")
+            raise ValueError(
+                f"Domain counts for occupation time must be non-negative, got {(a, b)}"
+            )
         if b <= a:
-             raise ValueError(
+            raise ValueError(
                 f"max_count domain[1] ({b}) must be greater than min_count domain[0] ({a}) for occupation time."
-            ) # Or b < a if point occupation is allowed for a single count N(t)=k
+            )  # Or b < a if point occupation is allowed for a single count N(t)=k
         if _duration <= 0:
             raise ValueError("duration must be positive")
-        
+
         if order == 0:
             return 1.0
 
@@ -452,7 +460,7 @@ class Poisson(StochasticProcess):
 
     def occupation_time_central_moment(
         self,
-        domain: tuple[real, real], # (min_count, max_count)
+        domain: tuple[real, real],  # (min_count, max_count)
         order: int,
         particles: int,
         duration: real,
@@ -473,8 +481,8 @@ class Poisson(StochasticProcess):
             raise ValueError("particles must be positive")
 
         try:
-            a = ensure_float(domain[0]) # min_count
-            b = ensure_float(domain[1]) # max_count
+            a = ensure_float(domain[0])  # min_count
+            b = ensure_float(domain[1])  # max_count
             _duration = ensure_float(duration)
         except TypeError as e:
             raise TypeError(
@@ -482,11 +490,15 @@ class Poisson(StochasticProcess):
             ) from e
 
         if not (float(a).is_integer() and float(b).is_integer()):
-            raise ValueError(f"Domain counts for occupation time must be integers, got {domain}")
+            raise ValueError(
+                f"Domain counts for occupation time must be integers, got {domain}"
+            )
         a = int(a)
         b = int(b)
         if a < 0 or b < 0:
-            raise ValueError(f"Domain counts for occupation time must be non-negative, got {(a,b)}")
+            raise ValueError(
+                f"Domain counts for occupation time must be non-negative, got {(a, b)}"
+            )
         if b <= a:
             raise ValueError(
                 f"max_count domain[1] ({b}) must be greater than min_count domain[0] ({a}) for occupation time."
@@ -497,8 +509,8 @@ class Poisson(StochasticProcess):
         if order == 0:
             return 1.0
         if order == 1:
-            return 0.0 # First central moment is 0
-            
+            return 0.0  # First central moment is 0
+
         return _core.poisson_occupation_time_central_moment(
             self.lambda_,
             (float(a), float(b)),

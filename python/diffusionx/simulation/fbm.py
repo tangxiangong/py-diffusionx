@@ -227,7 +227,7 @@ class Fbm(StochasticProcess):
 
         if order == 0:
             return 1.0
-        
+
         return _core.fbm_fpt_central_moment(
             self.start_position,
             self.hurst_exponent,
@@ -443,7 +443,7 @@ class Fbm(StochasticProcess):
             raise ValueError("duration must be positive")
         if _step_size <= 0:
             raise ValueError("step_size must be positive")
-        
+
         if order == 0:
             return 1.0
 
@@ -503,7 +503,7 @@ class Fbm(StochasticProcess):
             return 1.0
         if order == 1:
             return 0.0
-            
+
         return _core.fbm_occupation_time_central_moment(
             self.start_position,
             self.hurst_exponent,

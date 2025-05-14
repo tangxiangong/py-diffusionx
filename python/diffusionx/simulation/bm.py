@@ -183,14 +183,15 @@ class Bm(StochasticProcess):
             raise ValueError("step_size must be positive")
         if _max_duration <= 0:
             raise ValueError("max_duration must be positive")
-        
-        if order == 0: # Conventionally, 0th raw moment of FPT is related to probability of passage
+
+        if (
+            order == 0
+        ):  # Conventionally, 0th raw moment of FPT is related to probability of passage
             # The _core function might handle this, or expect positive orders.
             # For simplicity, if _core supports order 0, we pass it.
             # If not, this might need adjustment based on _core behavior or definition.
             # Assuming _core handles order 0 appropriately if it's a valid input.
             pass
-
 
         return _core.bm_fpt_raw_moment(
             self.start_position,
@@ -257,7 +258,7 @@ class Bm(StochasticProcess):
         if _max_duration <= 0:
             raise ValueError("max_duration must be positive")
 
-        if order == 0: # 0th central moment is 1
+        if order == 0:  # 0th central moment is 1
             return 1.0
         # 1st central moment is 0 by definition, if mean FPT exists
         # However, _core.bm_fpt_central_moment might calculate it directly
@@ -483,12 +484,14 @@ class Bm(StochasticProcess):
                 f"Domain elements, duration, and step_size must be numbers. Error: {e}"
             ) from e
 
-        if a >= b: # For occupation time, domain can be [a,b] where a can be equal to b if it's a point.
-                    # However, typical usage is an interval. _core.pyi uses tuple[float,float]
-                    # Let's stick to a < b for interval, or consult _core if point is allowed.
-                    # For now, assume domain is an interval a < b for consistency with FPT.
-                    # If _core supports a=b, this check might need to be a <= b.
-                    # Given typical physical meaning, a < b is safer.
+        if (
+            a >= b
+        ):  # For occupation time, domain can be [a,b] where a can be equal to b if it's a point.
+            # However, typical usage is an interval. _core.pyi uses tuple[float,float]
+            # Let's stick to a < b for interval, or consult _core if point is allowed.
+            # For now, assume domain is an interval a < b for consistency with FPT.
+            # If _core supports a=b, this check might need to be a <= b.
+            # Given typical physical meaning, a < b is safer.
             raise ValueError(
                 f"Invalid domain [{a}, {b}]; domain[0] must be strictly less than domain[1]."
             )
@@ -496,9 +499,9 @@ class Bm(StochasticProcess):
             raise ValueError("duration must be positive")
         if _step_size <= 0:
             raise ValueError("step_size must be positive")
-        
+
         if order == 0:
-            return 1.0 # 0th raw moment is 1
+            return 1.0  # 0th raw moment is 1
 
         return _core.bm_occupation_time_raw_moment(
             self.start_position,
@@ -570,7 +573,7 @@ class Bm(StochasticProcess):
         if order == 1:
             # The first central moment is E[X - E[X]], which is 0 by definition.
             return 0.0
-            
+
         return _core.bm_occupation_time_central_moment(
             self.start_position,
             self.diffusion_coefficient,

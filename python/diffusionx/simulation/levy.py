@@ -280,7 +280,7 @@ class Levy(StochasticProcess):
 
         if order == 0:
             return 1.0
-        
+
         return _core.levy_fpt_central_moment(
             self.start_position,
             self.alpha,
@@ -332,7 +332,7 @@ class Levy(StochasticProcess):
             raise ValueError("duration must be positive")
         if _step_size <= 0:
             raise ValueError("step_size must be positive")
-        
+
         if order == 0:
             return 1.0
 
@@ -392,7 +392,7 @@ class Levy(StochasticProcess):
             return 1.0
         if order == 1:
             return 0.0
-            
+
         return _core.levy_occupation_time_central_moment(
             self.start_position,
             self.alpha,
@@ -637,7 +637,7 @@ class Subordinator(StochasticProcess):
             raise ValueError("duration must be positive")
         if _step_size <= 0:
             raise ValueError("step_size must be positive")
-        
+
         if order == 0:
             return 1.0
 
@@ -696,7 +696,7 @@ class Subordinator(StochasticProcess):
             return 1.0
         if order == 1:
             return 0.0
-            
+
         return _core.subordinator_occupation_time_central_moment(
             self.alpha,
             (a, b),
@@ -933,7 +933,7 @@ class InvSubordinator(StochasticProcess):
             raise ValueError("duration must be positive")
         if _step_size <= 0:
             raise ValueError("step_size must be positive")
-        
+
         if order == 0:
             return 1.0
 
@@ -992,7 +992,7 @@ class InvSubordinator(StochasticProcess):
             return 1.0
         if order == 1:
             return 0.0
-            
+
         return _core.inv_subordinator_occupation_time_central_moment(
             self.alpha,
             (a, b),

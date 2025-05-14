@@ -244,7 +244,7 @@ class CTRW(StochasticProcess):
 
         if order == 0:
             return 1.0
-        
+
         return _core.ctrw_fpt_central_moment(
             self.alpha,
             self.beta,
@@ -440,7 +440,7 @@ class CTRW(StochasticProcess):
             )
         if _duration <= 0:
             raise ValueError("duration must be positive")
-        
+
         if order == 0:
             return 1.0
 
@@ -495,8 +495,8 @@ class CTRW(StochasticProcess):
         if order == 0:
             return 1.0
         if order == 1:
-            return 0.0 # First central moment is 0
-            
+            return 0.0  # First central moment is 0
+
         return _core.ctrw_occupation_time_central_moment(
             self.alpha,
             self.beta,

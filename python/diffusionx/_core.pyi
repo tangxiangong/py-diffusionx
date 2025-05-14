@@ -223,16 +223,32 @@ def poisson_occupation_time(
     duration: float,
 ) -> float: ...
 def poisson_fpt_raw_moment(
-    lambda_: float, domain: tuple[float, float], order: int, particles: int, max_duration: float
+    lambda_: float,
+    domain: tuple[float, float],
+    order: int,
+    particles: int,
+    max_duration: float,
 ) -> float | None: ...
 def poisson_fpt_central_moment(
-    lambda_: float, domain: tuple[float, float], order: int, particles: int, max_duration: float
+    lambda_: float,
+    domain: tuple[float, float],
+    order: int,
+    particles: int,
+    max_duration: float,
 ) -> float | None: ...
 def poisson_occupation_time_raw_moment(
-    lambda_: float, domain: tuple[float, float], duration: float, order: int, particles: int
+    lambda_: float,
+    domain: tuple[float, float],
+    duration: float,
+    order: int,
+    particles: int,
 ) -> float: ...
 def poisson_occupation_time_central_moment(
-    lambda_: float, domain: tuple[float, float], duration: float, order: int, particles: int
+    lambda_: float,
+    domain: tuple[float, float],
+    duration: float,
+    order: int,
+    particles: int,
 ) -> float: ...
 
 # Subordinator Process
@@ -254,16 +270,36 @@ def subordinator_occupation_time(
     step_size: float,
 ) -> float: ...
 def subordinator_fpt_raw_moment(
-    alpha: float, domain: tuple[float, float], order: int, particles: int, max_duration: float, step_size: float
+    alpha: float,
+    domain: tuple[float, float],
+    order: int,
+    particles: int,
+    max_duration: float,
+    step_size: float,
 ) -> float | None: ...
 def subordinator_fpt_central_moment(
-    alpha: float, domain: tuple[float, float], order: int, particles: int, max_duration: float, step_size: float
+    alpha: float,
+    domain: tuple[float, float],
+    order: int,
+    particles: int,
+    max_duration: float,
+    step_size: float,
 ) -> float | None: ...
 def subordinator_occupation_time_raw_moment(
-    alpha: float, domain: tuple[float, float], duration: float, order: int, particles: int, step_size: float
+    alpha: float,
+    domain: tuple[float, float],
+    duration: float,
+    order: int,
+    particles: int,
+    step_size: float,
 ) -> float: ...
 def subordinator_occupation_time_central_moment(
-    alpha: float, domain: tuple[float, float], duration: float, order: int, particles: int, step_size: float
+    alpha: float,
+    domain: tuple[float, float],
+    duration: float,
+    order: int,
+    particles: int,
+    step_size: float,
 ) -> float: ...
 def inv_subordinator_simulate(
     alpha: float,
@@ -283,10 +319,20 @@ def inv_subordinator_fpt(
     step_size: float,
 ) -> float | None: ...
 def inv_subordinator_fpt_raw_moment(
-    alpha: float, domain: tuple[float, float], order: int, particles: int, max_duration: float, step_size: float
+    alpha: float,
+    domain: tuple[float, float],
+    order: int,
+    particles: int,
+    max_duration: float,
+    step_size: float,
 ) -> float | None: ...
 def inv_subordinator_fpt_central_moment(
-    alpha: float, domain: tuple[float, float], order: int, particles: int, max_duration: float, step_size: float
+    alpha: float,
+    domain: tuple[float, float],
+    order: int,
+    particles: int,
+    max_duration: float,
+    step_size: float,
 ) -> float | None: ...
 def inv_subordinator_occupation_time(
     alpha: float,
@@ -295,10 +341,20 @@ def inv_subordinator_occupation_time(
     step_size: float,
 ) -> float: ...
 def inv_subordinator_occupation_time_raw_moment(
-    alpha: float, domain: tuple[float, float], duration: float, order: int, particles: int, step_size: float
+    alpha: float,
+    domain: tuple[float, float],
+    duration: float,
+    order: int,
+    particles: int,
+    step_size: float,
 ) -> float: ...
 def inv_subordinator_occupation_time_central_moment(
-    alpha: float, domain: tuple[float, float], duration: float, order: int, particles: int, step_size: float
+    alpha: float,
+    domain: tuple[float, float],
+    duration: float,
+    order: int,
+    particles: int,
+    step_size: float,
 ) -> float: ...
 
 # Fractional Brownian motion
