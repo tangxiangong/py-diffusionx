@@ -287,3 +287,222 @@ class Poisson(StochasticProcess):
             (a, b),
             _duration,
         )
+
+    def fpt_raw_moment(
+        self,
+        domain: tuple[real, real], # (start_count, target_count)
+        order: int,
+        particles: int,
+        max_duration: real = 1000,
+    ) -> Optional[float]:
+        if not (isinstance(domain, tuple) and len(domain) == 2):
+            raise TypeError(
+                f"domain must be a tuple of two real numbers, got {type(domain).__name__}"
+            )
+        if not isinstance(order, int):
+            raise TypeError(f"order must be an integer, got {type(order).__name__}")
+        if order < 0:
+            raise ValueError("order must be non-negative")
+        if not isinstance(particles, int):
+            raise TypeError(
+                f"particles must be an integer, got {type(particles).__name__}"
+            )
+        if particles <= 0:
+            raise ValueError("particles must be positive")
+
+        try:
+            a = ensure_float(domain[0]) # start_count
+            b = ensure_float(domain[1]) # target_count
+            _max_duration = ensure_float(max_duration)
+        except TypeError as e:
+            raise TypeError(
+                f"Domain counts and max_duration must be numbers. Error: {e}"
+            ) from e
+
+        if not (float(a).is_integer() and float(b).is_integer()):
+            raise ValueError(f"Domain counts for FPT must be integers, got {domain}")
+        a = int(a)
+        b = int(b)
+        if a < 0 or b < 0:
+            raise ValueError(f"Domain counts for FPT must be non-negative, got {(a,b)}")
+        if b <= a:
+            raise ValueError(
+                f"Target count domain[1] ({b}) must be greater than start count domain[0] ({a})."
+            )
+        if _max_duration <= 0:
+            raise ValueError("max_duration must be positive")
+
+        return _core.poisson_fpt_raw_moment(
+            self.lambda_,
+            (float(a), float(b)), # _core expects float tuple
+            order,
+            particles,
+            _max_duration,
+        )
+
+    def fpt_central_moment(
+        self,
+        domain: tuple[real, real], # (start_count, target_count)
+        order: int,
+        particles: int,
+        max_duration: real = 1000,
+    ) -> Optional[float]:
+        if not (isinstance(domain, tuple) and len(domain) == 2):
+            raise TypeError(
+                f"domain must be a tuple of two real numbers, got {type(domain).__name__}"
+            )
+        if not isinstance(order, int):
+            raise TypeError(f"order must be an integer, got {type(order).__name__}")
+        if order < 0:
+            raise ValueError("order must be non-negative")
+        if not isinstance(particles, int):
+            raise TypeError(
+                f"particles must be an integer, got {type(particles).__name__}"
+            )
+        if particles <= 0:
+            raise ValueError("particles must be positive")
+
+        try:
+            a = ensure_float(domain[0]) # start_count
+            b = ensure_float(domain[1]) # target_count
+            _max_duration = ensure_float(max_duration)
+        except TypeError as e:
+            raise TypeError(
+                f"Domain counts and max_duration must be numbers. Error: {e}"
+            ) from e
+
+        if not (float(a).is_integer() and float(b).is_integer()):
+            raise ValueError(f"Domain counts for FPT must be integers, got {domain}")
+        a = int(a)
+        b = int(b)
+        if a < 0 or b < 0:
+            raise ValueError(f"Domain counts for FPT must be non-negative, got {(a,b)}")
+        if b <= a:
+            raise ValueError(
+                f"Target count domain[1] ({b}) must be greater than start count domain[0] ({a})."
+            )
+        if _max_duration <= 0:
+            raise ValueError("max_duration must be positive")
+
+        if order == 0:
+            return 1.0
+        
+        return _core.poisson_fpt_central_moment(
+            self.lambda_,
+            (float(a), float(b)),
+            order,
+            particles,
+            _max_duration,
+        )
+
+    def occupation_time_raw_moment(
+        self,
+        domain: tuple[real, real], # (min_count, max_count)
+        order: int,
+        particles: int,
+        duration: real,
+    ) -> float:
+        if not (isinstance(domain, tuple) and len(domain) == 2):
+            raise TypeError(
+                f"domain must be a tuple of two real numbers, got {type(domain).__name__}"
+            )
+        if not isinstance(order, int):
+            raise TypeError(f"order must be an integer, got {type(order).__name__}")
+        if order < 0:
+            raise ValueError("order must be non-negative")
+        if not isinstance(particles, int):
+            raise TypeError(
+                f"particles must be an integer, got {type(particles).__name__}"
+            )
+        if particles <= 0:
+            raise ValueError("particles must be positive")
+
+        try:
+            a = ensure_float(domain[0]) # min_count
+            b = ensure_float(domain[1]) # max_count
+            _duration = ensure_float(duration)
+        except TypeError as e:
+            raise TypeError(
+                f"Domain counts and duration must be numbers. Error: {e}"
+            ) from e
+
+        if not (float(a).is_integer() and float(b).is_integer()):
+            raise ValueError(f"Domain counts for occupation time must be integers, got {domain}")
+        a = int(a)
+        b = int(b)
+        if a < 0 or b < 0:
+            raise ValueError(f"Domain counts for occupation time must be non-negative, got {(a,b)}")
+        if b <= a:
+             raise ValueError(
+                f"max_count domain[1] ({b}) must be greater than min_count domain[0] ({a}) for occupation time."
+            ) # Or b < a if point occupation is allowed for a single count N(t)=k
+        if _duration <= 0:
+            raise ValueError("duration must be positive")
+        
+        if order == 0:
+            return 1.0
+
+        return _core.poisson_occupation_time_raw_moment(
+            self.lambda_,
+            (float(a), float(b)),
+            order,
+            particles,
+            _duration,
+        )
+
+    def occupation_time_central_moment(
+        self,
+        domain: tuple[real, real], # (min_count, max_count)
+        order: int,
+        particles: int,
+        duration: real,
+    ) -> float:
+        if not (isinstance(domain, tuple) and len(domain) == 2):
+            raise TypeError(
+                f"domain must be a tuple of two real numbers, got {type(domain).__name__}"
+            )
+        if not isinstance(order, int):
+            raise TypeError(f"order must be an integer, got {type(order).__name__}")
+        if order < 0:
+            raise ValueError("order must be non-negative")
+        if not isinstance(particles, int):
+            raise TypeError(
+                f"particles must be an integer, got {type(particles).__name__}"
+            )
+        if particles <= 0:
+            raise ValueError("particles must be positive")
+
+        try:
+            a = ensure_float(domain[0]) # min_count
+            b = ensure_float(domain[1]) # max_count
+            _duration = ensure_float(duration)
+        except TypeError as e:
+            raise TypeError(
+                f"Domain counts and duration must be numbers. Error: {e}"
+            ) from e
+
+        if not (float(a).is_integer() and float(b).is_integer()):
+            raise ValueError(f"Domain counts for occupation time must be integers, got {domain}")
+        a = int(a)
+        b = int(b)
+        if a < 0 or b < 0:
+            raise ValueError(f"Domain counts for occupation time must be non-negative, got {(a,b)}")
+        if b <= a:
+            raise ValueError(
+                f"max_count domain[1] ({b}) must be greater than min_count domain[0] ({a}) for occupation time."
+            )
+        if _duration <= 0:
+            raise ValueError("duration must be positive")
+
+        if order == 0:
+            return 1.0
+        if order == 1:
+            return 0.0 # First central moment is 0
+            
+        return _core.poisson_occupation_time_central_moment(
+            self.lambda_,
+            (float(a), float(b)),
+            order,
+            particles,
+            _duration,
+        )
