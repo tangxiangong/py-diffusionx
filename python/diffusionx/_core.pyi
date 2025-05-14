@@ -852,3 +852,961 @@ def subordinated_langevin_eatamsd(
     time_step: float,
     quad_order: int,
 ) -> float: ...
+
+# Asymmetric Levy Process
+def asymmetric_levy_simulate(
+    start_position: float,
+    alpha: float,
+    beta: float,
+    duration: float,
+    step_size: float,
+) -> tuple[np.ndarray, np.ndarray]: ...
+def asymmetric_levy_fpt(
+    start_position: float,
+    alpha: float,
+    beta: float,
+    step_size: float,
+    domain: tuple[float, float],
+    max_duration: float,
+) -> float | None: ...
+def asymmetric_levy_fpt_raw_moment(
+    start_position: float,
+    alpha: float,
+    beta: float,
+    domain: tuple[float, float],
+    order: int,
+    particles: int,
+    max_duration: float,
+    step_size: float,
+) -> float | None: ...
+def asymmetric_levy_fpt_central_moment(
+    start_position: float,
+    alpha: float,
+    beta: float,
+    domain: tuple[float, float],
+    order: int,
+    particles: int,
+    max_duration: float,
+    step_size: float,
+) -> float | None: ...
+def asymmetric_levy_occupation_time(
+    start_position: float,
+    alpha: float,
+    beta: float,
+    step_size: float,
+    domain: tuple[float, float],
+    duration: float,
+) -> float: ...
+def asymmetric_levy_occupation_time_raw_moment(
+    start_position: float,
+    alpha: float,
+    beta: float,
+    domain: tuple[float, float],
+    duration: float,
+    order: int,
+    particles: int,
+    step_size: float,
+) -> float: ...
+def asymmetric_levy_occupation_time_central_moment(
+    start_position: float,
+    alpha: float,
+    beta: float,
+    domain: tuple[float, float],
+    duration: float,
+    order: int,
+    particles: int,
+    step_size: float,
+) -> float: ...
+def asymmetric_levy_tamsd(
+    start_position: float,
+    alpha: float,
+    beta: float,
+    duration: float,
+    delta: float,
+    step_size: float,
+    quad_order: int,
+) -> float: ...
+def asymmetric_levy_eatamsd(
+    start_position: float,
+    alpha: float,
+    beta: float,
+    duration: float,
+    delta: float,
+    particles: int,
+    step_size: float,
+    quad_order: int,
+) -> float: ...
+
+# Brownian Bridge
+def bb_simulate(
+    start_value: float,
+    end_value: float,
+    diffusion_coefficient: float,
+    duration: float,
+    step_size: float,
+) -> tuple[np.ndarray, np.ndarray]: ...
+def bb_raw_moment(
+    start_value: float,
+    end_value: float,
+    diffusion_coefficient: float,
+    duration: float,
+    step_size: float,
+    order: int,
+    particles: int,
+) -> float: ...
+def bb_central_moment(
+    start_value: float,
+    end_value: float,
+    diffusion_coefficient: float,
+    duration: float,
+    step_size: float,
+    order: int,
+    particles: int,
+) -> float: ...
+def bb_fpt(
+    start_value: float,
+    end_value: float,
+    diffusion_coefficient: float,
+    step_size: float,
+    domain: tuple[float, float],
+    max_duration: float,
+) -> float | None: ...
+def bb_fpt_raw_moment(
+    start_value: float,
+    end_value: float,
+    diffusion_coefficient: float,
+    domain: tuple[float, float],
+    order: int,
+    particles: int,
+    step_size: float,
+    max_duration: float,
+) -> float | None: ...
+def bb_fpt_central_moment(
+    start_value: float,
+    end_value: float,
+    diffusion_coefficient: float,
+    domain: tuple[float, float],
+    order: int,
+    particles: int,
+    step_size: float,
+    max_duration: float,
+) -> float | None: ...
+def bb_occupation_time(
+    start_value: float,
+    end_value: float,
+    diffusion_coefficient: float,
+    step_size: float,
+    domain: tuple[float, float],
+    duration: float,
+) -> float: ...
+def bb_occupation_time_raw_moment(
+    start_value: float,
+    end_value: float,
+    diffusion_coefficient: float,
+    domain: tuple[float, float],
+    order: int,
+    particles: int,
+    step_size: float,
+    duration: float,
+) -> float: ...
+def bb_occupation_time_central_moment(
+    start_value: float,
+    end_value: float,
+    diffusion_coefficient: float,
+    domain: tuple[float, float],
+    order: int,
+    particles: int,
+    step_size: float,
+    duration: float,
+) -> float: ...
+def bb_tamsd(
+    start_value: float,
+    end_value: float,
+    diffusion_coefficient: float,
+    duration: float,
+    delta: float,
+    step_size: float,
+    quad_order: int,
+) -> float: ...
+def bb_eatamsd(
+    start_value: float,
+    end_value: float,
+    diffusion_coefficient: float,
+    duration: float,
+    delta: float,
+    particles: int,
+    step_size: float,
+    quad_order: int,
+) -> float: ...
+
+# Brownian Excursion
+def be_simulate(
+    diffusion_coefficient: float,
+    duration: float,
+    step_size: float,
+) -> tuple[np.ndarray, np.ndarray]: ...
+def be_raw_moment(
+    diffusion_coefficient: float,
+    duration: float,
+    step_size: float,
+    order: int,
+    particles: int,
+) -> float: ...
+def be_central_moment(
+    diffusion_coefficient: float,
+    duration: float,
+    step_size: float,
+    order: int,
+    particles: int,
+) -> float: ...
+def be_fpt(
+    diffusion_coefficient: float,
+    step_size: float,
+    domain: tuple[float, float],
+    max_duration: float,
+) -> float | None: ...
+def be_fpt_raw_moment(
+    diffusion_coefficient: float,
+    domain: tuple[float, float],
+    order: int,
+    particles: int,
+    step_size: float,
+    max_duration: float,
+) -> float | None: ...
+def be_fpt_central_moment(
+    diffusion_coefficient: float,
+    domain: tuple[float, float],
+    order: int,
+    particles: int,
+    step_size: float,
+    max_duration: float,
+) -> float | None: ...
+def be_occupation_time(
+    diffusion_coefficient: float,
+    step_size: float,
+    domain: tuple[float, float],
+    duration: float,
+) -> float: ...
+def be_occupation_time_raw_moment(
+    diffusion_coefficient: float,
+    domain: tuple[float, float],
+    order: int,
+    particles: int,
+    step_size: float,
+    duration: float,
+) -> float: ...
+def be_occupation_time_central_moment(
+    diffusion_coefficient: float,
+    domain: tuple[float, float],
+    order: int,
+    particles: int,
+    step_size: float,
+    duration: float,
+) -> float: ...
+def be_tamsd(
+    diffusion_coefficient: float,
+    duration: float,
+    delta: float,
+    step_size: float,
+    quad_order: int,
+) -> float: ...
+def be_eatamsd(
+    diffusion_coefficient: float,
+    duration: float,
+    delta: float,
+    particles: int,
+    step_size: float,
+    quad_order: int,
+) -> float: ...
+
+# Brownian Meander
+def meander_simulate(
+    diffusion_coefficient: float,
+    duration: float,
+    step_size: float,
+) -> tuple[np.ndarray, np.ndarray]: ...
+def meander_raw_moment(
+    diffusion_coefficient: float,
+    duration: float,
+    step_size: float,
+    order: int,
+    particles: int,
+) -> float: ...
+def meander_central_moment(
+    diffusion_coefficient: float,
+    duration: float,
+    step_size: float,
+    order: int,
+    particles: int,
+) -> float: ...
+def meander_fpt(
+    diffusion_coefficient: float,
+    step_size: float,
+    domain: tuple[float, float],
+    max_duration: float,
+) -> float | None: ...
+def meander_fpt_raw_moment(
+    diffusion_coefficient: float,
+    domain: tuple[float, float],
+    order: int,
+    particles: int,
+    step_size: float,
+    max_duration: float,
+) -> float | None: ...
+def meander_fpt_central_moment(
+    diffusion_coefficient: float,
+    domain: tuple[float, float],
+    order: int,
+    particles: int,
+    step_size: float,
+    max_duration: float,
+) -> float | None: ...
+def meander_occupation_time(
+    diffusion_coefficient: float,
+    step_size: float,
+    domain: tuple[float, float],
+    duration: float,
+) -> float: ...
+def meander_occupation_time_raw_moment(
+    diffusion_coefficient: float,
+    domain: tuple[float, float],
+    order: int,
+    particles: int,
+    step_size: float,
+    duration: float,
+) -> float: ...
+def meander_occupation_time_central_moment(
+    diffusion_coefficient: float,
+    domain: tuple[float, float],
+    order: int,
+    particles: int,
+    step_size: float,
+    duration: float,
+) -> float: ...
+def meander_tamsd(
+    diffusion_coefficient: float,
+    duration: float,
+    delta: float,
+    step_size: float,
+    quad_order: int,
+) -> float: ...
+def meander_eatamsd(
+    diffusion_coefficient: float,
+    duration: float,
+    delta: float,
+    particles: int,
+    step_size: float,
+    quad_order: int,
+) -> float: ...
+
+# Cauchy Process
+def cauchy_simulate(
+    start_position: float,
+    scale: float,
+    duration: float,
+    step_size: float,
+) -> tuple[np.ndarray, np.ndarray]: ...
+def cauchy_raw_moment(
+    start_position: float,
+    scale: float,
+    duration: float,
+    step_size: float,
+    order: int,
+    particles: int,
+) -> float: ...
+def cauchy_central_moment(
+    start_position: float,
+    scale: float,
+    duration: float,
+    step_size: float,
+    order: int,
+    particles: int,
+) -> float: ...
+def cauchy_fpt(
+    start_position: float,
+    scale: float,
+    step_size: float,
+    domain: tuple[float, float],
+    max_duration: float,
+) -> float | None: ...
+def cauchy_fpt_raw_moment(
+    start_position: float,
+    scale: float,
+    domain: tuple[float, float],
+    order: int,
+    particles: int,
+    step_size: float,
+    max_duration: float,
+) -> float | None: ...
+def cauchy_fpt_central_moment(
+    start_position: float,
+    scale: float,
+    domain: tuple[float, float],
+    order: int,
+    particles: int,
+    step_size: float,
+    max_duration: float,
+) -> float | None: ...
+def cauchy_occupation_time(
+    start_position: float,
+    scale: float,
+    step_size: float,
+    domain: tuple[float, float],
+    duration: float,
+) -> float: ...
+def cauchy_occupation_time_raw_moment(
+    start_position: float,
+    scale: float,
+    domain: tuple[float, float],
+    order: int,
+    particles: int,
+    step_size: float,
+    duration: float,
+) -> float: ...
+def cauchy_occupation_time_central_moment(
+    start_position: float,
+    scale: float,
+    domain: tuple[float, float],
+    order: int,
+    particles: int,
+    step_size: float,
+    duration: float,
+) -> float: ...
+def cauchy_tamsd(
+    start_position: float,
+    scale: float,
+    duration: float,
+    delta: float,
+    step_size: float,
+    quad_order: int,
+) -> float: ...
+def cauchy_eatamsd(
+    start_position: float,
+    scale: float,
+    duration: float,
+    delta: float,
+    particles: int,
+    step_size: float,
+    quad_order: int,
+) -> float: ...
+
+# Asymmetric Cauchy Process
+def asymmetric_cauchy_simulate(
+    start_position: float,
+    scale: float,
+    beta: float,
+    duration: float,
+    step_size: float,
+) -> tuple[np.ndarray, np.ndarray]: ...
+def asymmetric_cauchy_raw_moment(
+    start_position: float,
+    scale: float,
+    beta: float,
+    duration: float,
+    step_size: float,
+    order: int,
+    particles: int,
+) -> float: ...
+def asymmetric_cauchy_central_moment(
+    start_position: float,
+    scale: float,
+    beta: float,
+    duration: float,
+    step_size: float,
+    order: int,
+    particles: int,
+) -> float: ...
+def asymmetric_cauchy_fpt(
+    start_position: float,
+    scale: float,
+    beta: float,
+    step_size: float,
+    domain: tuple[float, float],
+    max_duration: float,
+) -> float | None: ...
+def asymmetric_cauchy_fpt_raw_moment(
+    start_position: float,
+    scale: float,
+    beta: float,
+    domain: tuple[float, float],
+    order: int,
+    particles: int,
+    step_size: float,
+    max_duration: float,
+) -> float | None: ...
+def asymmetric_cauchy_fpt_central_moment(
+    start_position: float,
+    scale: float,
+    beta: float,
+    domain: tuple[float, float],
+    order: int,
+    particles: int,
+    step_size: float,
+    max_duration: float,
+) -> float | None: ...
+def asymmetric_cauchy_occupation_time(
+    start_position: float,
+    scale: float,
+    beta: float,
+    step_size: float,
+    domain: tuple[float, float],
+    duration: float,
+) -> float: ...
+def asymmetric_cauchy_occupation_time_raw_moment(
+    start_position: float,
+    scale: float,
+    beta: float,
+    domain: tuple[float, float],
+    order: int,
+    particles: int,
+    step_size: float,
+    duration: float,
+) -> float: ...
+def asymmetric_cauchy_occupation_time_central_moment(
+    start_position: float,
+    scale: float,
+    beta: float,
+    domain: tuple[float, float],
+    order: int,
+    particles: int,
+    step_size: float,
+    duration: float,
+) -> float: ...
+def asymmetric_cauchy_tamsd(
+    start_position: float,
+    scale: float,
+    beta: float,
+    duration: float,
+    delta: float,
+    step_size: float,
+    quad_order: int,
+) -> float: ...
+def asymmetric_cauchy_eatamsd(
+    start_position: float,
+    scale: float,
+    beta: float,
+    duration: float,
+    delta: float,
+    particles: int,
+    step_size: float,
+    quad_order: int,
+) -> float: ...
+
+# Gamma Process
+def gamma_simulate(
+    start_position: float,
+    shape: float,
+    rate: float,
+    duration: float,
+    step_size: float,
+) -> tuple[np.ndarray, np.ndarray]: ...
+def gamma_raw_moment(
+    start_position: float,
+    shape: float,
+    rate: float,
+    duration: float,
+    step_size: float,
+    order: int,
+    particles: int,
+) -> float: ...
+def gamma_central_moment(
+    start_position: float,
+    shape: float,
+    rate: float,
+    duration: float,
+    step_size: float,
+    order: int,
+    particles: int,
+) -> float: ...
+def gamma_fpt(
+    start_position: float,
+    shape: float,
+    rate: float,
+    step_size: float,
+    domain: tuple[float, float],
+    max_duration: float,
+) -> float | None: ...
+def gamma_fpt_raw_moment(
+    start_position: float,
+    shape: float,
+    rate: float,
+    domain: tuple[float, float],
+    order: int,
+    particles: int,
+    step_size: float,
+    max_duration: float,
+) -> float | None: ...
+def gamma_fpt_central_moment(
+    start_position: float,
+    shape: float,
+    rate: float,
+    domain: tuple[float, float],
+    order: int,
+    particles: int,
+    step_size: float,
+    max_duration: float,
+) -> float | None: ...
+def gamma_occupation_time(
+    start_position: float,
+    shape: float,
+    rate: float,
+    step_size: float,
+    domain: tuple[float, float],
+    duration: float,
+) -> float: ...
+def gamma_occupation_time_raw_moment(
+    start_position: float,
+    shape: float,
+    rate: float,
+    domain: tuple[float, float],
+    order: int,
+    particles: int,
+    step_size: float,
+    duration: float,
+) -> float: ...
+def gamma_occupation_time_central_moment(
+    start_position: float,
+    shape: float,
+    rate: float,
+    domain: tuple[float, float],
+    order: int,
+    particles: int,
+    step_size: float,
+    duration: float,
+) -> float: ...
+def gamma_tamsd(
+    start_position: float,
+    shape: float,
+    rate: float,
+    duration: float,
+    delta: float,
+    step_size: float,
+    quad_order: int,
+) -> float: ...
+def gamma_eatamsd(
+    start_position: float,
+    shape: float,
+    rate: float,
+    duration: float,
+    delta: float,
+    particles: int,
+    step_size: float,
+    quad_order: int,
+) -> float: ...
+
+# Geometric Brownian Motion
+def gb_simulate(
+    start_value: float,
+    mu: float,
+    sigma: float,
+    duration: float,
+    step_size: float,
+) -> tuple[np.ndarray, np.ndarray]: ...
+def gb_raw_moment(
+    start_value: float,
+    mu: float,
+    sigma: float,
+    duration: float,
+    step_size: float,
+    order: int,
+    particles: int,
+) -> float: ...
+def gb_central_moment(
+    start_value: float,
+    mu: float,
+    sigma: float,
+    duration: float,
+    step_size: float,
+    order: int,
+    particles: int,
+) -> float: ...
+def gb_fpt(
+    start_value: float,
+    mu: float,
+    sigma: float,
+    step_size: float,
+    domain: tuple[float, float],
+    max_duration: float,
+) -> float | None: ...
+def gb_fpt_raw_moment(
+    start_value: float,
+    mu: float,
+    sigma: float,
+    domain: tuple[float, float],
+    order: int,
+    particles: int,
+    step_size: float,
+    max_duration: float,
+) -> float | None: ...
+def gb_fpt_central_moment(
+    start_value: float,
+    mu: float,
+    sigma: float,
+    domain: tuple[float, float],
+    order: int,
+    particles: int,
+    step_size: float,
+    max_duration: float,
+) -> float | None: ...
+def gb_occupation_time(
+    start_value: float,
+    mu: float,
+    sigma: float,
+    step_size: float,
+    domain: tuple[float, float],
+    duration: float,
+) -> float: ...
+def gb_occupation_time_raw_moment(
+    start_value: float,
+    mu: float,
+    sigma: float,
+    domain: tuple[float, float],
+    order: int,
+    particles: int,
+    step_size: float,
+    duration: float,
+) -> float: ...
+def gb_occupation_time_central_moment(
+    start_value: float,
+    mu: float,
+    sigma: float,
+    domain: tuple[float, float],
+    order: int,
+    particles: int,
+    step_size: float,
+    duration: float,
+) -> float: ...
+def gb_tamsd(
+    start_value: float,
+    mu: float,
+    sigma: float,
+    duration: float,
+    delta: float,
+    step_size: float,
+    quad_order: int,
+) -> float: ...
+def gb_eatamsd(
+    start_value: float,
+    mu: float,
+    sigma: float,
+    duration: float,
+    delta: float,
+    particles: int,
+    step_size: float,
+    quad_order: int,
+) -> float: ...
+
+# Levy Walk
+def levy_walk_simulate(
+    start_position: float,
+    alpha: float,  # Parameter for jump length distribution
+    beta: float,  # Parameter for waiting time distribution or velocity
+    duration: float,
+    step_size: float,
+) -> tuple[np.ndarray, np.ndarray]: ...
+def levy_walk_raw_moment(
+    start_position: float,
+    alpha: float,
+    beta: float,
+    duration: float,
+    step_size: float,
+    order: int,
+    particles: int,
+) -> float: ...
+def levy_walk_central_moment(
+    start_position: float,
+    alpha: float,
+    beta: float,
+    duration: float,
+    step_size: float,
+    order: int,
+    particles: int,
+) -> float: ...
+def levy_walk_fpt(
+    start_position: float,
+    alpha: float,
+    beta: float,
+    step_size: float,
+    domain: tuple[float, float],
+    max_duration: float,
+) -> float | None: ...
+def levy_walk_fpt_raw_moment(
+    start_position: float,
+    alpha: float,
+    beta: float,
+    domain: tuple[float, float],
+    order: int,
+    particles: int,
+    step_size: float,
+    max_duration: float,
+) -> float | None: ...
+def levy_walk_fpt_central_moment(
+    start_position: float,
+    alpha: float,
+    beta: float,
+    domain: tuple[float, float],
+    order: int,
+    particles: int,
+    step_size: float,
+    max_duration: float,
+) -> float | None: ...
+def levy_walk_occupation_time(
+    start_position: float,
+    alpha: float,
+    beta: float,
+    step_size: float,
+    domain: tuple[float, float],
+    duration: float,
+) -> float: ...
+def levy_walk_occupation_time_raw_moment(
+    start_position: float,
+    alpha: float,
+    beta: float,
+    domain: tuple[float, float],
+    order: int,
+    particles: int,
+    step_size: float,
+    duration: float,
+) -> float: ...
+def levy_walk_occupation_time_central_moment(
+    start_position: float,
+    alpha: float,
+    beta: float,
+    domain: tuple[float, float],
+    order: int,
+    particles: int,
+    step_size: float,
+    duration: float,
+) -> float: ...
+def levy_walk_tamsd(
+    start_position: float,
+    alpha: float,
+    beta: float,
+    duration: float,
+    delta: float,
+    step_size: float,
+    quad_order: int,
+) -> float: ...
+def levy_walk_eatamsd(
+    start_position: float,
+    alpha: float,
+    beta: float,
+    duration: float,
+    delta: float,
+    particles: int,
+    step_size: float,
+    quad_order: int,
+) -> float: ...
+
+# Ornstein-Uhlenbeck Process
+def ou_simulate(
+    start_position: float,
+    theta: float,  # Mean reversion rate
+    mu: float,  # Long-term mean
+    sigma: float,  # Volatility
+    duration: float,
+    step_size: float,
+) -> tuple[np.ndarray, np.ndarray]: ...
+def ou_raw_moment(
+    start_position: float,
+    theta: float,
+    mu: float,
+    sigma: float,
+    duration: float,
+    step_size: float,
+    order: int,
+    particles: int,
+) -> float: ...
+def ou_central_moment(
+    start_position: float,
+    theta: float,
+    mu: float,
+    sigma: float,
+    duration: float,
+    step_size: float,
+    order: int,
+    particles: int,
+) -> float: ...
+def ou_fpt(
+    start_position: float,
+    theta: float,
+    mu: float,
+    sigma: float,
+    step_size: float,
+    domain: tuple[float, float],
+    max_duration: float,
+) -> float | None: ...
+def ou_fpt_raw_moment(
+    start_position: float,
+    theta: float,
+    mu: float,
+    sigma: float,
+    domain: tuple[float, float],
+    order: int,
+    particles: int,
+    step_size: float,
+    max_duration: float,
+) -> float | None: ...
+def ou_fpt_central_moment(
+    start_position: float,
+    theta: float,
+    mu: float,
+    sigma: float,
+    domain: tuple[float, float],
+    order: int,
+    particles: int,
+    step_size: float,
+    max_duration: float,
+) -> float | None: ...
+def ou_occupation_time(
+    start_position: float,
+    theta: float,
+    mu: float,
+    sigma: float,
+    step_size: float,
+    domain: tuple[float, float],
+    duration: float,
+) -> float: ...
+def ou_occupation_time_raw_moment(
+    start_position: float,
+    theta: float,
+    mu: float,
+    sigma: float,
+    domain: tuple[float, float],
+    order: int,
+    particles: int,
+    step_size: float,
+    duration: float,
+) -> float: ...
+def ou_occupation_time_central_moment(
+    start_position: float,
+    theta: float,
+    mu: float,
+    sigma: float,
+    domain: tuple[float, float],
+    order: int,
+    particles: int,
+    step_size: float,
+    duration: float,
+) -> float: ...
+def ou_tamsd(
+    start_position: float,
+    theta: float,
+    mu: float,
+    sigma: float,
+    duration: float,
+    delta: float,
+    step_size: float,
+    quad_order: int,
+) -> float: ...
+def ou_eatamsd(
+    start_position: float,
+    theta: float,
+    mu: float,
+    sigma: float,
+    duration: float,
+    delta: float,
+    particles: int,
+    step_size: float,
+    quad_order: int,
+) -> float: ...
