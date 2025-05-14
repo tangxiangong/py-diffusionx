@@ -156,6 +156,105 @@ class CTRW(StochasticProcess):
             _max_duration,
         )
 
+    def fpt_raw_moment(
+        self,
+        domain: tuple[real, real],
+        order: int,
+        particles: int,
+        max_duration: real = 1000,
+    ) -> Optional[float]:
+        if not (isinstance(domain, tuple) and len(domain) == 2):
+            raise TypeError(
+                f"domain must be a tuple of two real numbers, got {type(domain).__name__}"
+            )
+        if not isinstance(order, int):
+            raise TypeError(f"order must be an integer, got {type(order).__name__}")
+        if order < 0:
+            raise ValueError("order must be non-negative")
+        if not isinstance(particles, int):
+            raise TypeError(
+                f"particles must be an integer, got {type(particles).__name__}"
+            )
+        if particles <= 0:
+            raise ValueError("particles must be positive")
+
+        try:
+            a = ensure_float(domain[0])
+            b = ensure_float(domain[1])
+            _max_duration = ensure_float(max_duration)
+        except TypeError as e:
+            raise TypeError(
+                f"Domain elements and max_duration must be numbers. Error: {e}"
+            ) from e
+
+        if a >= b:
+            raise ValueError(
+                f"Invalid domain [{a}, {b}]; domain[0] must be strictly less than domain[1]."
+            )
+        if _max_duration <= 0:
+            raise ValueError("max_duration must be positive")
+
+        return _core.ctrw_fpt_raw_moment(
+            self.alpha,
+            self.beta,
+            self.start_position,
+            (a, b),
+            order,
+            particles,
+            _max_duration,
+        )
+
+    def fpt_central_moment(
+        self,
+        domain: tuple[real, real],
+        order: int,
+        particles: int,
+        max_duration: real = 1000,
+    ) -> Optional[float]:
+        if not (isinstance(domain, tuple) and len(domain) == 2):
+            raise TypeError(
+                f"domain must be a tuple of two real numbers, got {type(domain).__name__}"
+            )
+        if not isinstance(order, int):
+            raise TypeError(f"order must be an integer, got {type(order).__name__}")
+        if order < 0:
+            raise ValueError("order must be non-negative")
+        if not isinstance(particles, int):
+            raise TypeError(
+                f"particles must be an integer, got {type(particles).__name__}"
+            )
+        if particles <= 0:
+            raise ValueError("particles must be positive")
+
+        try:
+            a = ensure_float(domain[0])
+            b = ensure_float(domain[1])
+            _max_duration = ensure_float(max_duration)
+        except TypeError as e:
+            raise TypeError(
+                f"Domain elements and max_duration must be numbers. Error: {e}"
+            ) from e
+
+        if a >= b:
+            raise ValueError(
+                f"Invalid domain [{a}, {b}]; domain[0] must be strictly less than domain[1]."
+            )
+        if _max_duration <= 0:
+            raise ValueError("max_duration must be positive")
+
+        if order == 0:
+            return 1.0
+        
+        return _core.ctrw_fpt_central_moment(
+            self.alpha,
+            self.beta,
+            self.start_position,
+            (a, b),
+            order,
+            particles,
+            _max_duration,
+        )
+
     def raw_moment(self, duration: real, order: int, particles: int) -> float:
         """
         Calculate the raw moment of the CTRW.
@@ -301,6 +400,110 @@ class CTRW(StochasticProcess):
             self.beta,
             self.start_position,
             (a, b),
+            _duration,
+        )
+
+    def occupation_time_raw_moment(
+        self,
+        domain: tuple[real, real],
+        order: int,
+        particles: int,
+        duration: real,
+    ) -> float:
+        if not (isinstance(domain, tuple) and len(domain) == 2):
+            raise TypeError(
+                f"domain must be a tuple of two real numbers, got {type(domain).__name__}"
+            )
+        if not isinstance(order, int):
+            raise TypeError(f"order must be an integer, got {type(order).__name__}")
+        if order < 0:
+            raise ValueError("order must be non-negative")
+        if not isinstance(particles, int):
+            raise TypeError(
+                f"particles must be an integer, got {type(particles).__name__}"
+            )
+        if particles <= 0:
+            raise ValueError("particles must be positive")
+
+        try:
+            a = ensure_float(domain[0])
+            b = ensure_float(domain[1])
+            _duration = ensure_float(duration)
+        except TypeError as e:
+            raise TypeError(
+                f"Domain elements and duration must be numbers. Error: {e}"
+            ) from e
+
+        if a >= b:
+            raise ValueError(
+                f"Invalid domain [{a}, {b}]; domain[0] must be strictly less than domain[1]."
+            )
+        if _duration <= 0:
+            raise ValueError("duration must be positive")
+        
+        if order == 0:
+            return 1.0
+
+        return _core.ctrw_occupation_time_raw_moment(
+            self.alpha,
+            self.beta,
+            self.start_position,
+            (a, b),
+            order,
+            particles,
+            _duration,
+        )
+
+    def occupation_time_central_moment(
+        self,
+        domain: tuple[real, real],
+        order: int,
+        particles: int,
+        duration: real,
+    ) -> float:
+        if not (isinstance(domain, tuple) and len(domain) == 2):
+            raise TypeError(
+                f"domain must be a tuple of two real numbers, got {type(domain).__name__}"
+            )
+        if not isinstance(order, int):
+            raise TypeError(f"order must be an integer, got {type(order).__name__}")
+        if order < 0:
+            raise ValueError("order must be non-negative")
+        if not isinstance(particles, int):
+            raise TypeError(
+                f"particles must be an integer, got {type(particles).__name__}"
+            )
+        if particles <= 0:
+            raise ValueError("particles must be positive")
+
+        try:
+            a = ensure_float(domain[0])
+            b = ensure_float(domain[1])
+            _duration = ensure_float(duration)
+        except TypeError as e:
+            raise TypeError(
+                f"Domain elements and duration must be numbers. Error: {e}"
+            ) from e
+
+        if a >= b:
+            raise ValueError(
+                f"Invalid domain [{a}, {b}]; domain[0] must be strictly less than domain[1]."
+            )
+        if _duration <= 0:
+            raise ValueError("duration must be positive")
+
+        if order == 0:
+            return 1.0
+        if order == 1:
+            return 0.0 # First central moment is 0
+            
+        return _core.ctrw_occupation_time_central_moment(
+            self.alpha,
+            self.beta,
+            self.start_position,
+            (a, b),
+            order,
+            particles,
             _duration,
         )
 
