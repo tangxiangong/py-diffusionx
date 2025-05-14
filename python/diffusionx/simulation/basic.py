@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Union
+from typing import Union, Optional
 import numpy as np
 from .utils import ensure_float
 
@@ -21,6 +21,86 @@ class StochasticProcess(ABC):
         Returns:
             tuple[np.ndarray, np.ndarray]: A tuple containing arrays for time points and process values.
         """
+        pass
+
+    @abstractmethod
+    def fpt(
+        self,
+        domain: tuple[real, real],
+        # step_size/time_step and max_duration vary per process, so not strictly enforced here
+        # but generally expected. For CTRW/Poisson, step_size is not used.
+        # For SubordinatedLangevin, base fpt does not use time_step.
+        # We'll rely on wrappers in functional.py to handle this, and specific implementations.
+        *args,  # To accommodate varying parameters like step_size, max_duration
+        **kwargs,  # To accommodate varying parameters like step_size, max_duration
+    ) -> Optional[float]:
+        """Calculate the first passage time."""
+        pass
+
+    @abstractmethod
+    def occupation_time(
+        self,
+        domain: tuple[real, real],
+        duration: real,
+        # step_size/time_step varies per process
+        *args,  # To accommodate step_size if present
+        **kwargs,  # To accommodate step_size if present
+    ) -> float:
+        """Calculate the occupation time."""
+        pass
+
+    @abstractmethod
+    def fpt_raw_moment(
+        self,
+        domain: tuple[real, real],
+        order: int,
+        particles: int,
+        # step_size/time_step, max_duration vary
+        *args,
+        **kwargs,
+    ) -> Optional[float]:
+        """Calculate the raw moment of the first passage time."""
+        pass
+
+    @abstractmethod
+    def fpt_central_moment(
+        self,
+        domain: tuple[real, real],
+        order: int,
+        particles: int,
+        # step_size/time_step, max_duration vary
+        *args,
+        **kwargs,
+    ) -> Optional[float]:
+        """Calculate the central moment of the first passage time."""
+        pass
+
+    @abstractmethod
+    def occupation_time_raw_moment(
+        self,
+        domain: tuple[real, real],
+        order: int,
+        particles: int,
+        duration: real,
+        # step_size/time_step varies
+        *args,
+        **kwargs,
+    ) -> float:
+        """Calculate the raw moment of the occupation time."""
+        pass
+
+    @abstractmethod
+    def occupation_time_central_moment(
+        self,
+        domain: tuple[real, real],
+        order: int,
+        particles: int,
+        duration: real,
+        # step_size/time_step varies
+        *args,
+        **kwargs,
+    ) -> float:
+        """Calculate the central moment of the occupation time."""
         pass
 
 

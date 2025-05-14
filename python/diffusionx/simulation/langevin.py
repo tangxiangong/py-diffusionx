@@ -1,7 +1,13 @@
-from typing import Callable, Union
+from typing import Callable, Union, Optional
 from numpy import ndarray
 from .. import _core
-from ..simulation.utils import ensure_float
+from ..simulation.utils import (
+    ensure_float,
+    validate_domain,
+    validate_order,
+    validate_particles,
+    validate_positive_float_param,
+)
 
 # Define real for consistency if used, though parameters are often explicitly float/int here
 real = Union[float, int]
@@ -348,58 +354,19 @@ class Langevin:
     def fpt(
         self,
         domain: tuple[real, real],
-        time_step: real,
+        time_step: real = 0.01,
         max_duration: real = 1000,
-    ) -> Union[float, None]:
-        """
-        Calculate the first passage time of the Langevin process.
-
-        Parameters
-        ----------
-        domain : tuple[real, real]
-            The domain (a, b) for FPT. a must be less than b.
-        time_step : real
-            Time step size (must be positive).
-        max_duration : real, optional
-            Maximum duration to simulate for FPT. Defaults to 1000 (must be positive).
-
-        Returns
-        -------
-        Optional[float]
-            The first passage time, or None if max_duration is reached before FPT.
-        """
-        if not hasattr(_core, "langevin_fpt"):
-            raise NotImplementedError("langevin_fpt not implemented in _core module")
-
-        if not (isinstance(domain, tuple) and len(domain) == 2):
-            raise TypeError(
-                f"domain must be a tuple of two real numbers, got {type(domain).__name__}"
-            )
-        try:
-            a = ensure_float(domain[0])
-            b = ensure_float(domain[1])
-            _time_step = ensure_float(time_step)
-            _max_duration = ensure_float(max_duration)
-        except TypeError as e:
-            raise TypeError(
-                f"Domain elements, time_step, and max_duration must be numbers. Error: {e}"
-            ) from e
-
-        if _time_step <= 0:
-            raise ValueError("time_step must be positive")
-        if a >= b:
-            raise ValueError(
-                f"Invalid domain [{a}, {b}]; domain[0] must be strictly less than domain[1]."
-            )
-        if _max_duration <= 0:
-            raise ValueError("max_duration must be positive")
+    ) -> Optional[float]:
+        _a, _b = validate_domain(domain, process_name="Langevin FPT")
+        _time_step = validate_positive_float_param(time_step, "time_step")
+        _max_duration = validate_positive_float_param(max_duration, "max_duration")
 
         return _core.langevin_fpt(
+            self.start_position,
             self.drift_func,
             self.diffusion_func,
-            self.start_position,
-            (a, b),
             _time_step,
+            (_a, _b),
             _max_duration,
         )
 
@@ -408,55 +375,22 @@ class Langevin:
         domain: tuple[real, real],
         order: int,
         particles: int,
-        time_step: real,
+        time_step: real = 0.01,
         max_duration: real = 1000,
-    ) -> Union[float, None]:
-        if not hasattr(_core, "langevin_fpt_raw_moment"):
-            raise NotImplementedError(
-                "langevin_fpt_raw_moment not implemented in _core module"
-            )
-
-        if not (isinstance(domain, tuple) and len(domain) == 2):
-            raise TypeError(
-                f"domain must be a tuple of two real numbers, got {type(domain).__name__}"
-            )
-        if not isinstance(order, int):
-            raise TypeError(f"order must be an integer, got {type(order).__name__}")
-        if order < 0:
-            raise ValueError("order must be non-negative")
-        if not isinstance(particles, int):
-            raise TypeError(
-                f"particles must be an integer, got {type(particles).__name__}"
-            )
-        if particles <= 0:
-            raise ValueError("particles must be positive")
-
-        try:
-            a = ensure_float(domain[0])
-            b = ensure_float(domain[1])
-            _time_step = ensure_float(time_step)
-            _max_duration = ensure_float(max_duration)
-        except TypeError as e:
-            raise TypeError(
-                f"Domain, order, particles, time_step, max_duration must be numbers. Error: {e}"
-            ) from e
-
-        if a >= b:
-            raise ValueError(
-                f"Invalid domain [{a}, {b}]; domain[0] must be strictly less than domain[1]."
-            )
-        if _time_step <= 0:
-            raise ValueError("time_step must be positive")
-        if _max_duration <= 0:
-            raise ValueError("max_duration must be positive")
+    ) -> Optional[float]:
+        _a, _b = validate_domain(domain, process_name="Langevin FPT raw moment")
+        _order = validate_order(order)
+        _particles = validate_particles(particles)
+        _time_step = validate_positive_float_param(time_step, "time_step")
+        _max_duration = validate_positive_float_param(max_duration, "max_duration")
 
         return _core.langevin_fpt_raw_moment(
+            self.start_position,
             self.drift_func,
             self.diffusion_func,
-            self.start_position,
-            (a, b),
-            order,
-            particles,
+            (_a, _b),
+            _order,
+            _particles,
             _time_step,
             _max_duration,
         )
@@ -466,58 +400,25 @@ class Langevin:
         domain: tuple[real, real],
         order: int,
         particles: int,
-        time_step: real,
+        time_step: real = 0.01,
         max_duration: real = 1000,
-    ) -> Union[float, None]:
-        if not hasattr(_core, "langevin_fpt_central_moment"):
-            raise NotImplementedError(
-                "langevin_fpt_central_moment not implemented in _core module"
-            )
+    ) -> Optional[float]:
+        _a, _b = validate_domain(domain, process_name="Langevin FPT central moment")
+        _order = validate_order(order)
+        _particles = validate_particles(particles)
+        _time_step = validate_positive_float_param(time_step, "time_step")
+        _max_duration = validate_positive_float_param(max_duration, "max_duration")
 
-        if not (isinstance(domain, tuple) and len(domain) == 2):
-            raise TypeError(
-                f"domain must be a tuple of two real numbers, got {type(domain).__name__}"
-            )
-        if not isinstance(order, int):
-            raise TypeError(f"order must be an integer, got {type(order).__name__}")
-        if order < 0:
-            raise ValueError("order must be non-negative")
-        if not isinstance(particles, int):
-            raise TypeError(
-                f"particles must be an integer, got {type(particles).__name__}"
-            )
-        if particles <= 0:
-            raise ValueError("particles must be positive")
-
-        try:
-            a = ensure_float(domain[0])
-            b = ensure_float(domain[1])
-            _time_step = ensure_float(time_step)
-            _max_duration = ensure_float(max_duration)
-        except TypeError as e:
-            raise TypeError(
-                f"Domain, order, particles, time_step, max_duration must be numbers. Error: {e}"
-            ) from e
-
-        if a >= b:
-            raise ValueError(
-                f"Invalid domain [{a}, {b}]; domain[0] must be strictly less than domain[1]."
-            )
-        if _time_step <= 0:
-            raise ValueError("time_step must be positive")
-        if _max_duration <= 0:
-            raise ValueError("max_duration must be positive")
-
-        if order == 0:
+        if _order == 0:
             return 1.0
 
         return _core.langevin_fpt_central_moment(
+            self.start_position,
             self.drift_func,
             self.diffusion_func,
-            self.start_position,
-            (a, b),
-            order,
-            particles,
+            (_a, _b),
+            _order,
+            _particles,
             _time_step,
             _max_duration,
         )
@@ -526,44 +427,19 @@ class Langevin:
         self,
         domain: tuple[real, real],
         duration: real,
-        time_step: real,
+        time_step: real = 0.01,
     ) -> float:
-        if not hasattr(_core, "langevin_occupation_time"):
-            raise NotImplementedError(
-                "langevin_occupation_time not implemented in _core module"
-            )
-
-        if not (isinstance(domain, tuple) and len(domain) == 2):
-            raise TypeError(
-                f"domain must be a tuple of two real numbers, got {type(domain).__name__}"
-            )
-
-        try:
-            a = ensure_float(domain[0])
-            b = ensure_float(domain[1])
-            _duration = ensure_float(duration)
-            _time_step = ensure_float(time_step)
-        except TypeError as e:
-            raise TypeError(
-                f"Domain, duration, time_step must be numbers. Error: {e}"
-            ) from e
-
-        if a >= b:
-            raise ValueError(
-                f"Invalid domain [{a}, {b}]; domain[0] must be strictly less than domain[1]."
-            )
-        if _duration <= 0:
-            raise ValueError("duration must be positive")
-        if _time_step <= 0:
-            raise ValueError("time_step must be positive")
+        _a, _b = validate_domain(domain, process_name="Langevin Occupation Time")
+        _duration = validate_positive_float_param(duration, "duration")
+        _time_step = validate_positive_float_param(time_step, "time_step")
 
         return _core.langevin_occupation_time(
+            self.start_position,
             self.drift_func,
             self.diffusion_func,
-            self.start_position,
-            (a, b),
-            _duration,
             _time_step,
+            (_a, _b),
+            _duration,
         )
 
     def occupation_time_raw_moment(
@@ -572,59 +448,26 @@ class Langevin:
         order: int,
         particles: int,
         duration: real,
-        time_step: real,
+        time_step: real = 0.01,
     ) -> float:
-        if not hasattr(_core, "langevin_occupation_time_raw_moment"):
-            raise NotImplementedError(
-                "langevin_occupation_time_raw_moment not implemented in _core module"
-            )
+        _a, _b = validate_domain(domain, process_name="Langevin Occupation raw moment")
+        _order = validate_order(order)
+        _particles = validate_particles(particles)
+        _duration = validate_positive_float_param(duration, "duration")
+        _time_step = validate_positive_float_param(time_step, "time_step")
 
-        if not (isinstance(domain, tuple) and len(domain) == 2):
-            raise TypeError(
-                f"domain must be a tuple of two real numbers, got {type(domain).__name__}"
-            )
-        if not isinstance(order, int):
-            raise TypeError(f"order must be an integer, got {type(order).__name__}")
-        if order < 0:
-            raise ValueError("order must be non-negative")
-        if not isinstance(particles, int):
-            raise TypeError(
-                f"particles must be an integer, got {type(particles).__name__}"
-            )
-        if particles <= 0:
-            raise ValueError("particles must be positive")
-
-        try:
-            a = ensure_float(domain[0])
-            b = ensure_float(domain[1])
-            _duration = ensure_float(duration)
-            _time_step = ensure_float(time_step)
-        except TypeError as e:
-            raise TypeError(
-                f"Domain, order, particles, duration, time_step must be numbers. Error: {e}"
-            ) from e
-
-        if a >= b:
-            raise ValueError(
-                f"Invalid domain [{a}, {b}]; domain[0] must be strictly less than domain[1]."
-            )
-        if _duration <= 0:
-            raise ValueError("duration must be positive")
-        if _time_step <= 0:
-            raise ValueError("time_step must be positive")
-
-        if order == 0:
+        if _order == 0:
             return 1.0
 
         return _core.langevin_occupation_time_raw_moment(
+            self.start_position,
             self.drift_func,
             self.diffusion_func,
-            self.start_position,
-            (a, b),
-            order,
-            particles,
-            _duration,
+            (_a, _b),
+            _order,
+            _particles,
             _time_step,
+            _duration,
         )
 
     def occupation_time_central_moment(
@@ -633,61 +476,30 @@ class Langevin:
         order: int,
         particles: int,
         duration: real,
-        time_step: real,
+        time_step: real = 0.01,
     ) -> float:
-        if not hasattr(_core, "langevin_occupation_time_central_moment"):
-            raise NotImplementedError(
-                "langevin_occupation_time_central_moment not implemented in _core module"
-            )
+        _a, _b = validate_domain(
+            domain, process_name="Langevin Occupation central moment"
+        )
+        _order = validate_order(order)
+        _particles = validate_particles(particles)
+        _duration = validate_positive_float_param(duration, "duration")
+        _time_step = validate_positive_float_param(time_step, "time_step")
 
-        if not (isinstance(domain, tuple) and len(domain) == 2):
-            raise TypeError(
-                f"domain must be a tuple of two real numbers, got {type(domain).__name__}"
-            )
-        if not isinstance(order, int):
-            raise TypeError(f"order must be an integer, got {type(order).__name__}")
-        if order < 0:
-            raise ValueError("order must be non-negative")
-        if not isinstance(particles, int):
-            raise TypeError(
-                f"particles must be an integer, got {type(particles).__name__}"
-            )
-        if particles <= 0:
-            raise ValueError("particles must be positive")
-
-        try:
-            a = ensure_float(domain[0])
-            b = ensure_float(domain[1])
-            _duration = ensure_float(duration)
-            _time_step = ensure_float(time_step)
-        except TypeError as e:
-            raise TypeError(
-                f"Domain, order, particles, duration, time_step must be numbers. Error: {e}"
-            ) from e
-
-        if a >= b:
-            raise ValueError(
-                f"Invalid domain [{a}, {b}]; domain[0] must be strictly less than domain[1]."
-            )
-        if _duration <= 0:
-            raise ValueError("duration must be positive")
-        if _time_step <= 0:
-            raise ValueError("time_step must be positive")
-
-        if order == 0:
+        if _order == 0:
             return 1.0
-        if order == 1:
+        if _order == 1:
             return 0.0
 
         return _core.langevin_occupation_time_central_moment(
+            self.start_position,
             self.drift_func,
             self.diffusion_func,
-            self.start_position,
-            (a, b),
-            order,
-            particles,
-            _duration,
+            (_a, _b),
+            _order,
+            _particles,
             _time_step,
+            _duration,
         )
 
 
@@ -997,44 +809,20 @@ class GeneralizedLangevin:
     def fpt(
         self,
         domain: tuple[real, real],
-        time_step: real,
+        time_step: real = 0.01,
         max_duration: real = 1000,
-    ) -> Union[float, None]:
-        if not hasattr(_core, "generalized_langevin_fpt"):
-            raise NotImplementedError(
-                "generalized_langevin_fpt not implemented in _core module"
-            )
-
-        if not (isinstance(domain, tuple) and len(domain) == 2):
-            raise TypeError(
-                f"domain must be a tuple of two real numbers, got {type(domain).__name__}"
-            )
-        try:
-            a = ensure_float(domain[0])
-            b = ensure_float(domain[1])
-            _time_step = ensure_float(time_step)
-            _max_duration = ensure_float(max_duration)
-        except TypeError as e:
-            raise TypeError(
-                f"Domain, time_step, max_duration must be numbers. Error: {e}"
-            ) from e
-
-        if _time_step <= 0:
-            raise ValueError("time_step must be positive")
-        if a >= b:
-            raise ValueError(
-                f"Invalid domain [{a}, {b}]; domain[0] must be strictly less than domain[1]."
-            )
-        if _max_duration <= 0:
-            raise ValueError("max_duration must be positive")
+    ) -> Optional[float]:
+        _a, _b = validate_domain(domain, process_name="GeneralizedLangevin FPT")
+        _time_step = validate_positive_float_param(time_step, "time_step")
+        _max_duration = validate_positive_float_param(max_duration, "max_duration")
 
         return _core.generalized_langevin_fpt(
+            self.start_position,
             self.drift_func,
             self.diffusion_func,
-            self.start_position,
             self.alpha,
-            (a, b),
             _time_step,
+            (_a, _b),
             _max_duration,
         )
 
@@ -1043,56 +831,25 @@ class GeneralizedLangevin:
         domain: tuple[real, real],
         order: int,
         particles: int,
-        time_step: real,
+        time_step: real = 0.01,
         max_duration: real = 1000,
-    ) -> Union[float, None]:
-        if not hasattr(_core, "generalized_langevin_fpt_raw_moment"):
-            raise NotImplementedError(
-                "generalized_langevin_fpt_raw_moment not implemented in _core module"
-            )
-
-        if not (isinstance(domain, tuple) and len(domain) == 2):
-            raise TypeError(
-                f"domain must be a tuple of two real numbers, got {type(domain).__name__}"
-            )
-        if not isinstance(order, int):
-            raise TypeError(f"order must be an integer, got {type(order).__name__}")
-        if order < 0:
-            raise ValueError("order must be non-negative")
-        if not isinstance(particles, int):
-            raise TypeError(
-                f"particles must be an integer, got {type(particles).__name__}"
-            )
-        if particles <= 0:
-            raise ValueError("particles must be positive")
-
-        try:
-            a = ensure_float(domain[0])
-            b = ensure_float(domain[1])
-            _time_step = ensure_float(time_step)
-            _max_duration = ensure_float(max_duration)
-        except TypeError as e:
-            raise TypeError(
-                f"Domain, order, particles, time_step, max_duration must be numbers. Error: {e}"
-            ) from e
-
-        if a >= b:
-            raise ValueError(
-                f"Invalid domain [{a}, {b}]; domain[0] must be strictly less than domain[1]."
-            )
-        if _time_step <= 0:
-            raise ValueError("time_step must be positive")
-        if _max_duration <= 0:
-            raise ValueError("max_duration must be positive")
+    ) -> Optional[float]:
+        _a, _b = validate_domain(
+            domain, process_name="GeneralizedLangevin FPT raw moment"
+        )
+        _order = validate_order(order)
+        _particles = validate_particles(particles)
+        _time_step = validate_positive_float_param(time_step, "time_step")
+        _max_duration = validate_positive_float_param(max_duration, "max_duration")
 
         return _core.generalized_langevin_fpt_raw_moment(
+            self.start_position,
             self.drift_func,
             self.diffusion_func,
-            self.start_position,
             self.alpha,
-            (a, b),
-            order,
-            particles,
+            (_a, _b),
+            _order,
+            _particles,
             _time_step,
             _max_duration,
         )
@@ -1102,59 +859,28 @@ class GeneralizedLangevin:
         domain: tuple[real, real],
         order: int,
         particles: int,
-        time_step: real,
+        time_step: real = 0.01,
         max_duration: real = 1000,
-    ) -> Union[float, None]:
-        if not hasattr(_core, "generalized_langevin_fpt_central_moment"):
-            raise NotImplementedError(
-                "generalized_langevin_fpt_central_moment not implemented in _core module"
-            )
+    ) -> Optional[float]:
+        _a, _b = validate_domain(
+            domain, process_name="GeneralizedLangevin FPT central moment"
+        )
+        _order = validate_order(order)
+        _particles = validate_particles(particles)
+        _time_step = validate_positive_float_param(time_step, "time_step")
+        _max_duration = validate_positive_float_param(max_duration, "max_duration")
 
-        if not (isinstance(domain, tuple) and len(domain) == 2):
-            raise TypeError(
-                f"domain must be a tuple of two real numbers, got {type(domain).__name__}"
-            )
-        if not isinstance(order, int):
-            raise TypeError(f"order must be an integer, got {type(order).__name__}")
-        if order < 0:
-            raise ValueError("order must be non-negative")
-        if not isinstance(particles, int):
-            raise TypeError(
-                f"particles must be an integer, got {type(particles).__name__}"
-            )
-        if particles <= 0:
-            raise ValueError("particles must be positive")
-
-        try:
-            a = ensure_float(domain[0])
-            b = ensure_float(domain[1])
-            _time_step = ensure_float(time_step)
-            _max_duration = ensure_float(max_duration)
-        except TypeError as e:
-            raise TypeError(
-                f"Domain, order, particles, time_step, max_duration must be numbers. Error: {e}"
-            ) from e
-
-        if a >= b:
-            raise ValueError(
-                f"Invalid domain [{a}, {b}]; domain[0] must be strictly less than domain[1]."
-            )
-        if _time_step <= 0:
-            raise ValueError("time_step must be positive")
-        if _max_duration <= 0:
-            raise ValueError("max_duration must be positive")
-
-        if order == 0:
+        if _order == 0:
             return 1.0
 
         return _core.generalized_langevin_fpt_central_moment(
+            self.start_position,
             self.drift_func,
             self.diffusion_func,
-            self.start_position,
             self.alpha,
-            (a, b),
-            order,
-            particles,
+            (_a, _b),
+            _order,
+            _particles,
             _time_step,
             _max_duration,
         )
@@ -1163,45 +889,22 @@ class GeneralizedLangevin:
         self,
         domain: tuple[real, real],
         duration: real,
-        time_step: real,
+        time_step: real = 0.01,
     ) -> float:
-        if not hasattr(_core, "generalized_langevin_occupation_time"):
-            raise NotImplementedError(
-                "generalized_langevin_occupation_time not implemented in _core module"
-            )
-
-        if not (isinstance(domain, tuple) and len(domain) == 2):
-            raise TypeError(
-                f"domain must be a tuple of two real numbers, got {type(domain).__name__}"
-            )
-
-        try:
-            a = ensure_float(domain[0])
-            b = ensure_float(domain[1])
-            _duration = ensure_float(duration)
-            _time_step = ensure_float(time_step)
-        except TypeError as e:
-            raise TypeError(
-                f"Domain, duration, time_step must be numbers. Error: {e}"
-            ) from e
-
-        if a >= b:
-            raise ValueError(
-                f"Invalid domain [{a}, {b}]; domain[0] must be strictly less than domain[1]."
-            )
-        if _duration <= 0:
-            raise ValueError("duration must be positive")
-        if _time_step <= 0:
-            raise ValueError("time_step must be positive")
+        _a, _b = validate_domain(
+            domain, process_name="GeneralizedLangevin Occupation Time"
+        )
+        _duration = validate_positive_float_param(duration, "duration")
+        _time_step = validate_positive_float_param(time_step, "time_step")
 
         return _core.generalized_langevin_occupation_time(
+            self.start_position,
             self.drift_func,
             self.diffusion_func,
-            self.start_position,
             self.alpha,
-            (a, b),
-            _duration,
             _time_step,
+            (_a, _b),
+            _duration,
         )
 
     def occupation_time_raw_moment(
@@ -1210,60 +913,29 @@ class GeneralizedLangevin:
         order: int,
         particles: int,
         duration: real,
-        time_step: real,
+        time_step: real = 0.01,
     ) -> float:
-        if not hasattr(_core, "generalized_langevin_occupation_time_raw_moment"):
-            raise NotImplementedError(
-                "generalized_langevin_occupation_time_raw_moment not implemented in _core module"
-            )
+        _a, _b = validate_domain(
+            domain, process_name="GeneralizedLangevin Occupation raw moment"
+        )
+        _order = validate_order(order)
+        _particles = validate_particles(particles)
+        _duration = validate_positive_float_param(duration, "duration")
+        _time_step = validate_positive_float_param(time_step, "time_step")
 
-        if not (isinstance(domain, tuple) and len(domain) == 2):
-            raise TypeError(
-                f"domain must be a tuple of two real numbers, got {type(domain).__name__}"
-            )
-        if not isinstance(order, int):
-            raise TypeError(f"order must be an integer, got {type(order).__name__}")
-        if order < 0:
-            raise ValueError("order must be non-negative")
-        if not isinstance(particles, int):
-            raise TypeError(
-                f"particles must be an integer, got {type(particles).__name__}"
-            )
-        if particles <= 0:
-            raise ValueError("particles must be positive")
-
-        try:
-            a = ensure_float(domain[0])
-            b = ensure_float(domain[1])
-            _duration = ensure_float(duration)
-            _time_step = ensure_float(time_step)
-        except TypeError as e:
-            raise TypeError(
-                f"Domain, order, particles, duration, time_step must be numbers. Error: {e}"
-            ) from e
-
-        if a >= b:
-            raise ValueError(
-                f"Invalid domain [{a}, {b}]; domain[0] must be strictly less than domain[1]."
-            )
-        if _duration <= 0:
-            raise ValueError("duration must be positive")
-        if _time_step <= 0:
-            raise ValueError("time_step must be positive")
-
-        if order == 0:
+        if _order == 0:
             return 1.0
 
         return _core.generalized_langevin_occupation_time_raw_moment(
+            self.start_position,
             self.drift_func,
             self.diffusion_func,
-            self.start_position,
             self.alpha,
-            (a, b),
-            order,
-            particles,
-            _duration,
+            (_a, _b),
+            _order,
+            _particles,
             _time_step,
+            _duration,
         )
 
     def occupation_time_central_moment(
@@ -1272,62 +944,31 @@ class GeneralizedLangevin:
         order: int,
         particles: int,
         duration: real,
-        time_step: real,
+        time_step: real = 0.01,
     ) -> float:
-        if not hasattr(_core, "generalized_langevin_occupation_time_central_moment"):
-            raise NotImplementedError(
-                "generalized_langevin_occupation_time_central_moment not implemented in _core module"
-            )
+        _a, _b = validate_domain(
+            domain, process_name="GeneralizedLangevin Occupation central moment"
+        )
+        _order = validate_order(order)
+        _particles = validate_particles(particles)
+        _duration = validate_positive_float_param(duration, "duration")
+        _time_step = validate_positive_float_param(time_step, "time_step")
 
-        if not (isinstance(domain, tuple) and len(domain) == 2):
-            raise TypeError(
-                f"domain must be a tuple of two real numbers, got {type(domain).__name__}"
-            )
-        if not isinstance(order, int):
-            raise TypeError(f"order must be an integer, got {type(order).__name__}")
-        if order < 0:
-            raise ValueError("order must be non-negative")
-        if not isinstance(particles, int):
-            raise TypeError(
-                f"particles must be an integer, got {type(particles).__name__}"
-            )
-        if particles <= 0:
-            raise ValueError("particles must be positive")
-
-        try:
-            a = ensure_float(domain[0])
-            b = ensure_float(domain[1])
-            _duration = ensure_float(duration)
-            _time_step = ensure_float(time_step)
-        except TypeError as e:
-            raise TypeError(
-                f"Domain, order, particles, duration, time_step must be numbers. Error: {e}"
-            ) from e
-
-        if a >= b:
-            raise ValueError(
-                f"Invalid domain [{a}, {b}]; domain[0] must be strictly less than domain[1]."
-            )
-        if _duration <= 0:
-            raise ValueError("duration must be positive")
-        if _time_step <= 0:
-            raise ValueError("time_step must be positive")
-
-        if order == 0:
+        if _order == 0:
             return 1.0
-        if order == 1:
+        if _order == 1:
             return 0.0
 
         return _core.generalized_langevin_occupation_time_central_moment(
+            self.start_position,
             self.drift_func,
             self.diffusion_func,
-            self.start_position,
             self.alpha,
-            (a, b),
-            order,
-            particles,
-            _duration,
+            (_a, _b),
+            _order,
+            _particles,
             _time_step,
+            _duration,
         )
 
 
@@ -1563,41 +1204,17 @@ class SubordinatedLangevin:
         return self.central_moment(_duration, 2, particles, _time_step)
 
     def fpt(
-        self,
-        domain: tuple[real, real],
-        max_duration: real = 1000,  # Note: No time_step here as per _core.subordinated_langevin_fpt
-    ) -> Union[float, None]:
-        if not hasattr(_core, "subordinated_langevin_fpt"):
-            raise NotImplementedError(
-                "subordinated_langevin_fpt not implemented in _core module"
-            )
-
-        if not (isinstance(domain, tuple) and len(domain) == 2):
-            raise TypeError(
-                f"domain must be a tuple of two real numbers, got {type(domain).__name__}"
-            )
-        try:
-            a = ensure_float(domain[0])
-            b = ensure_float(domain[1])
-            _max_duration = ensure_float(max_duration)
-        except TypeError as e:
-            raise TypeError(
-                f"Domain and max_duration must be numbers. Error: {e}"
-            ) from e
-
-        if a >= b:
-            raise ValueError(
-                f"Invalid domain [{a}, {b}]; domain[0] must be strictly less than domain[1]."
-            )
-        if _max_duration <= 0:
-            raise ValueError("max_duration must be positive")
+        self, domain: tuple[real, real], max_duration: real = 1000
+    ) -> Optional[float]:  # No time_step here as per _core
+        _a, _b = validate_domain(domain, process_name="SubordinatedLangevin FPT")
+        _max_duration = validate_positive_float_param(max_duration, "max_duration")
 
         return _core.subordinated_langevin_fpt(
+            self.start_position,
             self.drift_func,
             self.diffusion_func,
             self.subordinator_alpha,
-            self.start_position,
-            (a, b),
+            (_a, _b),
             _max_duration,
         )
 
@@ -1606,56 +1223,25 @@ class SubordinatedLangevin:
         domain: tuple[real, real],
         order: int,
         particles: int,
-        time_step: real,  # time_step is present in moment functions
+        time_step: real = 0.01,  # Has time_step
         max_duration: real = 1000,
-    ) -> Union[float, None]:
-        if not hasattr(_core, "subordinated_langevin_fpt_raw_moment"):
-            raise NotImplementedError(
-                "subordinated_langevin_fpt_raw_moment not implemented in _core module"
-            )
-
-        if not (isinstance(domain, tuple) and len(domain) == 2):
-            raise TypeError(
-                f"domain must be a tuple of two real numbers, got {type(domain).__name__}"
-            )
-        if not isinstance(order, int):
-            raise TypeError(f"order must be an integer, got {type(order).__name__}")
-        if order < 0:
-            raise ValueError("order must be non-negative")
-        if not isinstance(particles, int):
-            raise TypeError(
-                f"particles must be an integer, got {type(particles).__name__}"
-            )
-        if particles <= 0:
-            raise ValueError("particles must be positive")
-
-        try:
-            a = ensure_float(domain[0])
-            b = ensure_float(domain[1])
-            _time_step = ensure_float(time_step)
-            _max_duration = ensure_float(max_duration)
-        except TypeError as e:
-            raise TypeError(
-                f"Domain, order, particles, time_step, max_duration must be numbers. Error: {e}"
-            ) from e
-
-        if a >= b:
-            raise ValueError(
-                f"Invalid domain [{a}, {b}]; domain[0] must be strictly less than domain[1]."
-            )
-        if _time_step <= 0:
-            raise ValueError("time_step must be positive")
-        if _max_duration <= 0:
-            raise ValueError("max_duration must be positive")
+    ) -> Optional[float]:
+        _a, _b = validate_domain(
+            domain, process_name="SubordinatedLangevin FPT raw moment"
+        )
+        _order = validate_order(order)
+        _particles = validate_particles(particles)
+        _time_step = validate_positive_float_param(time_step, "time_step")
+        _max_duration = validate_positive_float_param(max_duration, "max_duration")
 
         return _core.subordinated_langevin_fpt_raw_moment(
+            self.start_position,
             self.drift_func,
             self.diffusion_func,
             self.subordinator_alpha,
-            self.start_position,
-            (a, b),
-            order,
-            particles,
+            (_a, _b),
+            _order,
+            _particles,
             _time_step,
             _max_duration,
         )
@@ -1665,59 +1251,28 @@ class SubordinatedLangevin:
         domain: tuple[real, real],
         order: int,
         particles: int,
-        time_step: real,  # time_step is present in moment functions
+        time_step: real = 0.01,  # Has time_step
         max_duration: real = 1000,
-    ) -> Union[float, None]:
-        if not hasattr(_core, "subordinated_langevin_fpt_central_moment"):
-            raise NotImplementedError(
-                "subordinated_langevin_fpt_central_moment not implemented in _core module"
-            )
+    ) -> Optional[float]:
+        _a, _b = validate_domain(
+            domain, process_name="SubordinatedLangevin FPT central moment"
+        )
+        _order = validate_order(order)
+        _particles = validate_particles(particles)
+        _time_step = validate_positive_float_param(time_step, "time_step")
+        _max_duration = validate_positive_float_param(max_duration, "max_duration")
 
-        if not (isinstance(domain, tuple) and len(domain) == 2):
-            raise TypeError(
-                f"domain must be a tuple of two real numbers, got {type(domain).__name__}"
-            )
-        if not isinstance(order, int):
-            raise TypeError(f"order must be an integer, got {type(order).__name__}")
-        if order < 0:
-            raise ValueError("order must be non-negative")
-        if not isinstance(particles, int):
-            raise TypeError(
-                f"particles must be an integer, got {type(particles).__name__}"
-            )
-        if particles <= 0:
-            raise ValueError("particles must be positive")
-
-        try:
-            a = ensure_float(domain[0])
-            b = ensure_float(domain[1])
-            _time_step = ensure_float(time_step)
-            _max_duration = ensure_float(max_duration)
-        except TypeError as e:
-            raise TypeError(
-                f"Domain, order, particles, time_step, max_duration must be numbers. Error: {e}"
-            ) from e
-
-        if a >= b:
-            raise ValueError(
-                f"Invalid domain [{a}, {b}]; domain[0] must be strictly less than domain[1]."
-            )
-        if _time_step <= 0:
-            raise ValueError("time_step must be positive")
-        if _max_duration <= 0:
-            raise ValueError("max_duration must be positive")
-
-        if order == 0:
+        if _order == 0:
             return 1.0
 
         return _core.subordinated_langevin_fpt_central_moment(
+            self.start_position,
             self.drift_func,
             self.diffusion_func,
             self.subordinator_alpha,
-            self.start_position,
-            (a, b),
-            order,
-            particles,
+            (_a, _b),
+            _order,
+            _particles,
             _time_step,
             _max_duration,
         )
@@ -1726,45 +1281,22 @@ class SubordinatedLangevin:
         self,
         domain: tuple[real, real],
         duration: real,
-        time_step: real,
+        time_step: real = 0.01,  # Has time_step
     ) -> float:
-        if not hasattr(_core, "subordinated_langevin_occupation_time"):
-            raise NotImplementedError(
-                "subordinated_langevin_occupation_time not implemented in _core module"
-            )
-
-        if not (isinstance(domain, tuple) and len(domain) == 2):
-            raise TypeError(
-                f"domain must be a tuple of two real numbers, got {type(domain).__name__}"
-            )
-
-        try:
-            a = ensure_float(domain[0])
-            b = ensure_float(domain[1])
-            _duration = ensure_float(duration)
-            _time_step = ensure_float(time_step)
-        except TypeError as e:
-            raise TypeError(
-                f"Domain, duration, time_step must be numbers. Error: {e}"
-            ) from e
-
-        if a >= b:
-            raise ValueError(
-                f"Invalid domain [{a}, {b}]; domain[0] must be strictly less than domain[1]."
-            )
-        if _duration <= 0:
-            raise ValueError("duration must be positive")
-        if _time_step <= 0:
-            raise ValueError("time_step must be positive")
+        _a, _b = validate_domain(
+            domain, process_name="SubordinatedLangevin Occupation Time"
+        )
+        _duration = validate_positive_float_param(duration, "duration")
+        _time_step = validate_positive_float_param(time_step, "time_step")
 
         return _core.subordinated_langevin_occupation_time(
+            self.start_position,
             self.drift_func,
             self.diffusion_func,
             self.subordinator_alpha,
-            self.start_position,
-            (a, b),
-            _duration,
             _time_step,
+            (_a, _b),
+            _duration,
         )
 
     def occupation_time_raw_moment(
@@ -1773,60 +1305,29 @@ class SubordinatedLangevin:
         order: int,
         particles: int,
         duration: real,
-        time_step: real,
+        time_step: real = 0.01,  # Has time_step
     ) -> float:
-        if not hasattr(_core, "subordinated_langevin_occupation_time_raw_moment"):
-            raise NotImplementedError(
-                "subordinated_langevin_occupation_time_raw_moment not implemented in _core module"
-            )
+        _a, _b = validate_domain(
+            domain, process_name="SubordinatedLangevin Occupation raw moment"
+        )
+        _order = validate_order(order)
+        _particles = validate_particles(particles)
+        _duration = validate_positive_float_param(duration, "duration")
+        _time_step = validate_positive_float_param(time_step, "time_step")
 
-        if not (isinstance(domain, tuple) and len(domain) == 2):
-            raise TypeError(
-                f"domain must be a tuple of two real numbers, got {type(domain).__name__}"
-            )
-        if not isinstance(order, int):
-            raise TypeError(f"order must be an integer, got {type(order).__name__}")
-        if order < 0:
-            raise ValueError("order must be non-negative")
-        if not isinstance(particles, int):
-            raise TypeError(
-                f"particles must be an integer, got {type(particles).__name__}"
-            )
-        if particles <= 0:
-            raise ValueError("particles must be positive")
-
-        try:
-            a = ensure_float(domain[0])
-            b = ensure_float(domain[1])
-            _duration = ensure_float(duration)
-            _time_step = ensure_float(time_step)
-        except TypeError as e:
-            raise TypeError(
-                f"Domain, order, particles, duration, time_step must be numbers. Error: {e}"
-            ) from e
-
-        if a >= b:
-            raise ValueError(
-                f"Invalid domain [{a}, {b}]; domain[0] must be strictly less than domain[1]."
-            )
-        if _duration <= 0:
-            raise ValueError("duration must be positive")
-        if _time_step <= 0:
-            raise ValueError("time_step must be positive")
-
-        if order == 0:
+        if _order == 0:
             return 1.0
 
         return _core.subordinated_langevin_occupation_time_raw_moment(
+            self.start_position,
             self.drift_func,
             self.diffusion_func,
             self.subordinator_alpha,
-            self.start_position,
-            (a, b),
-            order,
-            particles,
-            _duration,
+            (_a, _b),
+            _order,
+            _particles,
             _time_step,
+            _duration,
         )
 
     def occupation_time_central_moment(
@@ -1835,60 +1336,29 @@ class SubordinatedLangevin:
         order: int,
         particles: int,
         duration: real,
-        time_step: real,
+        time_step: real = 0.01,  # Has time_step
     ) -> float:
-        if not hasattr(_core, "subordinated_langevin_occupation_time_central_moment"):
-            raise NotImplementedError(
-                "subordinated_langevin_occupation_time_central_moment not implemented in _core module"
-            )
+        _a, _b = validate_domain(
+            domain, process_name="SubordinatedLangevin Occupation central moment"
+        )
+        _order = validate_order(order)
+        _particles = validate_particles(particles)
+        _duration = validate_positive_float_param(duration, "duration")
+        _time_step = validate_positive_float_param(time_step, "time_step")
 
-        if not (isinstance(domain, tuple) and len(domain) == 2):
-            raise TypeError(
-                f"domain must be a tuple of two real numbers, got {type(domain).__name__}"
-            )
-        if not isinstance(order, int):
-            raise TypeError(f"order must be an integer, got {type(order).__name__}")
-        if order < 0:
-            raise ValueError("order must be non-negative")
-        if not isinstance(particles, int):
-            raise TypeError(
-                f"particles must be an integer, got {type(particles).__name__}"
-            )
-        if particles <= 0:
-            raise ValueError("particles must be positive")
-
-        try:
-            a = ensure_float(domain[0])
-            b = ensure_float(domain[1])
-            _duration = ensure_float(duration)
-            _time_step = ensure_float(time_step)
-        except TypeError as e:
-            raise TypeError(
-                f"Domain, order, particles, duration, time_step must be numbers. Error: {e}"
-            ) from e
-
-        if a >= b:
-            raise ValueError(
-                f"Invalid domain [{a}, {b}]; domain[0] must be strictly less than domain[1]."
-            )
-        if _duration <= 0:
-            raise ValueError("duration must be positive")
-        if _time_step <= 0:
-            raise ValueError("time_step must be positive")
-
-        if order == 0:
+        if _order == 0:
             return 1.0
-        if order == 1:
+        if _order == 1:
             return 0.0
 
         return _core.subordinated_langevin_occupation_time_central_moment(
+            self.start_position,
             self.drift_func,
             self.diffusion_func,
             self.subordinator_alpha,
-            self.start_position,
-            (a, b),
-            order,
-            particles,
-            _duration,
+            (_a, _b),
+            _order,
+            _particles,
             _time_step,
+            _duration,
         )

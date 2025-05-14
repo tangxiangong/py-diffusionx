@@ -1,7 +1,13 @@
 from diffusionx import _core
 from typing import Union, Optional
 from .basic import StochasticProcess, Trajectory
-from .utils import ensure_float
+from .utils import (
+    ensure_float,
+    validate_domain,
+    validate_order,
+    validate_particles,
+    validate_positive_float_param,
+)
 import numpy as np
 
 
@@ -100,34 +106,15 @@ class Fbm(StochasticProcess):
         Returns:
             Optional[float]: The FPT, or None if max_duration reached first.
         """
-        if not (isinstance(domain, tuple) and len(domain) == 2):
-            raise TypeError(
-                f"domain must be a tuple of two real numbers, got {type(domain).__name__}"
-            )
-        try:
-            _step_size = ensure_float(step_size)
-            a = ensure_float(domain[0])
-            b = ensure_float(domain[1])
-            _max_duration = ensure_float(max_duration)
-        except TypeError as e:
-            raise TypeError(
-                f"Domain elements, step_size, and max_duration must be numbers. Error: {e}"
-            ) from e
-
-        if _step_size <= 0:
-            raise ValueError("step_size must be positive")
-        if a >= b:
-            raise ValueError(
-                f"Invalid domain [{a}, {b}]; domain[0] must be strictly less than domain[1]."
-            )
-        if _max_duration <= 0:
-            raise ValueError("max_duration must be positive")
+        _a, _b = validate_domain(domain, process_name="Fbm FPT")
+        _step_size = validate_positive_float_param(step_size, "step_size")
+        _max_duration = validate_positive_float_param(max_duration, "max_duration")
 
         return _core.fbm_fpt(
             self.start_position,
             self.hurst_exponent,
             _step_size,
-            (a, b),
+            (_a, _b),
             _max_duration,
         )
 
@@ -139,46 +126,18 @@ class Fbm(StochasticProcess):
         step_size: real = 0.01,
         max_duration: real = 1000,
     ) -> Optional[float]:
-        if not (isinstance(domain, tuple) and len(domain) == 2):
-            raise TypeError(
-                f"domain must be a tuple of two real numbers, got {type(domain).__name__}"
-            )
-        if not isinstance(order, int):
-            raise TypeError(f"order must be an integer, got {type(order).__name__}")
-        if order < 0:
-            raise ValueError("order must be non-negative")
-        if not isinstance(particles, int):
-            raise TypeError(
-                f"particles must be an integer, got {type(particles).__name__}"
-            )
-        if particles <= 0:
-            raise ValueError("particles must be positive")
-
-        try:
-            a = ensure_float(domain[0])
-            b = ensure_float(domain[1])
-            _step_size = ensure_float(step_size)
-            _max_duration = ensure_float(max_duration)
-        except TypeError as e:
-            raise TypeError(
-                f"Domain elements, step_size, and max_duration must be numbers. Error: {e}"
-            ) from e
-
-        if a >= b:
-            raise ValueError(
-                f"Invalid domain [{a}, {b}]; domain[0] must be strictly less than domain[1]."
-            )
-        if _step_size <= 0:
-            raise ValueError("step_size must be positive")
-        if _max_duration <= 0:
-            raise ValueError("max_duration must be positive")
+        _a, _b = validate_domain(domain, process_name="Fbm FPT raw moment")
+        _order = validate_order(order)
+        _particles = validate_particles(particles)
+        _step_size = validate_positive_float_param(step_size, "step_size")
+        _max_duration = validate_positive_float_param(max_duration, "max_duration")
 
         return _core.fbm_fpt_raw_moment(
             self.start_position,
             self.hurst_exponent,
-            (a, b),
-            order,
-            particles,
+            (_a, _b),
+            _order,
+            _particles,
             _step_size,
             _max_duration,
         )
@@ -191,49 +150,21 @@ class Fbm(StochasticProcess):
         step_size: real = 0.01,
         max_duration: real = 1000,
     ) -> Optional[float]:
-        if not (isinstance(domain, tuple) and len(domain) == 2):
-            raise TypeError(
-                f"domain must be a tuple of two real numbers, got {type(domain).__name__}"
-            )
-        if not isinstance(order, int):
-            raise TypeError(f"order must be an integer, got {type(order).__name__}")
-        if order < 0:
-            raise ValueError("order must be non-negative")
-        if not isinstance(particles, int):
-            raise TypeError(
-                f"particles must be an integer, got {type(particles).__name__}"
-            )
-        if particles <= 0:
-            raise ValueError("particles must be positive")
+        _a, _b = validate_domain(domain, process_name="Fbm FPT central moment")
+        _order = validate_order(order)
+        _particles = validate_particles(particles)
+        _step_size = validate_positive_float_param(step_size, "step_size")
+        _max_duration = validate_positive_float_param(max_duration, "max_duration")
 
-        try:
-            a = ensure_float(domain[0])
-            b = ensure_float(domain[1])
-            _step_size = ensure_float(step_size)
-            _max_duration = ensure_float(max_duration)
-        except TypeError as e:
-            raise TypeError(
-                f"Domain elements, step_size, and max_duration must be numbers. Error: {e}"
-            ) from e
-
-        if a >= b:
-            raise ValueError(
-                f"Invalid domain [{a}, {b}]; domain[0] must be strictly less than domain[1]."
-            )
-        if _step_size <= 0:
-            raise ValueError("step_size must be positive")
-        if _max_duration <= 0:
-            raise ValueError("max_duration must be positive")
-
-        if order == 0:
+        if _order == 0:
             return 1.0
 
         return _core.fbm_fpt_central_moment(
             self.start_position,
             self.hurst_exponent,
-            (a, b),
-            order,
-            particles,
+            (_a, _b),
+            _order,
+            _particles,
             _step_size,
             _max_duration,
         )
@@ -257,40 +188,21 @@ class Fbm(StochasticProcess):
         Returns:
             float: The raw moment.
         """
-        if not isinstance(order, int):
-            raise TypeError(f"order must be an integer, got {type(order).__name__}")
-        if order < 0:
-            raise ValueError("order must be non-negative")
-        if order == 0:
+        _order = validate_order(order)
+        _particles = validate_particles(particles)
+        _duration = validate_positive_float_param(duration, "duration")
+        _step_size = validate_positive_float_param(step_size, "step_size")
+
+        if _order == 0:
             return 1.0
-
-        if not isinstance(particles, int):
-            raise TypeError(
-                f"particles must be an integer, got {type(particles).__name__}"
-            )
-        if particles <= 0:
-            raise ValueError("particles must be positive")
-
-        try:
-            _duration = ensure_float(duration)
-            _step_size = ensure_float(step_size)
-        except TypeError as e:
-            raise TypeError(
-                f"duration and step_size must be numbers. Error: {e}"
-            ) from e
-
-        if _duration <= 0:
-            raise ValueError("duration must be positive")
-        if _step_size <= 0:
-            raise ValueError("step_size must be positive")
 
         return _core.fbm_raw_moment(
             self.start_position,
             self.hurst_exponent,
             _duration,
             _step_size,
-            order,
-            particles,
+            _order,
+            _particles,
         )
 
     def central_moment(
@@ -312,42 +224,23 @@ class Fbm(StochasticProcess):
         Returns:
             float: The central moment.
         """
-        if not isinstance(order, int):
-            raise TypeError(f"order must be an integer, got {type(order).__name__}")
-        if order < 0:
-            raise ValueError("order must be non-negative")
-        if order == 0:
+        _order = validate_order(order)
+        _particles = validate_particles(particles)
+        _duration = validate_positive_float_param(duration, "duration")
+        _step_size = validate_positive_float_param(step_size, "step_size")
+
+        if _order == 0:
             return 1.0
-        if order == 1:  # First central moment is 0
+        if _order == 1:
             return 0.0
-
-        if not isinstance(particles, int):
-            raise TypeError(
-                f"particles must be an integer, got {type(particles).__name__}"
-            )
-        if particles <= 0:
-            raise ValueError("particles must be positive")
-
-        try:
-            _duration = ensure_float(duration)
-            _step_size = ensure_float(step_size)
-        except TypeError as e:
-            raise TypeError(
-                f"duration and step_size must be numbers. Error: {e}"
-            ) from e
-
-        if _duration <= 0:
-            raise ValueError("duration must be positive")
-        if _step_size <= 0:
-            raise ValueError("step_size must be positive")
 
         return _core.fbm_central_moment(
             self.start_position,
             self.hurst_exponent,
             _duration,
             _step_size,
-            order,
-            particles,
+            _order,
+            _particles,
         )
 
     def occupation_time(
@@ -371,34 +264,15 @@ class Fbm(StochasticProcess):
         Returns:
             float: Occupation time.
         """
-        if not (isinstance(domain, tuple) and len(domain) == 2):
-            raise TypeError(
-                f"domain must be a tuple of two real numbers, got {type(domain).__name__}"
-            )
-        try:
-            _duration = ensure_float(duration)
-            _step_size = ensure_float(step_size)
-            a = ensure_float(domain[0])
-            b = ensure_float(domain[1])
-        except TypeError as e:
-            raise TypeError(
-                f"Domain elements, duration, and step_size must be numbers. Error: {e}"
-            ) from e
-
-        if _duration <= 0:
-            raise ValueError("duration must be positive")
-        if _step_size <= 0:
-            raise ValueError("step_size must be positive")
-        if a >= b:
-            raise ValueError(
-                f"Invalid domain [{a}, {b}]; domain[0] must be strictly less than domain[1]."
-            )
+        _a, _b = validate_domain(domain, process_name="Fbm Occupation Time")
+        _duration = validate_positive_float_param(duration, "duration")
+        _step_size = validate_positive_float_param(step_size, "step_size")
 
         return _core.fbm_occupation_time(
             self.start_position,
             self.hurst_exponent,
             _step_size,
-            (a, b),
+            (_a, _b),
             _duration,
         )
 
@@ -410,49 +284,21 @@ class Fbm(StochasticProcess):
         duration: real,
         step_size: real = 0.01,
     ) -> float:
-        if not (isinstance(domain, tuple) and len(domain) == 2):
-            raise TypeError(
-                f"domain must be a tuple of two real numbers, got {type(domain).__name__}"
-            )
-        if not isinstance(order, int):
-            raise TypeError(f"order must be an integer, got {type(order).__name__}")
-        if order < 0:
-            raise ValueError("order must be non-negative")
-        if not isinstance(particles, int):
-            raise TypeError(
-                f"particles must be an integer, got {type(particles).__name__}"
-            )
-        if particles <= 0:
-            raise ValueError("particles must be positive")
+        _a, _b = validate_domain(domain, process_name="Fbm Occupation raw moment")
+        _order = validate_order(order)
+        _particles = validate_particles(particles)
+        _duration = validate_positive_float_param(duration, "duration")
+        _step_size = validate_positive_float_param(step_size, "step_size")
 
-        try:
-            a = ensure_float(domain[0])
-            b = ensure_float(domain[1])
-            _duration = ensure_float(duration)
-            _step_size = ensure_float(step_size)
-        except TypeError as e:
-            raise TypeError(
-                f"Domain elements, duration, and step_size must be numbers. Error: {e}"
-            ) from e
-
-        if a >= b:
-            raise ValueError(
-                f"Invalid domain [{a}, {b}]; domain[0] must be strictly less than domain[1]."
-            )
-        if _duration <= 0:
-            raise ValueError("duration must be positive")
-        if _step_size <= 0:
-            raise ValueError("step_size must be positive")
-
-        if order == 0:
+        if _order == 0:
             return 1.0
 
         return _core.fbm_occupation_time_raw_moment(
             self.start_position,
             self.hurst_exponent,
-            (a, b),
-            order,
-            particles,
+            (_a, _b),
+            _order,
+            _particles,
             _step_size,
             _duration,
         )
@@ -465,51 +311,23 @@ class Fbm(StochasticProcess):
         duration: real,
         step_size: real = 0.01,
     ) -> float:
-        if not (isinstance(domain, tuple) and len(domain) == 2):
-            raise TypeError(
-                f"domain must be a tuple of two real numbers, got {type(domain).__name__}"
-            )
-        if not isinstance(order, int):
-            raise TypeError(f"order must be an integer, got {type(order).__name__}")
-        if order < 0:
-            raise ValueError("order must be non-negative")
-        if not isinstance(particles, int):
-            raise TypeError(
-                f"particles must be an integer, got {type(particles).__name__}"
-            )
-        if particles <= 0:
-            raise ValueError("particles must be positive")
+        _a, _b = validate_domain(domain, process_name="Fbm Occupation central moment")
+        _order = validate_order(order)
+        _particles = validate_particles(particles)
+        _duration = validate_positive_float_param(duration, "duration")
+        _step_size = validate_positive_float_param(step_size, "step_size")
 
-        try:
-            a = ensure_float(domain[0])
-            b = ensure_float(domain[1])
-            _duration = ensure_float(duration)
-            _step_size = ensure_float(step_size)
-        except TypeError as e:
-            raise TypeError(
-                f"Domain elements, duration, and step_size must be numbers. Error: {e}"
-            ) from e
-
-        if a >= b:
-            raise ValueError(
-                f"Invalid domain [{a}, {b}]; domain[0] must be strictly less than domain[1]."
-            )
-        if _duration <= 0:
-            raise ValueError("duration must be positive")
-        if _step_size <= 0:
-            raise ValueError("step_size must be positive")
-
-        if order == 0:
+        if _order == 0:
             return 1.0
-        if order == 1:
+        if _order == 1:
             return 0.0
 
         return _core.fbm_occupation_time_central_moment(
             self.start_position,
             self.hurst_exponent,
-            (a, b),
-            order,
-            particles,
+            (_a, _b),
+            _order,
+            _particles,
             _step_size,
             _duration,
         )

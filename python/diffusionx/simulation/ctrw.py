@@ -1,7 +1,13 @@
 from diffusionx import _core
 from typing import Union, Optional
 from .basic import StochasticProcess, Trajectory
-from .utils import ensure_float
+from .utils import (
+    ensure_float,
+    validate_domain,
+    validate_order,
+    validate_particles,
+    validate_positive_float_param,
+)
 import numpy as np
 
 
@@ -128,31 +134,14 @@ class CTRW(StochasticProcess):
         Returns:
             Optional[float]: The FPT, or None if max_duration reached first.
         """
-        if not (isinstance(domain, tuple) and len(domain) == 2):
-            raise TypeError(
-                f"domain must be a tuple of two real numbers, got {type(domain).__name__}"
-            )
-        try:
-            a = ensure_float(domain[0])
-            b = ensure_float(domain[1])
-            _max_duration = ensure_float(max_duration)
-        except TypeError as e:
-            raise TypeError(
-                f"Domain elements and max_duration must be numbers. Error: {e}"
-            ) from e
-
-        if a >= b:
-            raise ValueError(
-                f"Invalid domain [{a}, {b}]; domain[0] must be strictly less than domain[1]."
-            )
-        if _max_duration <= 0:
-            raise ValueError("max_duration must be positive")
+        _a, _b = validate_domain(domain, process_name="CTRW FPT")
+        _max_duration = validate_positive_float_param(max_duration, "max_duration")
 
         return _core.ctrw_fpt(
             self.alpha,
             self.beta,
             self.start_position,
-            (a, b),
+            (_a, _b),
             _max_duration,
         )
 
@@ -163,44 +152,18 @@ class CTRW(StochasticProcess):
         particles: int,
         max_duration: real = 1000,
     ) -> Optional[float]:
-        if not (isinstance(domain, tuple) and len(domain) == 2):
-            raise TypeError(
-                f"domain must be a tuple of two real numbers, got {type(domain).__name__}"
-            )
-        if not isinstance(order, int):
-            raise TypeError(f"order must be an integer, got {type(order).__name__}")
-        if order < 0:
-            raise ValueError("order must be non-negative")
-        if not isinstance(particles, int):
-            raise TypeError(
-                f"particles must be an integer, got {type(particles).__name__}"
-            )
-        if particles <= 0:
-            raise ValueError("particles must be positive")
-
-        try:
-            a = ensure_float(domain[0])
-            b = ensure_float(domain[1])
-            _max_duration = ensure_float(max_duration)
-        except TypeError as e:
-            raise TypeError(
-                f"Domain elements and max_duration must be numbers. Error: {e}"
-            ) from e
-
-        if a >= b:
-            raise ValueError(
-                f"Invalid domain [{a}, {b}]; domain[0] must be strictly less than domain[1]."
-            )
-        if _max_duration <= 0:
-            raise ValueError("max_duration must be positive")
+        _a, _b = validate_domain(domain, process_name="CTRW FPT raw moment")
+        _order = validate_order(order)
+        _particles = validate_particles(particles)
+        _max_duration = validate_positive_float_param(max_duration, "max_duration")
 
         return _core.ctrw_fpt_raw_moment(
             self.alpha,
             self.beta,
             self.start_position,
-            (a, b),
-            order,
-            particles,
+            (_a, _b),
+            _order,
+            _particles,
             _max_duration,
         )
 
@@ -211,47 +174,21 @@ class CTRW(StochasticProcess):
         particles: int,
         max_duration: real = 1000,
     ) -> Optional[float]:
-        if not (isinstance(domain, tuple) and len(domain) == 2):
-            raise TypeError(
-                f"domain must be a tuple of two real numbers, got {type(domain).__name__}"
-            )
-        if not isinstance(order, int):
-            raise TypeError(f"order must be an integer, got {type(order).__name__}")
-        if order < 0:
-            raise ValueError("order must be non-negative")
-        if not isinstance(particles, int):
-            raise TypeError(
-                f"particles must be an integer, got {type(particles).__name__}"
-            )
-        if particles <= 0:
-            raise ValueError("particles must be positive")
+        _a, _b = validate_domain(domain, process_name="CTRW FPT central moment")
+        _order = validate_order(order)
+        _particles = validate_particles(particles)
+        _max_duration = validate_positive_float_param(max_duration, "max_duration")
 
-        try:
-            a = ensure_float(domain[0])
-            b = ensure_float(domain[1])
-            _max_duration = ensure_float(max_duration)
-        except TypeError as e:
-            raise TypeError(
-                f"Domain elements and max_duration must be numbers. Error: {e}"
-            ) from e
-
-        if a >= b:
-            raise ValueError(
-                f"Invalid domain [{a}, {b}]; domain[0] must be strictly less than domain[1]."
-            )
-        if _max_duration <= 0:
-            raise ValueError("max_duration must be positive")
-
-        if order == 0:
+        if _order == 0:
             return 1.0
 
         return _core.ctrw_fpt_central_moment(
             self.alpha,
             self.beta,
             self.start_position,
-            (a, b),
-            order,
-            particles,
+            (_a, _b),
+            _order,
+            _particles,
             _max_duration,
         )
 
@@ -271,34 +208,20 @@ class CTRW(StochasticProcess):
         Returns:
             float: The raw moment.
         """
-        if not isinstance(order, int):
-            raise TypeError(f"order must be an integer, got {type(order).__name__}")
-        if order < 0:
-            raise ValueError("order must be non-negative")
-        if order == 0:
+        _order = validate_order(order)
+        _particles = validate_particles(particles)
+        _duration = validate_positive_float_param(duration, "duration")
+
+        if _order == 0:
             return 1.0
-
-        if not isinstance(particles, int):
-            raise TypeError(
-                f"particles must be an integer, got {type(particles).__name__}"
-            )
-        if particles <= 0:
-            raise ValueError("particles must be positive")
-
-        try:
-            _duration = ensure_float(duration)
-        except TypeError as e:
-            raise TypeError(f"duration must be a number. Error: {e}") from e
-        if _duration <= 0:
-            raise ValueError("duration must be positive")
 
         return _core.ctrw_raw_moment(
             self.alpha,
             self.beta,
             self.start_position,
             _duration,
-            order,
-            particles,
+            _order,
+            _particles,
         )
 
     def central_moment(self, duration: real, order: int, particles: int) -> float:
@@ -317,43 +240,22 @@ class CTRW(StochasticProcess):
         Returns:
             float: The central moment.
         """
-        if not isinstance(order, int):
-            raise TypeError(f"order must be an integer, got {type(order).__name__}")
-        if order < 0:
-            raise ValueError("order must be non-negative")
-        if order == 0:
+        _order = validate_order(order)
+        _particles = validate_particles(particles)
+        _duration = validate_positive_float_param(duration, "duration")
+
+        if _order == 0:
             return 1.0
-        if (
-            order == 1
-        ):  # First central moment is 0 (assuming mean is start_position or handled by _core)
-            # For a general CTRW, the mean might not be start_position.
-            # If E[X_t] != start_position, then first central moment is E[X_t - E[X_t]] = 0.
-            # If _core.ctrw_central_moment calculates E[(X_t - start_position)^1], it might not be 0 if mean drifts.
-            # However, typically, central moments are about the mean of the process at time t.
-            # For now, assume it calculates E[(X_t - E[X_t])^order], so for order 1, it's 0.
+        if _order == 1:
             return 0.0
-
-        if not isinstance(particles, int):
-            raise TypeError(
-                f"particles must be an integer, got {type(particles).__name__}"
-            )
-        if particles <= 0:
-            raise ValueError("particles must be positive")
-
-        try:
-            _duration = ensure_float(duration)
-        except TypeError as e:
-            raise TypeError(f"duration must be a number. Error: {e}") from e
-        if _duration <= 0:
-            raise ValueError("duration must be positive")
 
         return _core.ctrw_central_moment(
             self.alpha,
             self.beta,
             self.start_position,
             _duration,
-            order,
-            particles,
+            _order,
+            _particles,
         )
 
     def occupation_time(
@@ -375,31 +277,14 @@ class CTRW(StochasticProcess):
         Returns:
             float: Occupation time.
         """
-        if not (isinstance(domain, tuple) and len(domain) == 2):
-            raise TypeError(
-                f"domain must be a tuple of two real numbers, got {type(domain).__name__}"
-            )
-        try:
-            _duration = ensure_float(duration)
-            a = ensure_float(domain[0])
-            b = ensure_float(domain[1])
-        except TypeError as e:
-            raise TypeError(
-                f"Domain elements and duration must be numbers. Error: {e}"
-            ) from e
-
-        if _duration <= 0:
-            raise ValueError("duration must be positive")
-        if a >= b:
-            raise ValueError(
-                f"Invalid domain [{a}, {b}]; domain[0] must be strictly less than domain[1]."
-            )
+        _a, _b = validate_domain(domain, process_name="CTRW Occupation Time")
+        _duration = validate_positive_float_param(duration, "duration")
 
         return _core.ctrw_occupation_time(
             self.alpha,
             self.beta,
             self.start_position,
-            (a, b),
+            (_a, _b),
             _duration,
         )
 
@@ -410,47 +295,21 @@ class CTRW(StochasticProcess):
         particles: int,
         duration: real,
     ) -> float:
-        if not (isinstance(domain, tuple) and len(domain) == 2):
-            raise TypeError(
-                f"domain must be a tuple of two real numbers, got {type(domain).__name__}"
-            )
-        if not isinstance(order, int):
-            raise TypeError(f"order must be an integer, got {type(order).__name__}")
-        if order < 0:
-            raise ValueError("order must be non-negative")
-        if not isinstance(particles, int):
-            raise TypeError(
-                f"particles must be an integer, got {type(particles).__name__}"
-            )
-        if particles <= 0:
-            raise ValueError("particles must be positive")
+        _a, _b = validate_domain(domain, process_name="CTRW Occupation raw moment")
+        _order = validate_order(order)
+        _particles = validate_particles(particles)
+        _duration = validate_positive_float_param(duration, "duration")
 
-        try:
-            a = ensure_float(domain[0])
-            b = ensure_float(domain[1])
-            _duration = ensure_float(duration)
-        except TypeError as e:
-            raise TypeError(
-                f"Domain elements and duration must be numbers. Error: {e}"
-            ) from e
-
-        if a >= b:
-            raise ValueError(
-                f"Invalid domain [{a}, {b}]; domain[0] must be strictly less than domain[1]."
-            )
-        if _duration <= 0:
-            raise ValueError("duration must be positive")
-
-        if order == 0:
+        if _order == 0:
             return 1.0
 
         return _core.ctrw_occupation_time_raw_moment(
             self.alpha,
             self.beta,
             self.start_position,
-            (a, b),
-            order,
-            particles,
+            (_a, _b),
+            _order,
+            _particles,
             _duration,
         )
 
@@ -461,49 +320,23 @@ class CTRW(StochasticProcess):
         particles: int,
         duration: real,
     ) -> float:
-        if not (isinstance(domain, tuple) and len(domain) == 2):
-            raise TypeError(
-                f"domain must be a tuple of two real numbers, got {type(domain).__name__}"
-            )
-        if not isinstance(order, int):
-            raise TypeError(f"order must be an integer, got {type(order).__name__}")
-        if order < 0:
-            raise ValueError("order must be non-negative")
-        if not isinstance(particles, int):
-            raise TypeError(
-                f"particles must be an integer, got {type(particles).__name__}"
-            )
-        if particles <= 0:
-            raise ValueError("particles must be positive")
+        _a, _b = validate_domain(domain, process_name="CTRW Occupation central moment")
+        _order = validate_order(order)
+        _particles = validate_particles(particles)
+        _duration = validate_positive_float_param(duration, "duration")
 
-        try:
-            a = ensure_float(domain[0])
-            b = ensure_float(domain[1])
-            _duration = ensure_float(duration)
-        except TypeError as e:
-            raise TypeError(
-                f"Domain elements and duration must be numbers. Error: {e}"
-            ) from e
-
-        if a >= b:
-            raise ValueError(
-                f"Invalid domain [{a}, {b}]; domain[0] must be strictly less than domain[1]."
-            )
-        if _duration <= 0:
-            raise ValueError("duration must be positive")
-
-        if order == 0:
+        if _order == 0:
             return 1.0
-        if order == 1:
-            return 0.0  # First central moment is 0
+        if _order == 1:
+            return 0.0
 
         return _core.ctrw_occupation_time_central_moment(
             self.alpha,
             self.beta,
             self.start_position,
-            (a, b),
-            order,
-            particles,
+            (_a, _b),
+            _order,
+            _particles,
             _duration,
         )
 

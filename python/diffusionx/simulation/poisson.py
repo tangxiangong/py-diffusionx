@@ -1,7 +1,13 @@
 from diffusionx import _core
 from typing import Union, Optional
 from .basic import StochasticProcess, Trajectory
-from .utils import ensure_float
+from .utils import (
+    ensure_float,
+    validate_domain,
+    validate_order,
+    validate_particles,
+    validate_positive_float_param,
+)
 import numpy as np
 
 
@@ -108,33 +114,18 @@ class Poisson(StochasticProcess):
         Returns:
             float: The raw moment of the Poisson process.
         """
-        if not isinstance(order, int):
-            raise TypeError(f"order must be an integer, got {type(order).__name__}")
-        if order < 0:
-            raise ValueError("order must be non-negative")
+        _order = validate_order(order)
+        _particles = validate_particles(particles)
+        _duration = validate_positive_float_param(duration, "duration")
 
-        if not isinstance(particles, int):
-            raise TypeError(
-                f"particles must be an integer, got {type(particles).__name__}"
-            )
-        if particles <= 0:
-            raise ValueError("particles must be positive")
-
-        try:
-            _duration = ensure_float(duration)
-        except TypeError as e:
-            raise TypeError(f"duration must be a number. Error: {e}") from e
-        if _duration <= 0:
-            raise ValueError(f"duration must be positive, got {_duration}")
-
-        if order == 0:
+        if _order == 0:
             return 1.0
 
         return _core.poisson_raw_moment(
             self.lambda_,
             _duration,
-            order,
-            particles,
+            _order,
+            _particles,
         )
 
     def central_moment(self, duration: real, order: int, particles: int) -> float:
@@ -153,35 +144,20 @@ class Poisson(StochasticProcess):
         Returns:
             float: The central moment of the Poisson process.
         """
-        if not isinstance(order, int):
-            raise TypeError(f"order must be an integer, got {type(order).__name__}")
-        if order < 0:
-            raise ValueError("order must be non-negative")
+        _order = validate_order(order)
+        _particles = validate_particles(particles)
+        _duration = validate_positive_float_param(duration, "duration")
 
-        if not isinstance(particles, int):
-            raise TypeError(
-                f"particles must be an integer, got {type(particles).__name__}"
-            )
-        if particles <= 0:
-            raise ValueError("particles must be positive")
-
-        try:
-            _duration = ensure_float(duration)
-        except TypeError as e:
-            raise TypeError(f"duration must be a number. Error: {e}") from e
-        if _duration <= 0:
-            raise ValueError(f"duration must be positive, got {_duration}")
-
-        if order == 0:
+        if _order == 0:
             return 1.0
-        if order == 1:
+        if _order == 1:
             return 0.0
 
         return _core.poisson_central_moment(
             self.lambda_,
             _duration,
-            order,
-            particles,
+            _order,
+            _particles,
         )
 
     def fpt(
@@ -205,39 +181,14 @@ class Poisson(StochasticProcess):
         Returns:
             Optional[float]: The first passage time (physical time), or None if max_duration is reached.
         """
-        if not (isinstance(domain, tuple) and len(domain) == 2):
-            raise TypeError(
-                f"domain must be a tuple of two real numbers, got {type(domain).__name__}"
-            )
-        try:
-            a = ensure_float(domain[0])
-            b = ensure_float(domain[1])
-            _max_duration = ensure_float(max_duration)
-        except TypeError as e:
-            raise TypeError(
-                f"Domain elements and max_duration must be numbers. Error: {e}"
-            ) from e
-
-        if not (
-            isinstance(a, (int, float))
-            and float(a).is_integer()
-            and isinstance(b, (int, float))
-            and float(b).is_integer()
-        ):
-            pass
-        if a < 0 or b < 0:
-            raise ValueError("Domain counts for FPT must be non-negative.")
-        if b <= a:
-            raise ValueError(
-                f"Target count domain[1] ({b}) must be greater than start count domain[0] ({a})."
-            )
-
-        if _max_duration <= 0:
-            raise ValueError("max_duration must be positive")
+        _a, _b = validate_domain(
+            domain, domain_type="poisson_fpt", process_name="Poisson FPT"
+        )
+        _max_duration = validate_positive_float_param(max_duration, "max_duration")
 
         return _core.poisson_fpt(
             self.lambda_,
-            (a, b),
+            (_a, _b),
             _max_duration,
         )
 
@@ -260,31 +211,16 @@ class Poisson(StochasticProcess):
         Returns:
             float: The total time N(t) spent in the count range [a,b].
         """
-        if not (isinstance(domain, tuple) and len(domain) == 2):
-            raise TypeError(
-                f"domain must be a tuple of two real numbers, got {type(domain).__name__}"
-            )
-        try:
-            a = ensure_float(domain[0])
-            b = ensure_float(domain[1])
-            _duration = ensure_float(duration)
-        except TypeError as e:
-            raise TypeError(
-                f"Domain elements and duration must be numbers. Error: {e}"
-            ) from e
-
-        if _duration <= 0:
-            raise ValueError(f"duration must be positive, got {_duration}")
-        if a < 0 or b < 0:
-            raise ValueError("Domain counts for occupation_time must be non-negative.")
-        if a > b:
-            raise ValueError(
-                f"Invalid domain count range [{a}, {b}]; domain[0] must be less than or equal to domain[1]."
-            )
+        _a, _b = validate_domain(
+            domain,
+            domain_type="poisson_occupation",
+            process_name="Poisson Occupation Time",
+        )
+        _duration = validate_positive_float_param(duration, "duration")
 
         return _core.poisson_occupation_time(
             self.lambda_,
-            (a, b),
+            (_a, _b),
             _duration,
         )
 
@@ -295,50 +231,18 @@ class Poisson(StochasticProcess):
         particles: int,
         max_duration: real = 1000,
     ) -> Optional[float]:
-        if not (isinstance(domain, tuple) and len(domain) == 2):
-            raise TypeError(
-                f"domain must be a tuple of two real numbers, got {type(domain).__name__}"
-            )
-        if not isinstance(order, int):
-            raise TypeError(f"order must be an integer, got {type(order).__name__}")
-        if order < 0:
-            raise ValueError("order must be non-negative")
-        if not isinstance(particles, int):
-            raise TypeError(
-                f"particles must be an integer, got {type(particles).__name__}"
-            )
-        if particles <= 0:
-            raise ValueError("particles must be positive")
-
-        try:
-            a = ensure_float(domain[0])  # start_count
-            b = ensure_float(domain[1])  # target_count
-            _max_duration = ensure_float(max_duration)
-        except TypeError as e:
-            raise TypeError(
-                f"Domain counts and max_duration must be numbers. Error: {e}"
-            ) from e
-
-        if not (float(a).is_integer() and float(b).is_integer()):
-            raise ValueError(f"Domain counts for FPT must be integers, got {domain}")
-        a = int(a)
-        b = int(b)
-        if a < 0 or b < 0:
-            raise ValueError(
-                f"Domain counts for FPT must be non-negative, got {(a, b)}"
-            )
-        if b <= a:
-            raise ValueError(
-                f"Target count domain[1] ({b}) must be greater than start count domain[0] ({a})."
-            )
-        if _max_duration <= 0:
-            raise ValueError("max_duration must be positive")
+        _a, _b = validate_domain(
+            domain, domain_type="poisson_fpt", process_name="Poisson FPT raw moment"
+        )
+        _order = validate_order(order)
+        _particles = validate_particles(particles)
+        _max_duration = validate_positive_float_param(max_duration, "max_duration")
 
         return _core.poisson_fpt_raw_moment(
             self.lambda_,
-            (float(a), float(b)),  # _core expects float tuple
-            order,
-            particles,
+            (_a, _b),  # _core expects float tuple
+            _order,
+            _particles,
             _max_duration,
         )
 
@@ -349,53 +253,21 @@ class Poisson(StochasticProcess):
         particles: int,
         max_duration: real = 1000,
     ) -> Optional[float]:
-        if not (isinstance(domain, tuple) and len(domain) == 2):
-            raise TypeError(
-                f"domain must be a tuple of two real numbers, got {type(domain).__name__}"
-            )
-        if not isinstance(order, int):
-            raise TypeError(f"order must be an integer, got {type(order).__name__}")
-        if order < 0:
-            raise ValueError("order must be non-negative")
-        if not isinstance(particles, int):
-            raise TypeError(
-                f"particles must be an integer, got {type(particles).__name__}"
-            )
-        if particles <= 0:
-            raise ValueError("particles must be positive")
+        _a, _b = validate_domain(
+            domain, domain_type="poisson_fpt", process_name="Poisson FPT central moment"
+        )
+        _order = validate_order(order)
+        _particles = validate_particles(particles)
+        _max_duration = validate_positive_float_param(max_duration, "max_duration")
 
-        try:
-            a = ensure_float(domain[0])  # start_count
-            b = ensure_float(domain[1])  # target_count
-            _max_duration = ensure_float(max_duration)
-        except TypeError as e:
-            raise TypeError(
-                f"Domain counts and max_duration must be numbers. Error: {e}"
-            ) from e
-
-        if not (float(a).is_integer() and float(b).is_integer()):
-            raise ValueError(f"Domain counts for FPT must be integers, got {domain}")
-        a = int(a)
-        b = int(b)
-        if a < 0 or b < 0:
-            raise ValueError(
-                f"Domain counts for FPT must be non-negative, got {(a, b)}"
-            )
-        if b <= a:
-            raise ValueError(
-                f"Target count domain[1] ({b}) must be greater than start count domain[0] ({a})."
-            )
-        if _max_duration <= 0:
-            raise ValueError("max_duration must be positive")
-
-        if order == 0:
+        if _order == 0:
             return 1.0
 
         return _core.poisson_fpt_central_moment(
             self.lambda_,
-            (float(a), float(b)),
-            order,
-            particles,
+            (_a, _b),
+            _order,
+            _particles,
             _max_duration,
         )
 
@@ -406,55 +278,23 @@ class Poisson(StochasticProcess):
         particles: int,
         duration: real,
     ) -> float:
-        if not (isinstance(domain, tuple) and len(domain) == 2):
-            raise TypeError(
-                f"domain must be a tuple of two real numbers, got {type(domain).__name__}"
-            )
-        if not isinstance(order, int):
-            raise TypeError(f"order must be an integer, got {type(order).__name__}")
-        if order < 0:
-            raise ValueError("order must be non-negative")
-        if not isinstance(particles, int):
-            raise TypeError(
-                f"particles must be an integer, got {type(particles).__name__}"
-            )
-        if particles <= 0:
-            raise ValueError("particles must be positive")
+        _a, _b = validate_domain(
+            domain,
+            domain_type="poisson_occupation",
+            process_name="Poisson Occupation raw moment",
+        )
+        _order = validate_order(order)
+        _particles = validate_particles(particles)
+        _duration = validate_positive_float_param(duration, "duration")
 
-        try:
-            a = ensure_float(domain[0])  # min_count
-            b = ensure_float(domain[1])  # max_count
-            _duration = ensure_float(duration)
-        except TypeError as e:
-            raise TypeError(
-                f"Domain counts and duration must be numbers. Error: {e}"
-            ) from e
-
-        if not (float(a).is_integer() and float(b).is_integer()):
-            raise ValueError(
-                f"Domain counts for occupation time must be integers, got {domain}"
-            )
-        a = int(a)
-        b = int(b)
-        if a < 0 or b < 0:
-            raise ValueError(
-                f"Domain counts for occupation time must be non-negative, got {(a, b)}"
-            )
-        if b <= a:
-            raise ValueError(
-                f"max_count domain[1] ({b}) must be greater than min_count domain[0] ({a}) for occupation time."
-            )  # Or b < a if point occupation is allowed for a single count N(t)=k
-        if _duration <= 0:
-            raise ValueError("duration must be positive")
-
-        if order == 0:
+        if _order == 0:
             return 1.0
 
         return _core.poisson_occupation_time_raw_moment(
             self.lambda_,
-            (float(a), float(b)),
-            order,
-            particles,
+            (_a, _b),
+            _order,
+            _particles,
             _duration,
         )
 
@@ -465,56 +305,24 @@ class Poisson(StochasticProcess):
         particles: int,
         duration: real,
     ) -> float:
-        if not (isinstance(domain, tuple) and len(domain) == 2):
-            raise TypeError(
-                f"domain must be a tuple of two real numbers, got {type(domain).__name__}"
-            )
-        if not isinstance(order, int):
-            raise TypeError(f"order must be an integer, got {type(order).__name__}")
-        if order < 0:
-            raise ValueError("order must be non-negative")
-        if not isinstance(particles, int):
-            raise TypeError(
-                f"particles must be an integer, got {type(particles).__name__}"
-            )
-        if particles <= 0:
-            raise ValueError("particles must be positive")
+        _a, _b = validate_domain(
+            domain,
+            domain_type="poisson_occupation",
+            process_name="Poisson Occupation central moment",
+        )
+        _order = validate_order(order)
+        _particles = validate_particles(particles)
+        _duration = validate_positive_float_param(duration, "duration")
 
-        try:
-            a = ensure_float(domain[0])  # min_count
-            b = ensure_float(domain[1])  # max_count
-            _duration = ensure_float(duration)
-        except TypeError as e:
-            raise TypeError(
-                f"Domain counts and duration must be numbers. Error: {e}"
-            ) from e
-
-        if not (float(a).is_integer() and float(b).is_integer()):
-            raise ValueError(
-                f"Domain counts for occupation time must be integers, got {domain}"
-            )
-        a = int(a)
-        b = int(b)
-        if a < 0 or b < 0:
-            raise ValueError(
-                f"Domain counts for occupation time must be non-negative, got {(a, b)}"
-            )
-        if b <= a:
-            raise ValueError(
-                f"max_count domain[1] ({b}) must be greater than min_count domain[0] ({a}) for occupation time."
-            )
-        if _duration <= 0:
-            raise ValueError("duration must be positive")
-
-        if order == 0:
+        if _order == 0:
             return 1.0
-        if order == 1:
-            return 0.0  # First central moment is 0
+        if _order == 1:
+            return 0.0
 
         return _core.poisson_occupation_time_central_moment(
             self.lambda_,
-            (float(a), float(b)),
-            order,
-            particles,
+            (_a, _b),
+            _order,
+            _particles,
             _duration,
         )

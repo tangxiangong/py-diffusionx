@@ -1,7 +1,13 @@
 from diffusionx import _core
 from typing import Union, Optional
 from .basic import StochasticProcess, Trajectory
-from .utils import ensure_float
+from .utils import (
+    ensure_float,
+    validate_domain,
+    validate_order,
+    validate_particles,
+    validate_positive_float_param,
+)
 import numpy as np
 
 
@@ -101,34 +107,15 @@ class Levy(StochasticProcess):
         Returns:
             Optional[float]: The first passage time, or None if max_duration is reached before FPT.
         """
-        if not (isinstance(domain, tuple) and len(domain) == 2):
-            raise TypeError(
-                f"domain must be a tuple of two real numbers, got {type(domain).__name__}"
-            )
-        try:
-            _step_size = ensure_float(step_size)
-            a = ensure_float(domain[0])
-            b = ensure_float(domain[1])
-            _max_duration = ensure_float(max_duration)
-        except TypeError as e:
-            raise TypeError(
-                f"Domain elements, step_size, and max_duration must be numbers. Error: {e}"
-            ) from e
-
-        if _step_size <= 0:
-            raise ValueError("step_size must be positive")
-        if a >= b:
-            raise ValueError(
-                f"Invalid domain [{a}, {b}]; domain[0] must be strictly less than domain[1]."
-            )
-        if _max_duration <= 0:
-            raise ValueError("max_duration must be positive")
+        _a, _b = validate_domain(domain, process_name="Levy FPT")
+        _step_size = validate_positive_float_param(step_size, "step_size")
+        _max_duration = validate_positive_float_param(max_duration, "max_duration")
 
         return _core.levy_fpt(
             self.start_position,
             self.alpha,
             _step_size,
-            (a, b),
+            (_a, _b),
             _max_duration,
         )
 
@@ -153,34 +140,15 @@ class Levy(StochasticProcess):
         Returns:
             float: The occupation time of the Lévy process in the domain.
         """
-        if not (isinstance(domain, tuple) and len(domain) == 2):
-            raise TypeError(
-                f"domain must be a tuple of two real numbers, got {type(domain).__name__}"
-            )
-        try:
-            _duration = ensure_float(duration)
-            _step_size = ensure_float(step_size)
-            a = ensure_float(domain[0])
-            b = ensure_float(domain[1])
-        except TypeError as e:
-            raise TypeError(
-                f"Domain elements, duration, and step_size must be numbers. Error: {e}"
-            ) from e
-
-        if _duration <= 0:
-            raise ValueError("duration must be positive")
-        if _step_size <= 0:
-            raise ValueError("step_size must be positive")
-        if a >= b:
-            raise ValueError(
-                f"Invalid domain [{a}, {b}]; domain[0] must be strictly less than domain[1]."
-            )
+        _a, _b = validate_domain(domain, process_name="Levy Occupation Time")
+        _duration = validate_positive_float_param(duration, "duration")
+        _step_size = validate_positive_float_param(step_size, "step_size")
 
         return _core.levy_occupation_time(
             self.start_position,
             self.alpha,
             _step_size,
-            (a, b),
+            (_a, _b),
             _duration,
         )
 
@@ -192,46 +160,18 @@ class Levy(StochasticProcess):
         step_size: real = 0.01,
         max_duration: real = 1000,
     ) -> Optional[float]:
-        if not (isinstance(domain, tuple) and len(domain) == 2):
-            raise TypeError(
-                f"domain must be a tuple of two real numbers, got {type(domain).__name__}"
-            )
-        if not isinstance(order, int):
-            raise TypeError(f"order must be an integer, got {type(order).__name__}")
-        if order < 0:
-            raise ValueError("order must be non-negative")
-        if not isinstance(particles, int):
-            raise TypeError(
-                f"particles must be an integer, got {type(particles).__name__}"
-            )
-        if particles <= 0:
-            raise ValueError("particles must be positive")
-
-        try:
-            a = ensure_float(domain[0])
-            b = ensure_float(domain[1])
-            _step_size = ensure_float(step_size)
-            _max_duration = ensure_float(max_duration)
-        except TypeError as e:
-            raise TypeError(
-                f"Domain elements, step_size, and max_duration must be numbers. Error: {e}"
-            ) from e
-
-        if a >= b:
-            raise ValueError(
-                f"Invalid domain [{a}, {b}]; domain[0] must be strictly less than domain[1]."
-            )
-        if _step_size <= 0:
-            raise ValueError("step_size must be positive")
-        if _max_duration <= 0:
-            raise ValueError("max_duration must be positive")
+        _a, _b = validate_domain(domain, process_name="Levy FPT raw moment")
+        _order = validate_order(order)
+        _particles = validate_particles(particles)
+        _step_size = validate_positive_float_param(step_size, "step_size")
+        _max_duration = validate_positive_float_param(max_duration, "max_duration")
 
         return _core.levy_fpt_raw_moment(
             self.start_position,
             self.alpha,
-            (a, b),
-            order,
-            particles,
+            (_a, _b),
+            _order,
+            _particles,
             _step_size,
             _max_duration,
         )
@@ -244,49 +184,21 @@ class Levy(StochasticProcess):
         step_size: real = 0.01,
         max_duration: real = 1000,
     ) -> Optional[float]:
-        if not (isinstance(domain, tuple) and len(domain) == 2):
-            raise TypeError(
-                f"domain must be a tuple of two real numbers, got {type(domain).__name__}"
-            )
-        if not isinstance(order, int):
-            raise TypeError(f"order must be an integer, got {type(order).__name__}")
-        if order < 0:
-            raise ValueError("order must be non-negative")
-        if not isinstance(particles, int):
-            raise TypeError(
-                f"particles must be an integer, got {type(particles).__name__}"
-            )
-        if particles <= 0:
-            raise ValueError("particles must be positive")
+        _a, _b = validate_domain(domain, process_name="Levy FPT central moment")
+        _order = validate_order(order)
+        _particles = validate_particles(particles)
+        _step_size = validate_positive_float_param(step_size, "step_size")
+        _max_duration = validate_positive_float_param(max_duration, "max_duration")
 
-        try:
-            a = ensure_float(domain[0])
-            b = ensure_float(domain[1])
-            _step_size = ensure_float(step_size)
-            _max_duration = ensure_float(max_duration)
-        except TypeError as e:
-            raise TypeError(
-                f"Domain elements, step_size, and max_duration must be numbers. Error: {e}"
-            ) from e
-
-        if a >= b:
-            raise ValueError(
-                f"Invalid domain [{a}, {b}]; domain[0] must be strictly less than domain[1]."
-            )
-        if _step_size <= 0:
-            raise ValueError("step_size must be positive")
-        if _max_duration <= 0:
-            raise ValueError("max_duration must be positive")
-
-        if order == 0:
+        if _order == 0:
             return 1.0
 
         return _core.levy_fpt_central_moment(
             self.start_position,
             self.alpha,
-            (a, b),
-            order,
-            particles,
+            (_a, _b),
+            _order,
+            _particles,
             _step_size,
             _max_duration,
         )
@@ -299,49 +211,21 @@ class Levy(StochasticProcess):
         duration: real,
         step_size: real = 0.01,
     ) -> float:
-        if not (isinstance(domain, tuple) and len(domain) == 2):
-            raise TypeError(
-                f"domain must be a tuple of two real numbers, got {type(domain).__name__}"
-            )
-        if not isinstance(order, int):
-            raise TypeError(f"order must be an integer, got {type(order).__name__}")
-        if order < 0:
-            raise ValueError("order must be non-negative")
-        if not isinstance(particles, int):
-            raise TypeError(
-                f"particles must be an integer, got {type(particles).__name__}"
-            )
-        if particles <= 0:
-            raise ValueError("particles must be positive")
+        _a, _b = validate_domain(domain, process_name="Levy Occupation raw moment")
+        _order = validate_order(order)
+        _particles = validate_particles(particles)
+        _duration = validate_positive_float_param(duration, "duration")
+        _step_size = validate_positive_float_param(step_size, "step_size")
 
-        try:
-            a = ensure_float(domain[0])
-            b = ensure_float(domain[1])
-            _duration = ensure_float(duration)
-            _step_size = ensure_float(step_size)
-        except TypeError as e:
-            raise TypeError(
-                f"Domain elements, duration, and step_size must be numbers. Error: {e}"
-            ) from e
-
-        if a >= b:
-            raise ValueError(
-                f"Invalid domain [{a}, {b}]; domain[0] must be strictly less than domain[1]."
-            )
-        if _duration <= 0:
-            raise ValueError("duration must be positive")
-        if _step_size <= 0:
-            raise ValueError("step_size must be positive")
-
-        if order == 0:
+        if _order == 0:
             return 1.0
 
         return _core.levy_occupation_time_raw_moment(
             self.start_position,
             self.alpha,
-            (a, b),
-            order,
-            particles,
+            (_a, _b),
+            _order,
+            _particles,
             _step_size,
             _duration,
         )
@@ -354,51 +238,23 @@ class Levy(StochasticProcess):
         duration: real,
         step_size: real = 0.01,
     ) -> float:
-        if not (isinstance(domain, tuple) and len(domain) == 2):
-            raise TypeError(
-                f"domain must be a tuple of two real numbers, got {type(domain).__name__}"
-            )
-        if not isinstance(order, int):
-            raise TypeError(f"order must be an integer, got {type(order).__name__}")
-        if order < 0:
-            raise ValueError("order must be non-negative")
-        if not isinstance(particles, int):
-            raise TypeError(
-                f"particles must be an integer, got {type(particles).__name__}"
-            )
-        if particles <= 0:
-            raise ValueError("particles must be positive")
+        _a, _b = validate_domain(domain, process_name="Levy Occupation central moment")
+        _order = validate_order(order)
+        _particles = validate_particles(particles)
+        _duration = validate_positive_float_param(duration, "duration")
+        _step_size = validate_positive_float_param(step_size, "step_size")
 
-        try:
-            a = ensure_float(domain[0])
-            b = ensure_float(domain[1])
-            _duration = ensure_float(duration)
-            _step_size = ensure_float(step_size)
-        except TypeError as e:
-            raise TypeError(
-                f"Domain elements, duration, and step_size must be numbers. Error: {e}"
-            ) from e
-
-        if a >= b:
-            raise ValueError(
-                f"Invalid domain [{a}, {b}]; domain[0] must be strictly less than domain[1]."
-            )
-        if _duration <= 0:
-            raise ValueError("duration must be positive")
-        if _step_size <= 0:
-            raise ValueError("step_size must be positive")
-
-        if order == 0:
+        if _order == 0:
             return 1.0
-        if order == 1:
+        if _order == 1:
             return 0.0
 
         return _core.levy_occupation_time_central_moment(
             self.start_position,
             self.alpha,
-            (a, b),
-            order,
-            particles,
+            (_a, _b),
+            _order,
+            _particles,
             _step_size,
             _duration,
         )
@@ -451,19 +307,15 @@ class Subordinator(StochasticProcess):
         step_size: real = 0.01,
         max_duration: real = 1000,
     ) -> Optional[float]:
-        _step_size = ensure_float(step_size)
-        a = ensure_float(domain[0])
-        b = ensure_float(domain[1])
-        _max_duration = ensure_float(max_duration)
-        if _step_size <= 0:
-            raise ValueError("step_size must be positive")
-        if a >= b:
-            raise ValueError("domain must be a valid interval")
-        if _max_duration <= 0:
-            raise ValueError("max_duration must be positive")
+        _a, _b = validate_domain(domain, process_name="Subordinator FPT")
+        _step_size = validate_positive_float_param(step_size, "step_size")
+        _max_duration = validate_positive_float_param(max_duration, "max_duration")
+        # Original code: a >= b -> "domain must be a valid interval"
+        # validate_domain ensures a < b by default, which is consistent.
+
         return _core.subordinator_fpt(
             self.alpha,
-            (a, b),
+            (_a, _b),
             _max_duration,
             _step_size,
         )
@@ -474,19 +326,15 @@ class Subordinator(StochasticProcess):
         duration: real,
         step_size: real = 0.01,
     ) -> float:
-        _duration = ensure_float(duration)
-        _step_size = ensure_float(step_size)
-        a = ensure_float(domain[0])
-        b = ensure_float(domain[1])
-        if _duration <= 0:
-            raise ValueError("duration must be positive")
-        if _step_size <= 0:
-            raise ValueError("step_size must be positive")
-        if a >= b:
-            raise ValueError("domain must be a valid interval")
+        _a, _b = validate_domain(domain, process_name="Subordinator Occupation Time")
+        _duration = validate_positive_float_param(duration, "duration")
+        _step_size = validate_positive_float_param(step_size, "step_size")
+        # Original code: a >= b -> "domain must be a valid interval"
+        # validate_domain ensures a < b by default.
+
         return _core.subordinator_occupation_time(
             self.alpha,
-            (a, b),
+            (_a, _b),
             _duration,
             _step_size,
         )
@@ -499,45 +347,17 @@ class Subordinator(StochasticProcess):
         step_size: real = 0.01,
         max_duration: real = 1000,
     ) -> Optional[float]:
-        if not (isinstance(domain, tuple) and len(domain) == 2):
-            raise TypeError(
-                f"domain must be a tuple of two real numbers, got {type(domain).__name__}"
-            )
-        if not isinstance(order, int):
-            raise TypeError(f"order must be an integer, got {type(order).__name__}")
-        if order < 0:
-            raise ValueError("order must be non-negative")
-        if not isinstance(particles, int):
-            raise TypeError(
-                f"particles must be an integer, got {type(particles).__name__}"
-            )
-        if particles <= 0:
-            raise ValueError("particles must be positive")
-
-        try:
-            a = ensure_float(domain[0])
-            b = ensure_float(domain[1])
-            _step_size = ensure_float(step_size)
-            _max_duration = ensure_float(max_duration)
-        except TypeError as e:
-            raise TypeError(
-                f"Domain elements, step_size, and max_duration must be numbers. Error: {e}"
-            ) from e
-
-        if a >= b:
-            raise ValueError(
-                f"Invalid domain [{a}, {b}]; domain[0] must be strictly less than domain[1]."
-            )
-        if _step_size <= 0:
-            raise ValueError("step_size must be positive")
-        if _max_duration <= 0:
-            raise ValueError("max_duration must be positive")
+        _a, _b = validate_domain(domain, process_name="Subordinator FPT raw moment")
+        _order = validate_order(order)
+        _particles = validate_particles(particles)
+        _step_size = validate_positive_float_param(step_size, "step_size")
+        _max_duration = validate_positive_float_param(max_duration, "max_duration")
 
         return _core.subordinator_fpt_raw_moment(
             self.alpha,
-            (a, b),
-            order,
-            particles,
+            (_a, _b),
+            _order,
+            _particles,
             _step_size,
             _max_duration,
         )
@@ -550,48 +370,20 @@ class Subordinator(StochasticProcess):
         step_size: real = 0.01,
         max_duration: real = 1000,
     ) -> Optional[float]:
-        if not (isinstance(domain, tuple) and len(domain) == 2):
-            raise TypeError(
-                f"domain must be a tuple of two real numbers, got {type(domain).__name__}"
-            )
-        if not isinstance(order, int):
-            raise TypeError(f"order must be an integer, got {type(order).__name__}")
-        if order < 0:
-            raise ValueError("order must be non-negative")
-        if not isinstance(particles, int):
-            raise TypeError(
-                f"particles must be an integer, got {type(particles).__name__}"
-            )
-        if particles <= 0:
-            raise ValueError("particles must be positive")
+        _a, _b = validate_domain(domain, process_name="Subordinator FPT central moment")
+        _order = validate_order(order)
+        _particles = validate_particles(particles)
+        _step_size = validate_positive_float_param(step_size, "step_size")
+        _max_duration = validate_positive_float_param(max_duration, "max_duration")
 
-        try:
-            a = ensure_float(domain[0])
-            b = ensure_float(domain[1])
-            _step_size = ensure_float(step_size)
-            _max_duration = ensure_float(max_duration)
-        except TypeError as e:
-            raise TypeError(
-                f"Domain elements, step_size, and max_duration must be numbers. Error: {e}"
-            ) from e
-
-        if a >= b:
-            raise ValueError(
-                f"Invalid domain [{a}, {b}]; domain[0] must be strictly less than domain[1]."
-            )
-        if _step_size <= 0:
-            raise ValueError("step_size must be positive")
-        if _max_duration <= 0:
-            raise ValueError("max_duration must be positive")
-
-        if order == 0:
+        if _order == 0:
             return 1.0
 
         return _core.subordinator_fpt_central_moment(
             self.alpha,
-            (a, b),
-            order,
-            particles,
+            (_a, _b),
+            _order,
+            _particles,
             _step_size,
             _max_duration,
         )
@@ -604,48 +396,22 @@ class Subordinator(StochasticProcess):
         duration: real,
         step_size: real = 0.01,
     ) -> float:
-        if not (isinstance(domain, tuple) and len(domain) == 2):
-            raise TypeError(
-                f"domain must be a tuple of two real numbers, got {type(domain).__name__}"
-            )
-        if not isinstance(order, int):
-            raise TypeError(f"order must be an integer, got {type(order).__name__}")
-        if order < 0:
-            raise ValueError("order must be non-negative")
-        if not isinstance(particles, int):
-            raise TypeError(
-                f"particles must be an integer, got {type(particles).__name__}"
-            )
-        if particles <= 0:
-            raise ValueError("particles must be positive")
+        _a, _b = validate_domain(
+            domain, process_name="Subordinator Occupation raw moment"
+        )
+        _order = validate_order(order)
+        _particles = validate_particles(particles)
+        _duration = validate_positive_float_param(duration, "duration")
+        _step_size = validate_positive_float_param(step_size, "step_size")
 
-        try:
-            a = ensure_float(domain[0])
-            b = ensure_float(domain[1])
-            _duration = ensure_float(duration)
-            _step_size = ensure_float(step_size)
-        except TypeError as e:
-            raise TypeError(
-                f"Domain elements, duration, and step_size must be numbers. Error: {e}"
-            ) from e
-
-        if a >= b:
-            raise ValueError(
-                f"Invalid domain [{a}, {b}]; domain[0] must be strictly less than domain[1]."
-            )
-        if _duration <= 0:
-            raise ValueError("duration must be positive")
-        if _step_size <= 0:
-            raise ValueError("step_size must be positive")
-
-        if order == 0:
+        if _order == 0:
             return 1.0
 
         return _core.subordinator_occupation_time_raw_moment(
             self.alpha,
-            (a, b),
-            order,
-            particles,
+            (_a, _b),
+            _order,
+            _particles,
             _step_size,
             _duration,
         )
@@ -658,50 +424,24 @@ class Subordinator(StochasticProcess):
         duration: real,
         step_size: real = 0.01,
     ) -> float:
-        if not (isinstance(domain, tuple) and len(domain) == 2):
-            raise TypeError(
-                f"domain must be a tuple of two real numbers, got {type(domain).__name__}"
-            )
-        if not isinstance(order, int):
-            raise TypeError(f"order must be an integer, got {type(order).__name__}")
-        if order < 0:
-            raise ValueError("order must be non-negative")
-        if not isinstance(particles, int):
-            raise TypeError(
-                f"particles must be an integer, got {type(particles).__name__}"
-            )
-        if particles <= 0:
-            raise ValueError("particles must be positive")
+        _a, _b = validate_domain(
+            domain, process_name="Subordinator Occupation central moment"
+        )
+        _order = validate_order(order)
+        _particles = validate_particles(particles)
+        _duration = validate_positive_float_param(duration, "duration")
+        _step_size = validate_positive_float_param(step_size, "step_size")
 
-        try:
-            a = ensure_float(domain[0])
-            b = ensure_float(domain[1])
-            _duration = ensure_float(duration)
-            _step_size = ensure_float(step_size)
-        except TypeError as e:
-            raise TypeError(
-                f"Domain elements, duration, and step_size must be numbers. Error: {e}"
-            ) from e
-
-        if a >= b:
-            raise ValueError(
-                f"Invalid domain [{a}, {b}]; domain[0] must be strictly less than domain[1]."
-            )
-        if _duration <= 0:
-            raise ValueError("duration must be positive")
-        if _step_size <= 0:
-            raise ValueError("step_size must be positive")
-
-        if order == 0:
+        if _order == 0:
             return 1.0
-        if order == 1:
+        if _order == 1:
             return 0.0
 
         return _core.subordinator_occupation_time_central_moment(
             self.alpha,
-            (a, b),
-            order,
-            particles,
+            (_a, _b),
+            _order,
+            _particles,
             _step_size,
             _duration,
         )
@@ -747,19 +487,15 @@ class InvSubordinator(StochasticProcess):
         step_size: real = 0.01,
         max_duration: real = 1000,
     ) -> Optional[float]:
-        _step_size = ensure_float(step_size)
-        a = ensure_float(domain[0])
-        b = ensure_float(domain[1])
-        _max_duration = ensure_float(max_duration)
-        if _step_size <= 0:
-            raise ValueError("step_size must be positive")
-        if a >= b:
-            raise ValueError("domain must be a valid interval")
-        if _max_duration <= 0:
-            raise ValueError("max_duration must be positive")
+        _a, _b = validate_domain(domain, process_name="InvSubordinator FPT")
+        _step_size = validate_positive_float_param(step_size, "step_size")
+        _max_duration = validate_positive_float_param(max_duration, "max_duration")
+        # Original code: a >= b -> "domain must be a valid interval"
+        # validate_domain ensures a < b by default.
+
         return _core.inv_subordinator_fpt(
             self.alpha,
-            (a, b),
+            (_a, _b),
             _max_duration,
             _step_size,
         )
@@ -770,19 +506,15 @@ class InvSubordinator(StochasticProcess):
         duration: real,
         step_size: real = 0.01,
     ) -> float:
-        _duration = ensure_float(duration)
-        _step_size = ensure_float(step_size)
-        a = ensure_float(domain[0])
-        b = ensure_float(domain[1])
-        if _duration <= 0:
-            raise ValueError("duration must be positive")
-        if _step_size <= 0:
-            raise ValueError("step_size must be positive")
-        if a >= b:
-            raise ValueError("domain must be a valid interval")
+        _a, _b = validate_domain(domain, process_name="InvSubordinator Occupation Time")
+        _duration = validate_positive_float_param(duration, "duration")
+        _step_size = validate_positive_float_param(step_size, "step_size")
+        # Original code: a >= b -> "domain must be a valid interval"
+        # validate_domain ensures a < b by default.
+
         return _core.inv_subordinator_occupation_time(
             self.alpha,
-            (a, b),
+            (_a, _b),
             _duration,
             _step_size,
         )
@@ -795,45 +527,17 @@ class InvSubordinator(StochasticProcess):
         step_size: real = 0.01,
         max_duration: real = 1000,
     ) -> Optional[float]:
-        if not (isinstance(domain, tuple) and len(domain) == 2):
-            raise TypeError(
-                f"domain must be a tuple of two real numbers, got {type(domain).__name__}"
-            )
-        if not isinstance(order, int):
-            raise TypeError(f"order must be an integer, got {type(order).__name__}")
-        if order < 0:
-            raise ValueError("order must be non-negative")
-        if not isinstance(particles, int):
-            raise TypeError(
-                f"particles must be an integer, got {type(particles).__name__}"
-            )
-        if particles <= 0:
-            raise ValueError("particles must be positive")
-
-        try:
-            a = ensure_float(domain[0])
-            b = ensure_float(domain[1])
-            _step_size = ensure_float(step_size)
-            _max_duration = ensure_float(max_duration)
-        except TypeError as e:
-            raise TypeError(
-                f"Domain elements, step_size, and max_duration must be numbers. Error: {e}"
-            ) from e
-
-        if a >= b:
-            raise ValueError(
-                f"Invalid domain [{a}, {b}]; domain[0] must be strictly less than domain[1]."
-            )
-        if _step_size <= 0:
-            raise ValueError("step_size must be positive")
-        if _max_duration <= 0:
-            raise ValueError("max_duration must be positive")
+        _a, _b = validate_domain(domain, process_name="InvSubordinator FPT raw moment")
+        _order = validate_order(order)
+        _particles = validate_particles(particles)
+        _step_size = validate_positive_float_param(step_size, "step_size")
+        _max_duration = validate_positive_float_param(max_duration, "max_duration")
 
         return _core.inv_subordinator_fpt_raw_moment(
             self.alpha,
-            (a, b),
-            order,
-            particles,
+            (_a, _b),
+            _order,
+            _particles,
             _step_size,
             _max_duration,
         )
@@ -846,48 +550,22 @@ class InvSubordinator(StochasticProcess):
         step_size: real = 0.01,
         max_duration: real = 1000,
     ) -> Optional[float]:
-        if not (isinstance(domain, tuple) and len(domain) == 2):
-            raise TypeError(
-                f"domain must be a tuple of two real numbers, got {type(domain).__name__}"
-            )
-        if not isinstance(order, int):
-            raise TypeError(f"order must be an integer, got {type(order).__name__}")
-        if order < 0:
-            raise ValueError("order must be non-negative")
-        if not isinstance(particles, int):
-            raise TypeError(
-                f"particles must be an integer, got {type(particles).__name__}"
-            )
-        if particles <= 0:
-            raise ValueError("particles must be positive")
+        _a, _b = validate_domain(
+            domain, process_name="InvSubordinator FPT central moment"
+        )
+        _order = validate_order(order)
+        _particles = validate_particles(particles)
+        _step_size = validate_positive_float_param(step_size, "step_size")
+        _max_duration = validate_positive_float_param(max_duration, "max_duration")
 
-        try:
-            a = ensure_float(domain[0])
-            b = ensure_float(domain[1])
-            _step_size = ensure_float(step_size)
-            _max_duration = ensure_float(max_duration)
-        except TypeError as e:
-            raise TypeError(
-                f"Domain elements, step_size, and max_duration must be numbers. Error: {e}"
-            ) from e
-
-        if a >= b:
-            raise ValueError(
-                f"Invalid domain [{a}, {b}]; domain[0] must be strictly less than domain[1]."
-            )
-        if _step_size <= 0:
-            raise ValueError("step_size must be positive")
-        if _max_duration <= 0:
-            raise ValueError("max_duration must be positive")
-
-        if order == 0:
+        if _order == 0:
             return 1.0
 
         return _core.inv_subordinator_fpt_central_moment(
             self.alpha,
-            (a, b),
-            order,
-            particles,
+            (_a, _b),
+            _order,
+            _particles,
             _step_size,
             _max_duration,
         )
@@ -900,48 +578,22 @@ class InvSubordinator(StochasticProcess):
         duration: real,
         step_size: real = 0.01,
     ) -> float:
-        if not (isinstance(domain, tuple) and len(domain) == 2):
-            raise TypeError(
-                f"domain must be a tuple of two real numbers, got {type(domain).__name__}"
-            )
-        if not isinstance(order, int):
-            raise TypeError(f"order must be an integer, got {type(order).__name__}")
-        if order < 0:
-            raise ValueError("order must be non-negative")
-        if not isinstance(particles, int):
-            raise TypeError(
-                f"particles must be an integer, got {type(particles).__name__}"
-            )
-        if particles <= 0:
-            raise ValueError("particles must be positive")
+        _a, _b = validate_domain(
+            domain, process_name="InvSubordinator Occupation raw moment"
+        )
+        _order = validate_order(order)
+        _particles = validate_particles(particles)
+        _duration = validate_positive_float_param(duration, "duration")
+        _step_size = validate_positive_float_param(step_size, "step_size")
 
-        try:
-            a = ensure_float(domain[0])
-            b = ensure_float(domain[1])
-            _duration = ensure_float(duration)
-            _step_size = ensure_float(step_size)
-        except TypeError as e:
-            raise TypeError(
-                f"Domain elements, duration, and step_size must be numbers. Error: {e}"
-            ) from e
-
-        if a >= b:
-            raise ValueError(
-                f"Invalid domain [{a}, {b}]; domain[0] must be strictly less than domain[1]."
-            )
-        if _duration <= 0:
-            raise ValueError("duration must be positive")
-        if _step_size <= 0:
-            raise ValueError("step_size must be positive")
-
-        if order == 0:
+        if _order == 0:
             return 1.0
 
         return _core.inv_subordinator_occupation_time_raw_moment(
             self.alpha,
-            (a, b),
-            order,
-            particles,
+            (_a, _b),
+            _order,
+            _particles,
             _step_size,
             _duration,
         )
@@ -954,50 +606,24 @@ class InvSubordinator(StochasticProcess):
         duration: real,
         step_size: real = 0.01,
     ) -> float:
-        if not (isinstance(domain, tuple) and len(domain) == 2):
-            raise TypeError(
-                f"domain must be a tuple of two real numbers, got {type(domain).__name__}"
-            )
-        if not isinstance(order, int):
-            raise TypeError(f"order must be an integer, got {type(order).__name__}")
-        if order < 0:
-            raise ValueError("order must be non-negative")
-        if not isinstance(particles, int):
-            raise TypeError(
-                f"particles must be an integer, got {type(particles).__name__}"
-            )
-        if particles <= 0:
-            raise ValueError("particles must be positive")
+        _a, _b = validate_domain(
+            domain, process_name="InvSubordinator Occupation central moment"
+        )
+        _order = validate_order(order)
+        _particles = validate_particles(particles)
+        _duration = validate_positive_float_param(duration, "duration")
+        _step_size = validate_positive_float_param(step_size, "step_size")
 
-        try:
-            a = ensure_float(domain[0])
-            b = ensure_float(domain[1])
-            _duration = ensure_float(duration)
-            _step_size = ensure_float(step_size)
-        except TypeError as e:
-            raise TypeError(
-                f"Domain elements, duration, and step_size must be numbers. Error: {e}"
-            ) from e
-
-        if a >= b:
-            raise ValueError(
-                f"Invalid domain [{a}, {b}]; domain[0] must be strictly less than domain[1]."
-            )
-        if _duration <= 0:
-            raise ValueError("duration must be positive")
-        if _step_size <= 0:
-            raise ValueError("step_size must be positive")
-
-        if order == 0:
+        if _order == 0:
             return 1.0
-        if order == 1:
+        if _order == 1:
             return 0.0
 
         return _core.inv_subordinator_occupation_time_central_moment(
             self.alpha,
-            (a, b),
-            order,
-            particles,
+            (_a, _b),
+            _order,
+            _particles,
             _step_size,
             _duration,
         )
