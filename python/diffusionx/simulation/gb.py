@@ -1,0 +1,338 @@
+from diffusionx import _core
+from typing import Union, Optional
+from .basic import StochasticProcess, Trajectory
+from .utils import (
+    ensure_float,
+    validate_domain,
+    validate_order,
+    validate_particles,
+    validate_positive_float_param,
+)
+import numpy as np
+
+real = Union[float, int]
+
+
+class Gb(StochasticProcess):
+    def __init__(
+        self,
+        start_value: real = 1.0,  # Typically > 0 for GBM
+        mu: real = 0.0,  # Drift parameter
+        sigma: real = 0.1,  # Volatility parameter
+    ):
+        """
+        Initialize a Geometric Brownian Motion (Gb) object.
+        S_t = S_0 * exp((mu - sigma^2/2)t + sigma * W_t)
+
+        Args:
+            start_value (real, optional): Initial value of the process (S0 > 0). Defaults to 1.0.
+            mu (real, optional): Drift coefficient. Defaults to 0.0.
+            sigma (real, optional): Volatility coefficient (sigma > 0). Defaults to 0.1.
+
+        Raises:
+            TypeError: If start_value, mu, or sigma are not numbers.
+            ValueError: If start_value or sigma are not positive.
+        """
+        try:
+            _start_value = ensure_float(start_value)
+            _mu = ensure_float(mu)
+            _sigma = ensure_float(sigma)
+        except TypeError as e:
+            raise TypeError(f"Input parameters must be numbers. Error: {e}") from e
+
+        if _start_value <= 0:
+            raise ValueError(
+                "start_value must be positive for Geometric Brownian Motion"
+            )
+        if _sigma <= 0:
+            raise ValueError("sigma (volatility) must be positive")
+
+        self.start_value = _start_value
+        self.mu = _mu
+        self.sigma = _sigma
+
+    def __call__(self, duration: real) -> Trajectory:
+        return Trajectory(self, duration)
+
+    def simulate(
+        self, duration: real, step_size: real = 0.01
+    ) -> tuple[np.ndarray, np.ndarray]:
+        _duration = validate_positive_float_param(duration, "duration")
+        _step_size = validate_positive_float_param(step_size, "step_size")
+
+        return _core.gb_simulate(
+            self.start_value,
+            self.mu,
+            self.sigma,
+            _duration,
+            _step_size,
+        )
+
+    def raw_moment(
+        self, duration: real, order: int, particles: int, step_size: real = 0.01
+    ) -> float:
+        _order = validate_order(order)
+        _particles = validate_particles(particles)
+        _duration = validate_positive_float_param(duration, "duration")
+        _step_size = validate_positive_float_param(step_size, "step_size")
+
+        if _order == 0:
+            return 1.0
+
+        return _core.gb_raw_moment(
+            self.start_value,
+            self.mu,
+            self.sigma,
+            _duration,
+            _step_size,
+            _order,
+            _particles,
+        )
+
+    def central_moment(
+        self, duration: real, order: int, particles: int, step_size: real = 0.01
+    ) -> float:
+        _order = validate_order(order)
+        _particles = validate_particles(particles)
+        _duration = validate_positive_float_param(duration, "duration")
+        _step_size = validate_positive_float_param(step_size, "step_size")
+
+        if _order == 0:
+            return 1.0
+        if _order == 1:
+            # For GBM, the first central moment is 0 by definition if calculated around the true mean E[S_t].
+            # The _core function is expected to perform this calculation based on simulated paths.
+            pass
+
+        return _core.gb_central_moment(
+            self.start_value,
+            self.mu,
+            self.sigma,
+            _duration,
+            _step_size,
+            _order,
+            _particles,
+        )
+
+    def fpt(
+        self,
+        domain: tuple[real, real],
+        step_size: real = 0.01,
+        max_duration: real = 1000,
+    ) -> Optional[float]:
+        _a, _b = validate_domain(domain, process_name="Gb FPT")
+        _step_size = validate_positive_float_param(step_size, "step_size")
+        _max_duration = validate_positive_float_param(max_duration, "max_duration")
+        # Ensure domain values are positive for GBM context if necessary, though validate_domain is generic.
+        if not (_a > 0 and _b > 0):
+            print(
+                f"Warning: FPT domain [{_a}, {_b}] for GBM might be unusual if not positive."
+            )
+
+        return _core.gb_fpt(
+            self.start_value,
+            self.mu,
+            self.sigma,
+            _step_size,
+            (_a, _b),
+            _max_duration,
+        )
+
+    def fpt_raw_moment(
+        self,
+        domain: tuple[real, real],
+        order: int,
+        particles: int,
+        step_size: real = 0.01,
+        max_duration: real = 1000,
+    ) -> Optional[float]:
+        _a, _b = validate_domain(domain, process_name="Gb FPT raw moment")
+        _order = validate_order(order)
+        _particles = validate_particles(particles)
+        _step_size = validate_positive_float_param(step_size, "step_size")
+        _max_duration = validate_positive_float_param(max_duration, "max_duration")
+        if not (_a > 0 and _b > 0):
+            print(
+                f"Warning: FPT domain [{_a}, {_b}] for GBM might be unusual if not positive."
+            )
+
+        return _core.gb_fpt_raw_moment(
+            self.start_value,
+            self.mu,
+            self.sigma,
+            (_a, _b),
+            _order,
+            _particles,
+            _step_size,
+            _max_duration,
+        )
+
+    def fpt_central_moment(
+        self,
+        domain: tuple[real, real],
+        order: int,
+        particles: int,
+        step_size: real = 0.01,
+        max_duration: real = 1000,
+    ) -> Optional[float]:
+        _a, _b = validate_domain(domain, process_name="Gb FPT central moment")
+        _order = validate_order(order)
+        _particles = validate_particles(particles)
+        _step_size = validate_positive_float_param(step_size, "step_size")
+        _max_duration = validate_positive_float_param(max_duration, "max_duration")
+        if not (_a > 0 and _b > 0):
+            print(
+                f"Warning: FPT domain [{_a}, {_b}] for GBM might be unusual if not positive."
+            )
+
+        if _order == 0:
+            return 1.0
+
+        return _core.gb_fpt_central_moment(
+            self.start_value,
+            self.mu,
+            self.sigma,
+            (_a, _b),
+            _order,
+            _particles,
+            _step_size,
+            _max_duration,
+        )
+
+    def occupation_time(
+        self,
+        domain: tuple[real, real],
+        duration: real,
+        step_size: real = 0.01,
+    ) -> float:
+        _a, _b = validate_domain(domain, process_name="Gb Occupation Time")
+        _duration = validate_positive_float_param(duration, "duration")
+        _step_size = validate_positive_float_param(step_size, "step_size")
+        if not (_a > 0 and _b > 0):
+            print(
+                f"Warning: Occupation domain [{_a}, {_b}] for GBM might be unusual if not positive."
+            )
+
+        return _core.gb_occupation_time(
+            self.start_value,
+            self.mu,
+            self.sigma,
+            _step_size,
+            (_a, _b),
+            _duration,
+        )
+
+    def occupation_time_raw_moment(
+        self,
+        domain: tuple[real, real],
+        order: int,
+        particles: int,
+        duration: real,
+        step_size: real = 0.01,
+    ) -> float:
+        _a, _b = validate_domain(domain, process_name="Gb Occupation raw moment")
+        _order = validate_order(order)
+        _particles = validate_particles(particles)
+        _duration = validate_positive_float_param(duration, "duration")
+        _step_size = validate_positive_float_param(step_size, "step_size")
+        if not (_a > 0 and _b > 0):
+            print(
+                f"Warning: Occupation domain [{_a}, {_b}] for GBM might be unusual if not positive."
+            )
+
+        if _order == 0:
+            return 1.0
+
+        return _core.gb_occupation_time_raw_moment(
+            self.start_value,
+            self.mu,
+            self.sigma,
+            (_a, _b),
+            _order,
+            _particles,
+            _step_size,
+            _duration,
+        )
+
+    def occupation_time_central_moment(
+        self,
+        domain: tuple[real, real],
+        order: int,
+        particles: int,
+        duration: real,
+        step_size: real = 0.01,
+    ) -> float:
+        _a, _b = validate_domain(domain, process_name="Gb Occupation central moment")
+        _order = validate_order(order)
+        _particles = validate_particles(particles)
+        _duration = validate_positive_float_param(duration, "duration")
+        _step_size = validate_positive_float_param(step_size, "step_size")
+        if not (_a > 0 and _b > 0):
+            print(
+                f"Warning: Occupation domain [{_a}, {_b}] for GBM might be unusual if not positive."
+            )
+
+        if _order == 0:
+            return 1.0
+        if _order == 1:
+            return 0.0
+
+        return _core.gb_occupation_time_central_moment(
+            self.start_value,
+            self.mu,
+            self.sigma,
+            (_a, _b),
+            _order,
+            _particles,
+            _step_size,
+            _duration,
+        )
+
+    def tamsd(
+        self,
+        duration: real,
+        delta: real,
+        step_size: real = 0.01,
+        quad_order: int = 32,
+    ) -> float:
+        _duration = validate_positive_float_param(duration, "duration")
+        _delta = validate_positive_float_param(delta, "delta")
+        _step_size = validate_positive_float_param(step_size, "step_size")
+        if not isinstance(quad_order, int) or quad_order <= 0:
+            raise ValueError("quad_order must be a positive integer.")
+
+        return _core.gb_tamsd(
+            self.start_value,
+            self.mu,
+            self.sigma,
+            _duration,
+            _delta,
+            _step_size,
+            quad_order,
+        )
+
+    def eatamsd(
+        self,
+        duration: real,
+        delta: real,
+        particles: int,
+        step_size: real = 0.01,
+        quad_order: int = 32,
+    ) -> float:
+        _duration = validate_positive_float_param(duration, "duration")
+        _delta = validate_positive_float_param(delta, "delta")
+        _particles = validate_particles(particles)
+        _step_size = validate_positive_float_param(step_size, "step_size")
+        if not isinstance(quad_order, int) or quad_order <= 0:
+            raise ValueError("quad_order must be a positive integer.")
+
+        return _core.gb_eatamsd(
+            self.start_value,
+            self.mu,
+            self.sigma,
+            _duration,
+            _delta,
+            _particles,
+            _step_size,
+            quad_order,
+        )
