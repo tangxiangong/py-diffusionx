@@ -2,7 +2,7 @@ use crate::{
     XPyResult,
     simulation::{PyArrayPair, vec_to_pyarray},
 };
-use diffusionx::simulation::{jump::CTRW, prelude::*};
+use diffusionx::simulation::{point::CTRW, prelude::*};
 use pyo3::prelude::*;
 
 #[pyfunction]
