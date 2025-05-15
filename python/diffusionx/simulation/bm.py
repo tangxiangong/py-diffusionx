@@ -1,6 +1,6 @@
 from diffusionx import _core
 from typing import Union, Optional
-from .basic import StochasticProcess, Trajectory
+from .basic import ContinuousProcess
 from .utils import (
     ensure_float,
     validate_domain,
@@ -14,7 +14,7 @@ import numpy as np
 real = Union[float, int]
 
 
-class Bm(StochasticProcess):
+class Bm(ContinuousProcess):
     def __init__(
         self,
         start_position: real = 0.0,
@@ -43,18 +43,15 @@ class Bm(StochasticProcess):
         self.start_position = _start_position
         self.diffusion_coefficient = _diffusion_coefficient
 
-    def __call__(self, duration: real) -> Trajectory:
-        return Trajectory(self, duration)
-
     def simulate(
-        self, duration: real, step_size: real = 0.01
+        self, duration: real, step_size: float = 0.01
     ) -> tuple[np.ndarray, np.ndarray]:
         """
         Simulate the Brownian motion.
 
         Args:
             duration (real): Total duration of the simulation.
-            step_size (real, optional): Step size of the Brownian motion. Defaults to 0.01.
+            step_size (float, optional): Step size of the Brownian motion. Defaults to 0.01.
 
         Raises:
             TypeError: If duration or step_size are not numbers.
@@ -83,11 +80,56 @@ class Bm(StochasticProcess):
             _step_size,
         )
 
+    def moment(
+        self, duration: real, order: int, particles: int = 10_000, step_size: real = 0.01, central: bool = True
+    ) -> float:
+        """
+        Calculate the raw moment of the Brownian motion.
+
+        Args:
+            duration (real): Duration of the simulation for moment calculation.
+            order (int): Order of the moment (non-negative integer).
+            particles (int, optional): Number of particles (positive integer) for ensemble averaging. Defaults to 10_000.
+            step_size (real, optional): Step size for the simulation. Defaults to 0.01.
+            central (bool, optional): Whether to calculate the central moment. Defaults to True.
+            
+        Raises:
+            TypeError: If duration, order, particles, or step_size have incorrect types.
+            ValueError: If order is negative, particles is not positive, or if duration or step_size are not positive.
+
+        Returns:
+            float: The raw moment of the Brownian motion.
+        """
+        _order = validate_order(order)
+        _particles = validate_particles(particles)
+        _duration = validate_positive_float_param(duration, "duration")
+        _step_size = validate_positive_float_param(step_size, "step_size")
+
+        if not isinstance(central, bool):
+            raise TypeError("central must be a boolean")
+
+        result = _core.bm_raw_moment(
+            self.start_position,
+            self.diffusion_coefficient,
+            _duration,
+            _step_size,
+            _order,
+            _particles,
+        ) if not central else _core.bm_central_moment(
+            self.start_position,
+            self.diffusion_coefficient,
+            _duration,
+            _step_size,
+            _order,
+            _particles,
+        )
+        return result
+
     def fpt(
         self,
         domain: tuple[real, real],
-        step_size: real = 0.01,
         max_duration: real = 1000,
+        step_size: float = 0.01,
     ) -> Optional[float]:
         """
         Calculate the first passage time of the Brownian motion.
@@ -116,13 +158,14 @@ class Bm(StochasticProcess):
             _max_duration,
         )
 
-    def fpt_raw_moment(
+    def fpt_moment(
         self,
         domain: tuple[real, real],
         order: int,
-        particles: int,
-        step_size: real = 0.01,
+        central: bool = True,
+        particles: int = 10_000,
         max_duration: real = 1000,
+        step_size: float = 0.01,
     ) -> Optional[float]:
         """
         Calculate the raw moment of the first passage time for Brownian motion.
@@ -133,7 +176,8 @@ class Bm(StochasticProcess):
             particles (int): Number of particles for ensemble average (positive integer).
             step_size (real, optional): Step size. Defaults to 0.01.
             max_duration (real, optional): Maximum duration. Defaults to 1000.
-
+            central (bool, optional): Whether to calculate the central moment. Defaults to True.
+            
         Returns:
             Optional[float]: The raw moment of FPT, or None if no passage for some particles.
         """
@@ -143,10 +187,18 @@ class Bm(StochasticProcess):
         _step_size = validate_positive_float_param(step_size, "step_size")
         _max_duration = validate_positive_float_param(max_duration, "max_duration")
 
-        # _core.bm_fpt_raw_moment is expected to handle order 0 appropriately.
-        # For FPT, 0th moment can relate to probability of passage if not certain.
-
-        return _core.bm_fpt_raw_moment(
+        if not isinstance(central, bool):
+            raise TypeError("central must be a boolean")
+        
+        result = _core.bm_fpt_raw_moment(
+            self.start_position,
+            self.diffusion_coefficient,
+            (_a, _b),
+            _order,
+            _particles,
+            _step_size,
+            _max_duration,
+        ) if not central else _core.bm_fpt_central_moment(
             self.start_position,
             self.diffusion_coefficient,
             (_a, _b),
@@ -155,128 +207,15 @@ class Bm(StochasticProcess):
             _step_size,
             _max_duration,
         )
+        
+        return result
 
-    def fpt_central_moment(
-        self,
-        domain: tuple[real, real],
-        order: int,
-        particles: int,
-        step_size: real = 0.01,
-        max_duration: real = 1000,
-    ) -> Optional[float]:
-        """
-        Calculate the central moment of the first passage time for Brownian motion.
-
-        Args:
-            domain (tuple[real, real]): The domain (a, b). a must be less than b.
-            order (int): Order of the moment (non-negative integer).
-            particles (int): Number of particles for ensemble average (positive integer).
-            step_size (real, optional): Step size. Defaults to 0.01.
-            max_duration (real, optional): Maximum duration. Defaults to 1000.
-
-        Returns:
-            Optional[float]: The central moment of FPT, or None if no passage for some particles.
-        """
-        _a, _b = validate_domain(domain, process_name="Bm FPT central moment")
-        _order = validate_order(order)
-        _particles = validate_particles(particles)
-        _step_size = validate_positive_float_param(step_size, "step_size")
-        _max_duration = validate_positive_float_param(max_duration, "max_duration")
-
-        if _order == 0:
-            return 1.0
-        # For order 1, the _core function is expected to return a value consistent with 0.0
-        # or None if the mean FPT is not well-defined or calculable.
-
-        return _core.bm_fpt_central_moment(
-            self.start_position,
-            self.diffusion_coefficient,
-            (_a, _b),
-            _order,
-            _particles,
-            _step_size,
-            _max_duration,
-        )
-
-    def raw_moment(
-        self, duration: real, order: int, particles: int, step_size: real = 0.01
-    ) -> float:
-        """
-        Calculate the raw moment of the Brownian motion.
-
-        Args:
-            duration (real): Duration of the simulation for moment calculation.
-            order (int): Order of the moment (non-negative integer).
-            particles (int): Number of particles (positive integer) for ensemble averaging.
-            step_size (real, optional): Step size for the simulation. Defaults to 0.01.
-
-        Raises:
-            TypeError: If duration, order, particles, or step_size have incorrect types.
-            ValueError: If order is negative, particles is not positive, or if duration or step_size are not positive.
-
-        Returns:
-            float: The raw moment of the Brownian motion.
-        """
-        _order = validate_order(order)
-        _particles = validate_particles(particles)
-        _duration = validate_positive_float_param(duration, "duration")
-        _step_size = validate_positive_float_param(step_size, "step_size")
-
-        if _order == 0:
-            return 1.0
-
-        return _core.bm_raw_moment(
-            self.start_position,
-            self.diffusion_coefficient,
-            _duration,
-            _step_size,
-            _order,
-            _particles,
-        )
-
-    def central_moment(
-        self, duration: real, order: int, particles: int, step_size: real = 0.01
-    ) -> float:
-        """
-        Calculate the central moment of the Brownian motion.
-
-        Args:
-            duration (real): Duration of the simulation for moment calculation.
-            order (int): Order of the moment (non-negative integer).
-            particles (int): Number of particles (positive integer) for ensemble averaging.
-            step_size (real, optional): Step size for the simulation. Defaults to 0.01.
-
-        Raises:
-            TypeError: If duration, order, particles, or step_size have incorrect types.
-            ValueError: If order is negative, particles is not positive, or if duration or step_size are not positive.
-
-        Returns:
-            float: The central moment of the Brownian motion.
-        """
-        _order = validate_order(order)
-        _particles = validate_particles(particles)
-        _duration = validate_positive_float_param(duration, "duration")
-        _step_size = validate_positive_float_param(step_size, "step_size")
-
-        if _order == 0:
-            return 1.0
-        if _order == 1:
-            return 0.0
-
-        return _core.bm_central_moment(
-            self.start_position,
-            self.diffusion_coefficient,
-            _duration,
-            _step_size,
-            _order,
-            _particles,
-        )
-
+    
     def occupation_time(
         self,
         domain: tuple[real, real],
         duration: real,
-        step_size: real = 0.01,
+        step_size: float = 0.01,
     ) -> float:
         """
         Calculate the occupation time of the Brownian motion in a given domain.
@@ -305,13 +244,14 @@ class Bm(StochasticProcess):
             _duration,
         )
 
-    def occupation_time_raw_moment(
+    def occupation_time_moment(
         self,
         domain: tuple[real, real],
-        order: int,
-        particles: int,
         duration: real,
-        step_size: real = 0.01,
+        order: int,
+        central: bool = True,
+        particles: int = 10_000,
+        step_size: float = 0.01,
     ) -> float:
         """
         Calculate the raw moment of the occupation time for Brownian motion.
@@ -319,10 +259,10 @@ class Bm(StochasticProcess):
         Args:
             domain (tuple[real, real]): The domain (a, b). a must be less than b.
             order (int): Order of the moment (non-negative integer).
-            particles (int): Number of particles for ensemble average (positive integer).
+            particles (int, optional): Number of particles for ensemble average (positive integer). Defaults to 10_000.
             duration (real): Total duration of the simulation.
             step_size (real, optional): Step size. Defaults to 0.01.
-
+            central (bool, optional): Whether to calculate the central moment. Defaults to True.
         Returns:
             float: The raw moment of occupation time.
         """
@@ -332,10 +272,18 @@ class Bm(StochasticProcess):
         _duration = validate_positive_float_param(duration, "duration")
         _step_size = validate_positive_float_param(step_size, "step_size")
 
-        if _order == 0:
-            return 1.0
+        if not isinstance(central, bool):
+            raise TypeError("central must be a boolean")
 
-        return _core.bm_occupation_time_raw_moment(
+        result = _core.bm_occupation_time_raw_moment(
+            self.start_position,
+            self.diffusion_coefficient,
+            (_a, _b),
+            _order,
+            _particles,
+            _step_size,
+            _duration,
+        ) if not central else _core.bm_occupation_time_central_moment(
             self.start_position,
             self.diffusion_coefficient,
             (_a, _b),
@@ -344,46 +292,72 @@ class Bm(StochasticProcess):
             _step_size,
             _duration,
         )
+        return result
 
-    def occupation_time_central_moment(
+    def tamsd(
         self,
-        domain: tuple[real, real],
-        order: int,
-        particles: int,
         duration: real,
-        step_size: real = 0.01,
+        delta: real,
+        step_size: float = 0.01,
+        quad_order: int = 10,
     ) -> float:
         """
-        Calculate the central moment of the occupation time for Brownian motion.
+        Calculate the time-averaged mean-square displacement of the Brownian motion.
 
         Args:
-            domain (tuple[real, real]): The domain (a, b). a must be less than b.
-            order (int): Order of the moment (non-negative integer).
-            particles (int): Number of particles for ensemble average (positive integer).
             duration (real): Total duration of the simulation.
+            delta (real): Time lag for the mean-square displacement.
             step_size (real, optional): Step size. Defaults to 0.01.
+            quad_order (int, optional): Quadrature order. Defaults to 10.
 
         Returns:
-            float: The central moment of occupation time.
+            float: The time-averaged mean-square displacement.
         """
-        _a, _b = validate_domain(domain, process_name="Bm Occupation central moment")
-        _order = validate_order(order)
-        _particles = validate_particles(particles)
         _duration = validate_positive_float_param(duration, "duration")
+        _delta = validate_positive_float_param(delta, "delta")
         _step_size = validate_positive_float_param(step_size, "step_size")
 
-        if _order == 0:
-            return 1.0
-        if _order == 1:
-            # The first central moment is E[X - E[X]], which is 0 by definition.
-            return 0.0
-
-        return _core.bm_occupation_time_central_moment(
+        return _core.bm_tamsd(
             self.start_position,
             self.diffusion_coefficient,
-            (_a, _b),
-            _order,
+            _duration,
+            _delta,
+            _step_size,
+            quad_order,
+        )
+
+    def eatamsd(
+        self,
+        duration: real,
+        delta: real,
+        particles: int = 10_000,
+        step_size: float = 0.01,
+        quad_order: int = 10,
+    ) -> float:
+        """
+        Calculate the time-averaged mean-square displacement of the Brownian motion.
+
+        Args:
+            duration (real): Total duration of the simulation.
+            delta (real): Time lag for the mean-square displacement.
+            particles (int, optional): Number of particles for ensemble average (positive integer). Defaults to 10_000.
+            step_size (real, optional): Step size. Defaults to 0.01.
+            quad_order (int, optional): Quadrature order. Defaults to 10.
+
+        Returns:
+            float: The time-averaged mean-square displacement.
+        """
+        _duration = validate_positive_float_param(duration, "duration")
+        _delta = validate_positive_float_param(delta, "delta")
+        _particles = validate_particles(particles)
+        _step_size = validate_positive_float_param(step_size, "step_size")
+
+        return _core.bm_eatamsd(
+            self.start_position,
+            self.diffusion_coefficient,
+            _duration,
+            _delta,
             _particles,
             _step_size,
-            _duration,
+            quad_order,
         )
