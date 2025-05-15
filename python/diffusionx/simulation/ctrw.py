@@ -1,6 +1,6 @@
 from diffusionx import _core
 from typing import Union, Optional
-from .basic import StochasticProcess, Trajectory
+from .basic import PointProcess
 from .utils import (
     ensure_float,
     validate_domain,
@@ -14,7 +14,7 @@ import numpy as np
 real = Union[float, int]
 
 
-class CTRW(StochasticProcess):
+class CTRW(PointProcess):
     def __init__(
         self,
         alpha: real = 1.0,
@@ -49,13 +49,7 @@ class CTRW(StochasticProcess):
         self.beta = _beta
         self.start_position = _start_position
 
-    def __call__(self, duration: real) -> Trajectory:
-        # Duration validation is handled by Trajectory.__init__
-        return Trajectory(self, duration)
-
-    def simulate(
-        self, duration: real, step_size: real = 0.01
-    ) -> tuple[np.ndarray, np.ndarray]:
+    def simulate(self, duration: Optional[real] = None, num_step: Optional[int] = None, _step_size: real = 0.01) -> tuple[np.ndarray, np.ndarray]:
         """
         Simulate the CTRW based on total duration.
 
@@ -63,58 +57,73 @@ class CTRW(StochasticProcess):
               consistency with the StochasticProcess interface.
 
         Args:
-            duration (real): Total duration of the simulation.
+            duration (real, optional): Total duration of the simulation.
+            num_step (int, optional): Number of steps in the simulation.
             step_size (real, optional): Ignored by this method. Defaults to 0.01.
 
         Raises:
-            TypeError: If duration is not a number.
-            ValueError: If duration is not positive.
+            TypeError: If duration or num_step is not a number.
+            ValueError: If duration or num_step is not positive.
 
         Returns:
             tuple[np.ndarray, np.ndarray]: Times and positions of the CTRW.
         """
-        try:
-            _duration = ensure_float(duration)
-        except TypeError as e:
-            raise TypeError(f"duration must be a number. Error: {e}") from e
+        if duration is not None:
+            try:
+                _duration = ensure_float(duration)
+            except TypeError as e:
+                raise TypeError(f"duration must be a number. Error: {e}") from e
 
-        if _duration <= 0:
-            raise ValueError(f"duration must be positive, got {_duration}")
-        # step_size is intentionally not validated here as it's documented as unused.
-        return _core.ctrw_simulate_duration(
+            if _duration <= 0:
+                raise ValueError(f"duration must be positive, got {_duration}")
+            # step_size is intentionally not validated here as it's documented as unused.
+            return _core.ctrw_simulate_duration(
+                self.alpha,
+                self.beta,
+                self.start_position,
+                _duration,
+            )
+        elif num_step is not None:
+            if not isinstance(num_step, int):
+                raise TypeError(
+                    f"num_step must be an integer, got {type(num_step).__name__}"
+                )
+            if num_step <= 0:
+                raise ValueError(f"num_step must be positive, got {num_step}")
+            return _core.ctrw_simulate_step(
+                self.alpha,
+                self.beta,
+                self.start_position,
+                num_step,
+            )
+        else:
+            raise ValueError("Either duration or num_step must be provided")
+    
+    def moment(self, duration: real, order: int, central: bool = True, particles: int = 10_000) -> float: 
+        _order = validate_order(order)
+        _particles = validate_particles(particles)
+        _duration = validate_positive_float_param(duration, "duration")
+        
+        if not isinstance(central, bool):
+            raise TypeError("central must be a boolean")
+
+        result = _core.ctrw_raw_moment(
             self.alpha,
             self.beta,
             self.start_position,
             _duration,
-        )
-
-    def simulate_with_step(self, num_step: int) -> tuple[np.ndarray, np.ndarray]:
-        """
-        Simulate the CTRW for a specified number of steps.
-
-        Args:
-            num_step (int): The number of steps in the simulation.
-
-        Raises:
-            TypeError: If num_step is not an integer.
-            ValueError: If num_step is not positive.
-
-        Returns:
-            tuple[np.ndarray, np.ndarray]: Times and positions of the CTRW.
-        """
-        if not isinstance(num_step, int):
-            raise TypeError(
-                f"num_step must be an integer, got {type(num_step).__name__}"
-            )
-        if num_step <= 0:
-            raise ValueError(f"num_step must be positive, got {num_step}")
-        return _core.ctrw_simulate_step(
+            _order,
+            _particles,
+        ) if not central else _core.ctrw_central_moment(
             self.alpha,
             self.beta,
             self.start_position,
-            num_step,
+            _duration,
+            _order,
+            _particles,
         )
-
+        return result
+            
     def fpt(
         self,
         domain: tuple[real, real],
@@ -145,11 +154,12 @@ class CTRW(StochasticProcess):
             _max_duration,
         )
 
-    def fpt_raw_moment(
+    def fpt_moment(
         self,
         domain: tuple[real, real],
         order: int,
-        particles: int,
+        central: bool = True,
+        particles: int = 10_000,
         max_duration: real = 1000,
     ) -> Optional[float]:
         _a, _b = validate_domain(domain, process_name="CTRW FPT raw moment")
@@ -157,7 +167,18 @@ class CTRW(StochasticProcess):
         _particles = validate_particles(particles)
         _max_duration = validate_positive_float_param(max_duration, "max_duration")
 
-        return _core.ctrw_fpt_raw_moment(
+        if not isinstance(central, bool):
+            raise TypeError("central must be a boolean")    
+        
+        result = _core.ctrw_fpt_raw_moment(
+            self.alpha,
+            self.beta,
+            self.start_position,
+            (_a, _b),
+            _order,
+            _particles,
+            _max_duration,
+        ) if not central else _core.ctrw_fpt_central_moment(
             self.alpha,
             self.beta,
             self.start_position,
@@ -166,98 +187,8 @@ class CTRW(StochasticProcess):
             _particles,
             _max_duration,
         )
-
-    def fpt_central_moment(
-        self,
-        domain: tuple[real, real],
-        order: int,
-        particles: int,
-        max_duration: real = 1000,
-    ) -> Optional[float]:
-        _a, _b = validate_domain(domain, process_name="CTRW FPT central moment")
-        _order = validate_order(order)
-        _particles = validate_particles(particles)
-        _max_duration = validate_positive_float_param(max_duration, "max_duration")
-
-        if _order == 0:
-            return 1.0
-
-        return _core.ctrw_fpt_central_moment(
-            self.alpha,
-            self.beta,
-            self.start_position,
-            (_a, _b),
-            _order,
-            _particles,
-            _max_duration,
-        )
-
-    def raw_moment(self, duration: real, order: int, particles: int) -> float:
-        """
-        Calculate the raw moment of the CTRW.
-
-        Args:
-            duration (real): Simulation duration.
-            order (int): Moment order (non-negative integer).
-            particles (int): Number of particles (positive integer).
-
-        Raises:
-            TypeError: If any parameter has an incorrect type.
-            ValueError: For invalid parameter values.
-
-        Returns:
-            float: The raw moment.
-        """
-        _order = validate_order(order)
-        _particles = validate_particles(particles)
-        _duration = validate_positive_float_param(duration, "duration")
-
-        if _order == 0:
-            return 1.0
-
-        return _core.ctrw_raw_moment(
-            self.alpha,
-            self.beta,
-            self.start_position,
-            _duration,
-            _order,
-            _particles,
-        )
-
-    def central_moment(self, duration: real, order: int, particles: int) -> float:
-        """
-        Calculate the central moment of the CTRW.
-
-        Args:
-            duration (real): Simulation duration.
-            order (int): Moment order (non-negative integer).
-            particles (int): Number of particles (positive integer).
-
-        Raises:
-            TypeError: If any parameter has an incorrect type.
-            ValueError: For invalid parameter values.
-
-        Returns:
-            float: The central moment.
-        """
-        _order = validate_order(order)
-        _particles = validate_particles(particles)
-        _duration = validate_positive_float_param(duration, "duration")
-
-        if _order == 0:
-            return 1.0
-        if _order == 1:
-            return 0.0
-
-        return _core.ctrw_central_moment(
-            self.alpha,
-            self.beta,
-            self.start_position,
-            _duration,
-            _order,
-            _particles,
-        )
-
+        return result
+    
     def occupation_time(
         self,
         domain: tuple[real, real],
@@ -288,100 +219,37 @@ class CTRW(StochasticProcess):
             _duration,
         )
 
-    def occupation_time_raw_moment(
+    def occupation_time_moment(
         self,
         domain: tuple[real, real],
-        order: int,
-        particles: int,
         duration: real,
+        order: int,
+        central: bool = True,
+        particles: int = 10_000,
     ) -> float:
         _a, _b = validate_domain(domain, process_name="CTRW Occupation raw moment")
         _order = validate_order(order)
         _particles = validate_particles(particles)
         _duration = validate_positive_float_param(duration, "duration")
 
-        if _order == 0:
-            return 1.0
+        if not isinstance(central, bool):
+            raise TypeError("central must be a boolean")
 
-        return _core.ctrw_occupation_time_raw_moment(
+        result = _core.ctrw_occupation_time_raw_moment(
             self.alpha,
             self.beta,
             self.start_position,
             (_a, _b),
+            _duration,
             _order,
             _particles,
-            _duration,
-        )
-
-    def occupation_time_central_moment(
-        self,
-        domain: tuple[real, real],
-        order: int,
-        particles: int,
-        duration: real,
-    ) -> float:
-        _a, _b = validate_domain(domain, process_name="CTRW Occupation central moment")
-        _order = validate_order(order)
-        _particles = validate_particles(particles)
-        _duration = validate_positive_float_param(duration, "duration")
-
-        if _order == 0:
-            return 1.0
-        if _order == 1:
-            return 0.0
-
-        return _core.ctrw_occupation_time_central_moment(
+        ) if not central else _core.ctrw_occupation_time_central_moment(
             self.alpha,
             self.beta,
             self.start_position,
             (_a, _b),
+            _duration,
             _order,
             _particles,
-            _duration,
         )
-
-    def mean(self, duration: real, particles: int) -> float:
-        """
-        Calculate the mean of the CTRW.
-
-        Args:
-            duration (real): Simulation duration.
-            particles (int): Number of particles.
-
-        Raises:
-            TypeError: If duration or particles have incorrect types.
-            ValueError: For invalid parameter values.
-
-        Returns:
-            float: The mean.
-        """
-        _duration = ensure_float(duration)  # Validate here before passing
-        if not isinstance(particles, int):
-            raise TypeError(
-                f"particles must be an integer, got {type(particles).__name__}"
-            )
-        # Further validation for _duration and particles (e.g. >0) is handled by raw_moment
-        return self.raw_moment(_duration, 1, particles)
-
-    def msd(self, duration: real, particles: int) -> float:
-        """
-        Calculate the mean square displacement (MSD) of the CTRW.
-
-        Args:
-            duration (real): Simulation duration.
-            particles (int): Number of particles.
-
-        Raises:
-            TypeError: If duration or particles have incorrect types.
-            ValueError: For invalid parameter values.
-
-        Returns:
-            float: The MSD.
-        """
-        _duration = ensure_float(duration)  # Validate here
-        if not isinstance(particles, int):
-            raise TypeError(
-                f"particles must be an integer, got {type(particles).__name__}"
-            )
-        # Further validation for _duration and particles is handled by central_moment
-        return self.central_moment(_duration, 2, particles)
+        return result
