@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 from typing import List, Tuple, Optional, Union, Callable, Literal, Any, cast
-from .basic import StochasticProcess
+from .basic import ContinuousProcess
 from dataclasses import dataclass, field
 
 # Type aliases
@@ -36,7 +36,7 @@ class PlotConfig:
 
     # Stochastic process simulation configuration
     duration: real = 10.0
-    step_size: real = 0.01
+    step_size: float = 0.01
     n_trajectories: int = 100
 
     # Statistical properties configuration
@@ -183,7 +183,7 @@ def _plot_multiple_trajectories(
 
 
 def _generate_trajectories(
-    process: StochasticProcess, config: PlotConfig
+    process: ContinuousProcess, config: PlotConfig
 ) -> Tuple[np.ndarray, List[np.ndarray], np.ndarray]:
     """
     Generate multiple trajectories for statistical analysis.
@@ -215,7 +215,7 @@ def _generate_trajectories(
 
 
 def _plot_statistics(
-    process: StochasticProcess, config: PlotConfig
+    process: ContinuousProcess, config: PlotConfig
 ) -> Tuple[plt.Figure, plt.Axes]:
     """
     Plot statistical properties (mean, variance, or standard deviation).
@@ -284,7 +284,7 @@ def _plot_statistics(
 
 
 def _plot_msd(
-    process: StochasticProcess, config: PlotConfig
+    process: ContinuousProcess, config: PlotConfig
 ) -> Tuple[plt.Figure, plt.Axes]:
     """
     Plot mean square displacement.
@@ -336,7 +336,7 @@ def _plot_msd(
 
 
 def _plot_histogram(
-    process: StochasticProcess, config: PlotConfig
+    process: ContinuousProcess, config: PlotConfig
 ) -> Tuple[plt.Figure, plt.Axes]:
     """
     Plot position distribution histogram.
@@ -406,7 +406,7 @@ def _determine_time_index(
 
 
 def _collect_positions_at_time(
-    process: StochasticProcess, config: PlotConfig, time_index: int
+    process: ContinuousProcess, config: PlotConfig, time_index: int
 ) -> List[float]:
     """
     Collect position data at specified time point.
@@ -455,7 +455,7 @@ def _add_kde_to_histogram(
         print("scipy library is required for KDE plotting")
 
 
-def _plot_density(process: StochasticProcess, config: PlotConfig) -> plt.Figure:
+def _plot_density(process: ContinuousProcess, config: PlotConfig) -> plt.Figure:
     """
     Plot density distribution evolution over time.
 
@@ -552,7 +552,7 @@ def _apply_common_settings(fig: plt.Figure, ax: plt.Axes, config: PlotConfig) ->
 
 
 def plot(
-    data: Union[PathData, list[PathData], StochasticProcess],
+    data: Union[PathData, list[PathData], ContinuousProcess],
     config: Optional[PlotConfig] = None,
     **kwargs,
 ) -> plt.Figure:
@@ -580,7 +580,7 @@ def plot(
         _config.plot_type == PlotConfig().plot_type and not original_user_plot_type
     )
 
-    if isinstance(data, StochasticProcess):
+    if isinstance(data, ContinuousProcess):
         # For a StochasticProcess, all plot types are potentially valid as trajectories can be generated.
         # If plot_type was not explicitly set by user (or was default), and it's something like "multiple",
         # it might be ambiguous. Defaulting to "trajectory" if not specified seems reasonable.
@@ -635,7 +635,7 @@ def plot(
     # This logic implies _plot_* functions need to handle config.ax being None or an Axes object.
 
     if _config.plot_type == "trajectory":
-        if isinstance(data, StochasticProcess):
+        if isinstance(data, ContinuousProcess):
             # Simulate a single trajectory if a process is given
             if (
                 _config.duration is None
@@ -657,7 +657,7 @@ def plot(
     elif _config.plot_type == "multiple":
         if isinstance(data, list):  # List[PathData]
             fig, ax = _plot_multiple_trajectories(data, _config)
-        elif isinstance(data, StochasticProcess):
+        elif isinstance(data, ContinuousProcess):
             # Generate N trajectories for 'multiple' plot type from a process
             trajectories_data = []
             for _ in range(_config.n_trajectories if _config.n_trajectories > 0 else 1):
@@ -670,22 +670,22 @@ def plot(
             )
 
     elif _config.plot_type == "statistics":
-        if not isinstance(data, StochasticProcess):
+        if not isinstance(data, ContinuousProcess):
             raise ValueError("For 'statistics' plot, data must be a StochasticProcess.")
         fig, ax = _plot_statistics(data, _config)
 
     elif _config.plot_type == "msd":
-        if not isinstance(data, StochasticProcess):
+        if not isinstance(data, ContinuousProcess):
             raise ValueError("For 'msd' plot, data must be a StochasticProcess.")
         fig, ax = _plot_msd(data, _config)
 
     elif _config.plot_type == "histogram":
-        if not isinstance(data, StochasticProcess):
+        if not isinstance(data, ContinuousProcess):
             raise ValueError("For 'histogram' plot, data must be a StochasticProcess.")
         fig, ax = _plot_histogram(data, _config)
 
     elif _config.plot_type == "density":
-        if not isinstance(data, StochasticProcess):
+        if not isinstance(data, ContinuousProcess):
             raise ValueError("For 'density' plot, data must be a StochasticProcess.")
         # _plot_density returns fig directly
         fig = _plot_density(data, _config)

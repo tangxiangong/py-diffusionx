@@ -18,7 +18,7 @@ class BrownianBridge(ContinuousProcess):
         Initialize a Brownian Bridge object.
         """
     def simulate(
-        self, duration: real, step_size: real = 0.01
+        self, duration: real, step_size: float = 0.01
     ) -> tuple[np.ndarray, np.ndarray]:
         _duration = validate_positive_float_param(duration, "duration")
         _step_size = validate_positive_float_param(step_size, "step_size")
@@ -44,7 +44,7 @@ class BrownianBridge(ContinuousProcess):
         self,
         domain: tuple[real, real],
         max_duration: real = 1000,
-        step_size: real = 0.01,
+        step_size: float = 0.01,
     ) -> Optional[float]:
         _a, _b = validate_domain(domain, process_name="Bb FPT")
         _step_size = validate_positive_float_param(step_size, "step_size")
@@ -65,7 +65,7 @@ class BrownianBridge(ContinuousProcess):
         central: bool = True,
         particles: int = 10_000,
         max_duration: real = 1000,
-        step_size: real = 0.01,
+        step_size: float = 0.01,
     ) -> Optional[float]:
         _a, _b = validate_domain(domain, process_name="Brownian bridge FPT moment")
         _order = validate_order(order)

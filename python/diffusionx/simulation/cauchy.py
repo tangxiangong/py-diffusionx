@@ -37,7 +37,7 @@ class Cauchy(ContinuousProcess):
     def simulate(
         self,
         duration: real,
-        step_size: real = 0.01,
+        step_size: float = 0.01,
     ) -> tuple[np.ndarray, np.ndarray]:
         _duration = validate_positive_float_param(duration, "duration")
         _step_size = validate_positive_float_param(step_size, "step_size")
@@ -268,7 +268,7 @@ class AsymmetricCauchy(ContinuousProcess):
         )
 
     def moment(
-        self, duration: real, order: int, particles: int = 10_000, step_size: real = 0.01, central: bool = True
+        self, duration: real, order: int, particles: int = 10_000, step_size: float = 0.01, central: bool = True
     ) -> float:
         _order = validate_order(order)
         _particles = validate_particles(particles)

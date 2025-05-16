@@ -939,42 +939,27 @@ def asymmetric_levy_eatamsd(
 
 # Brownian Bridge
 def bb_simulate(
-    start_value: float,
-    end_value: float,
-    diffusion_coefficient: float,
     duration: float,
     step_size: float,
 ) -> tuple[np.ndarray, np.ndarray]: ...
 def bb_raw_moment(
-    start_value: float,
-    end_value: float,
-    diffusion_coefficient: float,
     duration: float,
     step_size: float,
     order: int,
     particles: int,
 ) -> float: ...
 def bb_central_moment(
-    start_value: float,
-    end_value: float,
-    diffusion_coefficient: float,
     duration: float,
     step_size: float,
     order: int,
     particles: int,
 ) -> float: ...
 def bb_fpt(
-    start_value: float,
-    end_value: float,
-    diffusion_coefficient: float,
     step_size: float,
     domain: tuple[float, float],
     max_duration: float,
 ) -> float | None: ...
 def bb_fpt_raw_moment(
-    start_value: float,
-    end_value: float,
-    diffusion_coefficient: float,
     domain: tuple[float, float],
     order: int,
     particles: int,
@@ -982,9 +967,6 @@ def bb_fpt_raw_moment(
     max_duration: float,
 ) -> float | None: ...
 def bb_fpt_central_moment(
-    start_value: float,
-    end_value: float,
-    diffusion_coefficient: float,
     domain: tuple[float, float],
     order: int,
     particles: int,
@@ -992,17 +974,11 @@ def bb_fpt_central_moment(
     max_duration: float,
 ) -> float | None: ...
 def bb_occupation_time(
-    start_value: float,
-    end_value: float,
-    diffusion_coefficient: float,
     step_size: float,
     domain: tuple[float, float],
     duration: float,
 ) -> float: ...
 def bb_occupation_time_raw_moment(
-    start_value: float,
-    end_value: float,
-    diffusion_coefficient: float,
     domain: tuple[float, float],
     order: int,
     particles: int,
@@ -1010,9 +986,6 @@ def bb_occupation_time_raw_moment(
     duration: float,
 ) -> float: ...
 def bb_occupation_time_central_moment(
-    start_value: float,
-    end_value: float,
-    diffusion_coefficient: float,
     domain: tuple[float, float],
     order: int,
     particles: int,
@@ -1020,18 +993,12 @@ def bb_occupation_time_central_moment(
     duration: float,
 ) -> float: ...
 def bb_tamsd(
-    start_value: float,
-    end_value: float,
-    diffusion_coefficient: float,
     duration: float,
     delta: float,
     step_size: float,
     quad_order: int,
 ) -> float: ...
 def bb_eatamsd(
-    start_value: float,
-    end_value: float,
-    diffusion_coefficient: float,
     duration: float,
     delta: float,
     particles: int,
@@ -1041,32 +1008,27 @@ def bb_eatamsd(
 
 # Brownian Excursion
 def be_simulate(
-    diffusion_coefficient: float,
     duration: float,
     step_size: float,
 ) -> tuple[np.ndarray, np.ndarray]: ...
 def be_raw_moment(
-    diffusion_coefficient: float,
     duration: float,
     step_size: float,
     order: int,
     particles: int,
 ) -> float: ...
 def be_central_moment(
-    diffusion_coefficient: float,
     duration: float,
     step_size: float,
     order: int,
     particles: int,
 ) -> float: ...
 def be_fpt(
-    diffusion_coefficient: float,
     step_size: float,
     domain: tuple[float, float],
     max_duration: float,
 ) -> float | None: ...
 def be_fpt_raw_moment(
-    diffusion_coefficient: float,
     domain: tuple[float, float],
     order: int,
     particles: int,
@@ -1074,7 +1036,6 @@ def be_fpt_raw_moment(
     max_duration: float,
 ) -> float | None: ...
 def be_fpt_central_moment(
-    diffusion_coefficient: float,
     domain: tuple[float, float],
     order: int,
     particles: int,
@@ -1082,13 +1043,11 @@ def be_fpt_central_moment(
     max_duration: float,
 ) -> float | None: ...
 def be_occupation_time(
-    diffusion_coefficient: float,
     step_size: float,
     domain: tuple[float, float],
     duration: float,
 ) -> float: ...
 def be_occupation_time_raw_moment(
-    diffusion_coefficient: float,
     domain: tuple[float, float],
     order: int,
     particles: int,
@@ -1096,7 +1055,6 @@ def be_occupation_time_raw_moment(
     duration: float,
 ) -> float: ...
 def be_occupation_time_central_moment(
-    diffusion_coefficient: float,
     domain: tuple[float, float],
     order: int,
     particles: int,
@@ -1104,14 +1062,12 @@ def be_occupation_time_central_moment(
     duration: float,
 ) -> float: ...
 def be_tamsd(
-    diffusion_coefficient: float,
     duration: float,
     delta: float,
     step_size: float,
     quad_order: int,
 ) -> float: ...
 def be_eatamsd(
-    diffusion_coefficient: float,
     duration: float,
     delta: float,
     particles: int,
@@ -1121,32 +1077,27 @@ def be_eatamsd(
 
 # Brownian Meander
 def meander_simulate(
-    diffusion_coefficient: float,
     duration: float,
     step_size: float,
 ) -> tuple[np.ndarray, np.ndarray]: ...
 def meander_raw_moment(
-    diffusion_coefficient: float,
     duration: float,
     step_size: float,
     order: int,
     particles: int,
 ) -> float: ...
 def meander_central_moment(
-    diffusion_coefficient: float,
     duration: float,
     step_size: float,
     order: int,
     particles: int,
 ) -> float: ...
 def meander_fpt(
-    diffusion_coefficient: float,
     step_size: float,
     domain: tuple[float, float],
     max_duration: float,
 ) -> float | None: ...
 def meander_fpt_raw_moment(
-    diffusion_coefficient: float,
     domain: tuple[float, float],
     order: int,
     particles: int,
@@ -1154,7 +1105,6 @@ def meander_fpt_raw_moment(
     max_duration: float,
 ) -> float | None: ...
 def meander_fpt_central_moment(
-    diffusion_coefficient: float,
     domain: tuple[float, float],
     order: int,
     particles: int,
@@ -1162,13 +1112,11 @@ def meander_fpt_central_moment(
     max_duration: float,
 ) -> float | None: ...
 def meander_occupation_time(
-    diffusion_coefficient: float,
     step_size: float,
     domain: tuple[float, float],
     duration: float,
 ) -> float: ...
 def meander_occupation_time_raw_moment(
-    diffusion_coefficient: float,
     domain: tuple[float, float],
     order: int,
     particles: int,
@@ -1176,7 +1124,6 @@ def meander_occupation_time_raw_moment(
     duration: float,
 ) -> float: ...
 def meander_occupation_time_central_moment(
-    diffusion_coefficient: float,
     domain: tuple[float, float],
     order: int,
     particles: int,
@@ -1184,14 +1131,12 @@ def meander_occupation_time_central_moment(
     duration: float,
 ) -> float: ...
 def meander_tamsd(
-    diffusion_coefficient: float,
     duration: float,
     delta: float,
     step_size: float,
     quad_order: int,
 ) -> float: ...
 def meander_eatamsd(
-    diffusion_coefficient: float,
     duration: float,
     delta: float,
     particles: int,
@@ -1202,13 +1147,11 @@ def meander_eatamsd(
 # Cauchy Process
 def cauchy_simulate(
     start_position: float,
-    scale: float,
     duration: float,
     step_size: float,
 ) -> tuple[np.ndarray, np.ndarray]: ...
 def cauchy_raw_moment(
     start_position: float,
-    scale: float,
     duration: float,
     step_size: float,
     order: int,
@@ -1216,7 +1159,6 @@ def cauchy_raw_moment(
 ) -> float: ...
 def cauchy_central_moment(
     start_position: float,
-    scale: float,
     duration: float,
     step_size: float,
     order: int,
@@ -1224,14 +1166,12 @@ def cauchy_central_moment(
 ) -> float: ...
 def cauchy_fpt(
     start_position: float,
-    scale: float,
     step_size: float,
     domain: tuple[float, float],
     max_duration: float,
 ) -> float | None: ...
 def cauchy_fpt_raw_moment(
     start_position: float,
-    scale: float,
     domain: tuple[float, float],
     order: int,
     particles: int,
@@ -1240,7 +1180,6 @@ def cauchy_fpt_raw_moment(
 ) -> float | None: ...
 def cauchy_fpt_central_moment(
     start_position: float,
-    scale: float,
     domain: tuple[float, float],
     order: int,
     particles: int,
@@ -1256,7 +1195,6 @@ def cauchy_occupation_time(
 ) -> float: ...
 def cauchy_occupation_time_raw_moment(
     start_position: float,
-    scale: float,
     domain: tuple[float, float],
     order: int,
     particles: int,
@@ -1265,7 +1203,6 @@ def cauchy_occupation_time_raw_moment(
 ) -> float: ...
 def cauchy_occupation_time_central_moment(
     start_position: float,
-    scale: float,
     domain: tuple[float, float],
     order: int,
     particles: int,
@@ -1274,7 +1211,6 @@ def cauchy_occupation_time_central_moment(
 ) -> float: ...
 def cauchy_tamsd(
     start_position: float,
-    scale: float,
     duration: float,
     delta: float,
     step_size: float,
@@ -1293,14 +1229,12 @@ def cauchy_eatamsd(
 # Asymmetric Cauchy Process
 def asymmetric_cauchy_simulate(
     start_position: float,
-    scale: float,
     beta: float,
     duration: float,
     step_size: float,
 ) -> tuple[np.ndarray, np.ndarray]: ...
 def asymmetric_cauchy_raw_moment(
     start_position: float,
-    scale: float,
     beta: float,
     duration: float,
     step_size: float,
@@ -1309,7 +1243,6 @@ def asymmetric_cauchy_raw_moment(
 ) -> float: ...
 def asymmetric_cauchy_central_moment(
     start_position: float,
-    scale: float,
     beta: float,
     duration: float,
     step_size: float,
@@ -1318,7 +1251,6 @@ def asymmetric_cauchy_central_moment(
 ) -> float: ...
 def asymmetric_cauchy_fpt(
     start_position: float,
-    scale: float,
     beta: float,
     step_size: float,
     domain: tuple[float, float],
@@ -1326,7 +1258,6 @@ def asymmetric_cauchy_fpt(
 ) -> float | None: ...
 def asymmetric_cauchy_fpt_raw_moment(
     start_position: float,
-    scale: float,
     beta: float,
     domain: tuple[float, float],
     order: int,
@@ -1336,7 +1267,6 @@ def asymmetric_cauchy_fpt_raw_moment(
 ) -> float | None: ...
 def asymmetric_cauchy_fpt_central_moment(
     start_position: float,
-    scale: float,
     beta: float,
     domain: tuple[float, float],
     order: int,
@@ -1346,7 +1276,6 @@ def asymmetric_cauchy_fpt_central_moment(
 ) -> float | None: ...
 def asymmetric_cauchy_occupation_time(
     start_position: float,
-    scale: float,
     beta: float,
     step_size: float,
     domain: tuple[float, float],
@@ -1354,7 +1283,6 @@ def asymmetric_cauchy_occupation_time(
 ) -> float: ...
 def asymmetric_cauchy_occupation_time_raw_moment(
     start_position: float,
-    scale: float,
     beta: float,
     domain: tuple[float, float],
     order: int,
@@ -1364,7 +1292,6 @@ def asymmetric_cauchy_occupation_time_raw_moment(
 ) -> float: ...
 def asymmetric_cauchy_occupation_time_central_moment(
     start_position: float,
-    scale: float,
     beta: float,
     domain: tuple[float, float],
     order: int,
@@ -1374,7 +1301,6 @@ def asymmetric_cauchy_occupation_time_central_moment(
 ) -> float: ...
 def asymmetric_cauchy_tamsd(
     start_position: float,
-    scale: float,
     beta: float,
     duration: float,
     delta: float,
@@ -1383,7 +1309,6 @@ def asymmetric_cauchy_tamsd(
 ) -> float: ...
 def asymmetric_cauchy_eatamsd(
     start_position: float,
-    scale: float,
     beta: float,
     duration: float,
     delta: float,

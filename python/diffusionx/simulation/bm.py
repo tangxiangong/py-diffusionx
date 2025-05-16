@@ -81,7 +81,7 @@ class Bm(ContinuousProcess):
         )
 
     def moment(
-        self, duration: real, order: int, particles: int = 10_000, step_size: real = 0.01, central: bool = True
+        self, duration: real, order: int, particles: int = 10_000, step_size: float = 0.01, central: bool = True
     ) -> float:
         """
         Calculate the raw moment of the Brownian motion.

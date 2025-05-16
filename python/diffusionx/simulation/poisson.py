@@ -1,6 +1,6 @@
 from diffusionx import _core
 from typing import Union, Optional
-from .basic import StochasticProcess, Trajectory
+from .basic import ContinuousProcess
 from .utils import (
     ensure_float,
     validate_domain,
@@ -14,7 +14,7 @@ import numpy as np
 real = Union[float, int]
 
 
-class Poisson(StochasticProcess):
+class Poisson(ContinuousProcess):
     def __init__(
         self,
         lambda_: real = 1.0,
@@ -38,11 +38,8 @@ class Poisson(StochasticProcess):
             raise ValueError(f"lambda_ must be positive, got {_lambda_}")
         self.lambda_ = _lambda_
 
-    def __call__(self, duration: real) -> Trajectory:
-        return Trajectory(self, duration)
-
     def simulate(
-        self, duration: real, step_size: real = 0.01
+        self, duration: real, step_size: float = 0.01
     ) -> tuple[np.ndarray, np.ndarray]:
         """
         Simulate the Poisson process based on total duration.
@@ -98,7 +95,7 @@ class Poisson(StochasticProcess):
             num_step,
         )
 
-    def raw_moment(self, duration: real, order: int, particles: int) -> float:
+    def moment(self, duration: real, order: int, center: bool = False, particles: int = 10_000) -> float:
         """
         Calculate the raw moment of the Poisson process at a given duration.
 
@@ -121,45 +118,20 @@ class Poisson(StochasticProcess):
         if _order == 0:
             return 1.0
 
-        return _core.poisson_raw_moment(
+        result = _core.poisson_raw_moment(
+            self.lambda_,
+            _duration,
+            _order,
+            _particles,
+        ) if not center else _core.poisson_central_moment(
             self.lambda_,
             _duration,
             _order,
             _particles,
         )
-
-    def central_moment(self, duration: real, order: int, particles: int) -> float:
-        """
-        Calculate the central moment of the Poisson process at a given duration.
-
-        Args:
-            duration (real): Duration of the process (must be positive).
-            order (int): Order of the moment (must be non-negative).
-            particles (int): Number of particles for ensemble average (must be positive).
-
-        Raises:
-            TypeError: If parameters have incorrect types.
-            ValueError: If parameters have invalid values.
-
-        Returns:
-            float: The central moment of the Poisson process.
-        """
-        _order = validate_order(order)
-        _particles = validate_particles(particles)
-        _duration = validate_positive_float_param(duration, "duration")
-
-        if _order == 0:
-            return 1.0
-        if _order == 1:
-            return 0.0
-
-        return _core.poisson_central_moment(
-            self.lambda_,
-            _duration,
-            _order,
-            _particles,
-        )
-
+        
+        return result
+    
     def fpt(
         self,
         domain: tuple[real, real],
@@ -224,11 +196,12 @@ class Poisson(StochasticProcess):
             _duration,
         )
 
-    def fpt_raw_moment(
+    def fpt_moment(
         self,
         domain: tuple[real, real],  # (start_count, target_count)
         order: int,
-        particles: int,
+        center: bool = False,
+        particles: int = 10_000,
         max_duration: real = 1000,
     ) -> Optional[float]:
         _a, _b = validate_domain(
@@ -244,26 +217,7 @@ class Poisson(StochasticProcess):
             _order,
             _particles,
             _max_duration,
-        )
-
-    def fpt_central_moment(
-        self,
-        domain: tuple[real, real],  # (start_count, target_count)
-        order: int,
-        particles: int,
-        max_duration: real = 1000,
-    ) -> Optional[float]:
-        _a, _b = validate_domain(
-            domain, domain_type="poisson_fpt", process_name="Poisson FPT central moment"
-        )
-        _order = validate_order(order)
-        _particles = validate_particles(particles)
-        _max_duration = validate_positive_float_param(max_duration, "max_duration")
-
-        if _order == 0:
-            return 1.0
-
-        return _core.poisson_fpt_central_moment(
+        ) if not center else _core.poisson_fpt_central_moment(
             self.lambda_,
             (_a, _b),
             _order,
@@ -271,12 +225,13 @@ class Poisson(StochasticProcess):
             _max_duration,
         )
 
-    def occupation_time_raw_moment(
+    def occupation_time_moment(
         self,
         domain: tuple[real, real],  # (min_count, max_count)
-        order: int,
-        particles: int,
         duration: real,
+        order: int,
+        center: bool = False,
+        particles: int = 10_000,
     ) -> float:
         _a, _b = validate_domain(
             domain,
@@ -296,33 +251,11 @@ class Poisson(StochasticProcess):
             _order,
             _particles,
             _duration,
-        )
-
-    def occupation_time_central_moment(
-        self,
-        domain: tuple[real, real],  # (min_count, max_count)
-        order: int,
-        particles: int,
-        duration: real,
-    ) -> float:
-        _a, _b = validate_domain(
-            domain,
-            domain_type="poisson_occupation",
-            process_name="Poisson Occupation central moment",
-        )
-        _order = validate_order(order)
-        _particles = validate_particles(particles)
-        _duration = validate_positive_float_param(duration, "duration")
-
-        if _order == 0:
-            return 1.0
-        if _order == 1:
-            return 0.0
-
-        return _core.poisson_occupation_time_central_moment(
+        ) if not center else _core.poisson_occupation_time_central_moment(
             self.lambda_,
             (_a, _b),
             _order,
             _particles,
             _duration,
         )
+

@@ -49,7 +49,7 @@ class CTRW(PointProcess):
         self.beta = _beta
         self.start_position = _start_position
 
-    def simulate(self, duration: Optional[real] = None, num_step: Optional[int] = None, _step_size: real = 0.01) -> tuple[np.ndarray, np.ndarray]:
+    def simulate(self, duration: Optional[real] = None, num_step: Optional[int] = None, _step_size: float = 0.01) -> tuple[np.ndarray, np.ndarray]:
         """
         Simulate the CTRW based on total duration.
 

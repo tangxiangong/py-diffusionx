@@ -1,6 +1,6 @@
 from diffusionx import _core
 from typing import Union, Optional
-from .basic import StochasticProcess, Trajectory
+from .basic import ContinuousProcess
 from .utils import (
     ensure_float,
     validate_domain,
@@ -14,7 +14,7 @@ import numpy as np
 real = Union[float, int]
 
 
-class Levy(StochasticProcess):
+class Levy(ContinuousProcess):
     def __init__(
         self,
         alpha: real,
@@ -45,12 +45,8 @@ class Levy(StochasticProcess):
         self.start_position = _start_position
         self.alpha = _alpha
 
-    def __call__(self, duration: real) -> Trajectory:
-        # Duration validation is handled by Trajectory.__init__
-        return Trajectory(self, duration)
-
     def simulate(
-        self, duration: real, step_size: real = 0.01
+        self, duration: real, step_size: float = 0.01
     ) -> tuple[np.ndarray, np.ndarray]:
         """
         Simulate the Lévy process.
@@ -89,7 +85,7 @@ class Levy(StochasticProcess):
     def fpt(
         self,
         domain: tuple[real, real],
-        step_size: real = 0.01,
+        step_size: float = 0.01,
         max_duration: real = 1000,
     ) -> Optional[float]:
         """
@@ -123,7 +119,7 @@ class Levy(StochasticProcess):
         self,
         domain: tuple[real, real],
         duration: real,
-        step_size: real = 0.01,
+        step_size: float = 0.01,
     ) -> float:
         """
         Calculate the occupation time of the Lévy process in a given domain.
@@ -152,12 +148,13 @@ class Levy(StochasticProcess):
             _duration,
         )
 
-    def fpt_raw_moment(
+    def fpt_moment(
         self,
         domain: tuple[real, real],
         order: int,
-        particles: int,
-        step_size: real = 0.01,
+        center: bool = False,
+        particles: int = 10_000,
+        step_size: float = 0.01,
         max_duration: real = 1000,
     ) -> Optional[float]:
         _a, _b = validate_domain(domain, process_name="Levy FPT raw moment")
@@ -166,7 +163,7 @@ class Levy(StochasticProcess):
         _step_size = validate_positive_float_param(step_size, "step_size")
         _max_duration = validate_positive_float_param(max_duration, "max_duration")
 
-        return _core.levy_fpt_raw_moment(
+        result = _core.levy_fpt_raw_moment(
             self.start_position,
             self.alpha,
             (_a, _b),
@@ -174,42 +171,26 @@ class Levy(StochasticProcess):
             _particles,
             _step_size,
             _max_duration,
-        )
-
-    def fpt_central_moment(
-        self,
-        domain: tuple[real, real],
-        order: int,
-        particles: int,
-        step_size: real = 0.01,
-        max_duration: real = 1000,
-    ) -> Optional[float]:
-        _a, _b = validate_domain(domain, process_name="Levy FPT central moment")
-        _order = validate_order(order)
-        _particles = validate_particles(particles)
-        _step_size = validate_positive_float_param(step_size, "step_size")
-        _max_duration = validate_positive_float_param(max_duration, "max_duration")
-
-        if _order == 0:
-            return 1.0
-
-        return _core.levy_fpt_central_moment(
+        ) if not center else _core.levy_fpt_central_moment(
             self.start_position,
             self.alpha,
             (_a, _b),
             _order,
-            _particles,
-            _step_size,
-            _max_duration,
-        )
+                _particles,
+                _step_size,
+                _max_duration,
+            )
 
-    def occupation_time_raw_moment(
+        return result
+
+    def occupation_time_moment(
         self,
         domain: tuple[real, real],
-        order: int,
-        particles: int,
         duration: real,
-        step_size: real = 0.01,
+        order: int,
+        center: bool = False,
+        particles: int = 10_000,
+        step_size: float = 0.01,
     ) -> float:
         _a, _b = validate_domain(domain, process_name="Levy Occupation raw moment")
         _order = validate_order(order)
@@ -220,7 +201,15 @@ class Levy(StochasticProcess):
         if _order == 0:
             return 1.0
 
-        return _core.levy_occupation_time_raw_moment(
+        result = _core.levy_occupation_time_raw_moment(
+            self.start_position,
+            self.alpha,
+            (_a, _b),
+            _order,
+            _particles,
+            _step_size,
+            _duration,
+        ) if not center else _core.levy_occupation_time_central_moment(
             self.start_position,
             self.alpha,
             (_a, _b),
@@ -230,37 +219,10 @@ class Levy(StochasticProcess):
             _duration,
         )
 
-    def occupation_time_central_moment(
-        self,
-        domain: tuple[real, real],
-        order: int,
-        particles: int,
-        duration: real,
-        step_size: real = 0.01,
-    ) -> float:
-        _a, _b = validate_domain(domain, process_name="Levy Occupation central moment")
-        _order = validate_order(order)
-        _particles = validate_particles(particles)
-        _duration = validate_positive_float_param(duration, "duration")
-        _step_size = validate_positive_float_param(step_size, "step_size")
-
-        if _order == 0:
-            return 1.0
-        if _order == 1:
-            return 0.0
-
-        return _core.levy_occupation_time_central_moment(
-            self.start_position,
-            self.alpha,
-            (_a, _b),
-            _order,
-            _particles,
-            _step_size,
-            _duration,
-        )
+        return result
 
 
-class Subordinator(StochasticProcess):
+class Subordinator(ContinuousProcess):
     def __init__(
         self,
         alpha: real,
@@ -283,11 +245,8 @@ class Subordinator(StochasticProcess):
 
         self.alpha = alpha_transformed
 
-    def __call__(self, duration: real) -> Trajectory:
-        return Trajectory(self, duration)
-
     def simulate(
-        self, duration: real, step_size: real = 0.01
+        self, duration: real, step_size: float = 0.01
     ) -> tuple[np.ndarray, np.ndarray]:
         _duration = ensure_float(duration)
         _step_size = ensure_float(step_size)
@@ -304,14 +263,12 @@ class Subordinator(StochasticProcess):
     def fpt(
         self,
         domain: tuple[real, real],
-        step_size: real = 0.01,
+        step_size: float = 0.01,
         max_duration: real = 1000,
     ) -> Optional[float]:
         _a, _b = validate_domain(domain, process_name="Subordinator FPT")
         _step_size = validate_positive_float_param(step_size, "step_size")
         _max_duration = validate_positive_float_param(max_duration, "max_duration")
-        # Original code: a >= b -> "domain must be a valid interval"
-        # validate_domain ensures a < b by default, which is consistent.
 
         return _core.subordinator_fpt(
             self.alpha,
@@ -324,14 +281,12 @@ class Subordinator(StochasticProcess):
         self,
         domain: tuple[real, real],
         duration: real,
-        step_size: real = 0.01,
+        step_size: float = 0.01,
     ) -> float:
         _a, _b = validate_domain(domain, process_name="Subordinator Occupation Time")
         _duration = validate_positive_float_param(duration, "duration")
         _step_size = validate_positive_float_param(step_size, "step_size")
         # Original code: a >= b -> "domain must be a valid interval"
-        # validate_domain ensures a < b by default.
-
         return _core.subordinator_occupation_time(
             self.alpha,
             (_a, _b),
@@ -339,12 +294,13 @@ class Subordinator(StochasticProcess):
             _step_size,
         )
 
-    def fpt_raw_moment(
+    def fpt_moment(
         self,
         domain: tuple[real, real],
         order: int,
-        particles: int,
-        step_size: real = 0.01,
+        center: bool = False,
+        particles: int = 10_000,
+        step_size: float = 0.01,
         max_duration: real = 1000,
     ) -> Optional[float]:
         _a, _b = validate_domain(domain, process_name="Subordinator FPT raw moment")
@@ -353,7 +309,14 @@ class Subordinator(StochasticProcess):
         _step_size = validate_positive_float_param(step_size, "step_size")
         _max_duration = validate_positive_float_param(max_duration, "max_duration")
 
-        return _core.subordinator_fpt_raw_moment(
+        result = _core.subordinator_fpt_raw_moment(
+            self.alpha,
+            (_a, _b),
+            _order,
+            _particles,
+            _step_size,
+            _max_duration,
+        ) if not center else _core.subordinator_fpt_central_moment(
             self.alpha,
             (_a, _b),
             _order,
@@ -362,39 +325,16 @@ class Subordinator(StochasticProcess):
             _max_duration,
         )
 
-    def fpt_central_moment(
+        return result
+
+    def occupation_time_moment(
         self,
         domain: tuple[real, real],
-        order: int,
-        particles: int,
-        step_size: real = 0.01,
-        max_duration: real = 1000,
-    ) -> Optional[float]:
-        _a, _b = validate_domain(domain, process_name="Subordinator FPT central moment")
-        _order = validate_order(order)
-        _particles = validate_particles(particles)
-        _step_size = validate_positive_float_param(step_size, "step_size")
-        _max_duration = validate_positive_float_param(max_duration, "max_duration")
-
-        if _order == 0:
-            return 1.0
-
-        return _core.subordinator_fpt_central_moment(
-            self.alpha,
-            (_a, _b),
-            _order,
-            _particles,
-            _step_size,
-            _max_duration,
-        )
-
-    def occupation_time_raw_moment(
-        self,
-        domain: tuple[real, real],
-        order: int,
-        particles: int,
         duration: real,
-        step_size: real = 0.01,
+        order: int,
+        center: bool = False,
+        particles: int = 10_000,
+        step_size: float = 0.01,
     ) -> float:
         _a, _b = validate_domain(
             domain, process_name="Subordinator Occupation raw moment"
@@ -407,7 +347,14 @@ class Subordinator(StochasticProcess):
         if _order == 0:
             return 1.0
 
-        return _core.subordinator_occupation_time_raw_moment(
+        result = _core.subordinator_occupation_time_raw_moment(
+            self.alpha,
+            (_a, _b),
+            _order,
+            _particles,
+            _step_size,
+            _duration,
+        ) if not center else _core.subordinator_occupation_time_central_moment(
             self.alpha,
             (_a, _b),
             _order,
@@ -416,38 +363,10 @@ class Subordinator(StochasticProcess):
             _duration,
         )
 
-    def occupation_time_central_moment(
-        self,
-        domain: tuple[real, real],
-        order: int,
-        particles: int,
-        duration: real,
-        step_size: real = 0.01,
-    ) -> float:
-        _a, _b = validate_domain(
-            domain, process_name="Subordinator Occupation central moment"
-        )
-        _order = validate_order(order)
-        _particles = validate_particles(particles)
-        _duration = validate_positive_float_param(duration, "duration")
-        _step_size = validate_positive_float_param(step_size, "step_size")
-
-        if _order == 0:
-            return 1.0
-        if _order == 1:
-            return 0.0
-
-        return _core.subordinator_occupation_time_central_moment(
-            self.alpha,
-            (_a, _b),
-            _order,
-            _particles,
-            _step_size,
-            _duration,
-        )
+        return result
 
 
-class InvSubordinator(StochasticProcess):
+class InvSubordinator(ContinuousProcess):
     def __init__(
         self,
         alpha: real,
@@ -463,11 +382,8 @@ class InvSubordinator(StochasticProcess):
             raise ValueError("alpha must be in the range (0, 1) for InvSubordinator")
         self.alpha = alpha_transformed
 
-    def __call__(self, duration: real) -> Trajectory:
-        return Trajectory(self, duration)
-
     def simulate(
-        self, duration: real, step_size: real = 0.01
+        self, duration: real, step_size: float = 0.01
     ) -> tuple[np.ndarray, np.ndarray]:
         _duration = ensure_float(duration)
         _step_size = ensure_float(step_size)
@@ -484,14 +400,12 @@ class InvSubordinator(StochasticProcess):
     def fpt(
         self,
         domain: tuple[real, real],
-        step_size: real = 0.01,
+        step_size: float = 0.01,
         max_duration: real = 1000,
     ) -> Optional[float]:
         _a, _b = validate_domain(domain, process_name="InvSubordinator FPT")
         _step_size = validate_positive_float_param(step_size, "step_size")
         _max_duration = validate_positive_float_param(max_duration, "max_duration")
-        # Original code: a >= b -> "domain must be a valid interval"
-        # validate_domain ensures a < b by default.
 
         return _core.inv_subordinator_fpt(
             self.alpha,
@@ -504,13 +418,11 @@ class InvSubordinator(StochasticProcess):
         self,
         domain: tuple[real, real],
         duration: real,
-        step_size: real = 0.01,
+        step_size: float = 0.01,
     ) -> float:
         _a, _b = validate_domain(domain, process_name="InvSubordinator Occupation Time")
         _duration = validate_positive_float_param(duration, "duration")
         _step_size = validate_positive_float_param(step_size, "step_size")
-        # Original code: a >= b -> "domain must be a valid interval"
-        # validate_domain ensures a < b by default.
 
         return _core.inv_subordinator_occupation_time(
             self.alpha,
@@ -519,12 +431,13 @@ class InvSubordinator(StochasticProcess):
             _step_size,
         )
 
-    def fpt_raw_moment(
+    def fpt_moment(
         self,
         domain: tuple[real, real],
         order: int,
-        particles: int,
-        step_size: real = 0.01,
+        center: bool = False,
+        particles: int = 10_000,
+        step_size: float = 0.01,
         max_duration: real = 1000,
     ) -> Optional[float]:
         _a, _b = validate_domain(domain, process_name="InvSubordinator FPT raw moment")
@@ -533,7 +446,14 @@ class InvSubordinator(StochasticProcess):
         _step_size = validate_positive_float_param(step_size, "step_size")
         _max_duration = validate_positive_float_param(max_duration, "max_duration")
 
-        return _core.inv_subordinator_fpt_raw_moment(
+        result = _core.inv_subordinator_fpt_raw_moment(
+            self.alpha,
+            (_a, _b),
+            _order,
+            _particles,
+            _step_size,
+            _max_duration,
+        ) if not center else _core.inv_subordinator_fpt_central_moment(
             self.alpha,
             (_a, _b),
             _order,
@@ -541,42 +461,17 @@ class InvSubordinator(StochasticProcess):
             _step_size,
             _max_duration,
         )
+        
+        return result
 
-    def fpt_central_moment(
+    def occupation_time_moment(
         self,
         domain: tuple[real, real],
-        order: int,
-        particles: int,
-        step_size: real = 0.01,
-        max_duration: real = 1000,
-    ) -> Optional[float]:
-        _a, _b = validate_domain(
-            domain, process_name="InvSubordinator FPT central moment"
-        )
-        _order = validate_order(order)
-        _particles = validate_particles(particles)
-        _step_size = validate_positive_float_param(step_size, "step_size")
-        _max_duration = validate_positive_float_param(max_duration, "max_duration")
-
-        if _order == 0:
-            return 1.0
-
-        return _core.inv_subordinator_fpt_central_moment(
-            self.alpha,
-            (_a, _b),
-            _order,
-            _particles,
-            _step_size,
-            _max_duration,
-        )
-
-    def occupation_time_raw_moment(
-        self,
-        domain: tuple[real, real],
-        order: int,
-        particles: int,
         duration: real,
-        step_size: real = 0.01,
+        order: int,
+        center: bool = False,
+        particles: int = 10_000,
+        step_size: float = 0.01,
     ) -> float:
         _a, _b = validate_domain(
             domain, process_name="InvSubordinator Occupation raw moment"
@@ -589,7 +484,14 @@ class InvSubordinator(StochasticProcess):
         if _order == 0:
             return 1.0
 
-        return _core.inv_subordinator_occupation_time_raw_moment(
+        result = _core.inv_subordinator_occupation_time_raw_moment(
+            self.alpha,
+            (_a, _b),
+            _order,
+            _particles,
+            _step_size,
+            _duration,
+        ) if not center else _core.inv_subordinator_occupation_time_central_moment(
             self.alpha,
             (_a, _b),
             _order,
@@ -597,18 +499,144 @@ class InvSubordinator(StochasticProcess):
             _step_size,
             _duration,
         )
+        
+        return result
+    
 
-    def occupation_time_central_moment(
+class AsymmetricLevy(ContinuousProcess):
+    def __init__(
+        self,
+        alpha: real,
+        beta: real,
+        start_position: real = 0.0,
+    ):
+        """
+        Initialize an Asymmetric Lévy process object.
+
+        Args:
+            alpha (real): Stability index of the Asymmetric Lévy process. Must be in (0, 2].
+            beta (real): Skewness parameter. Must be in [-1, 1].
+            start_position (real, optional): Starting position. Defaults to 0.0.
+
+        Raises:
+            TypeError: If alpha, beta, or start_position are not numbers.
+            ValueError: If alpha is not in (0, 2] or beta is not in [-1, 1].
+        """
+        try:
+            _alpha = ensure_float(alpha)
+            _beta = ensure_float(beta)
+            _start_position = ensure_float(start_position)
+        except TypeError as e:
+            raise TypeError(f"Input parameters must be numbers. Error: {e}") from e
+
+        if not (0 < _alpha <= 2):
+            raise ValueError(f"alpha must be in the range (0, 2], got {_alpha}")
+        if not (-1 <= _beta <= 1):
+            raise ValueError(f"beta must be in the range [-1, 1], got {_beta}")
+
+        self.alpha = _alpha
+        self.beta = _beta
+        self.start_position = _start_position
+
+    def simulate(
+        self, duration: real, step_size: float = 0.01
+    ) -> tuple[np.ndarray, np.ndarray]:
+        _duration = validate_positive_float_param(duration, "duration")
+        _step_size = validate_positive_float_param(step_size, "step_size")
+
+        return _core.asymmetric_levy_simulate(
+            self.start_position,
+            self.alpha,
+            self.beta,
+            _duration,
+            _step_size,
+        )
+
+    def fpt(
+        self,
+        domain: tuple[real, real],
+        step_size: float = 0.01,
+        max_duration: real = 1000,
+    ) -> Optional[float]:
+        _a, _b = validate_domain(domain, process_name="AsymmetricLevy FPT")
+        _step_size = validate_positive_float_param(step_size, "step_size")
+        _max_duration = validate_positive_float_param(max_duration, "max_duration")
+
+        return _core.asymmetric_levy_fpt(
+            self.start_position,
+            self.alpha,
+            self.beta,
+            _step_size,
+            (_a, _b),
+            _max_duration,
+        )
+
+    def fpt_moment(
         self,
         domain: tuple[real, real],
         order: int,
-        particles: int,
-        duration: real,
-        step_size: real = 0.01,
-    ) -> float:
-        _a, _b = validate_domain(
-            domain, process_name="InvSubordinator Occupation central moment"
+        center: bool = False,
+        particles: int = 10_000,
+        step_size: float = 0.01,
+        max_duration: real = 1000,
+    ) -> Optional[float]:
+        _a, _b = validate_domain(domain, process_name="AsymmetricLevy FPT raw moment")
+        _order = validate_order(order)
+        _particles = validate_particles(particles)
+        _step_size = validate_positive_float_param(step_size, "step_size")
+        _max_duration = validate_positive_float_param(max_duration, "max_duration")
+
+        result = _core.asymmetric_levy_fpt_raw_moment(
+            self.start_position,
+            self.alpha,
+            self.beta,
+            (_a, _b),
+            _order,
+            _particles,
+            _step_size,
+            _max_duration,
+        ) if not center else _core.asymmetric_levy_fpt_central_moment(
+            self.start_position,
+            self.alpha,
+            self.beta,
+            (_a, _b),
+            _order,
+            _particles,
+            _step_size,
+            _max_duration,
         )
+        
+        return result
+
+    def occupation_time(
+        self,
+        domain: tuple[real, real],
+        duration: real,
+        step_size: float = 0.01,
+    ) -> float:
+        _a, _b = validate_domain(domain, process_name="AsymmetricLevy Occupation Time")
+        _duration = validate_positive_float_param(duration, "duration")
+        _step_size = validate_positive_float_param(step_size, "step_size")
+
+        return _core.asymmetric_levy_occupation_time(
+            self.start_position,
+            self.alpha,
+            self.beta,
+            _step_size,
+            (_a, _b),
+            _duration,
+        )
+
+    def occupation_time_moment(
+        self,
+        domain: tuple[real, real],
+        duration: real,
+        order: int,
+        center: bool = False,
+        particles: int = 10_000,
+        step_size: float = 0.01,
+    ) -> float:
+        _a, _b = validate_domain(domain, process_name="AsymmetricLevy Occupation raw moment")
         _order = validate_order(order)
         _particles = validate_particles(particles)
         _duration = validate_positive_float_param(duration, "duration")
@@ -616,14 +644,74 @@ class InvSubordinator(StochasticProcess):
 
         if _order == 0:
             return 1.0
-        if _order == 1:
-            return 0.0
 
-        return _core.inv_subordinator_occupation_time_central_moment(
+        result = _core.asymmetric_levy_occupation_time_raw_moment(
+            self.start_position,
             self.alpha,
+            self.beta,
             (_a, _b),
             _order,
             _particles,
             _step_size,
             _duration,
+        ) if not center else _core.asymmetric_levy_occupation_time_central_moment(
+            self.start_position,
+            self.alpha,
+            self.beta,
+            (_a, _b),
+            _duration,
+            _order,
+            _particles,
+            _step_size,
+        )
+        
+        return result
+
+    def tamsd(
+        self,
+        duration: real,
+        delta: real,
+        step_size: float = 0.01,
+        quad_order: int = 10,
+    ) -> float:
+        _duration = validate_positive_float_param(duration, "duration")
+        _delta = validate_positive_float_param(delta, "delta")
+        _step_size = validate_positive_float_param(step_size, "step_size")
+        if not isinstance(quad_order, int) or quad_order <= 0:
+            raise ValueError("quad_order must be a positive integer.")
+
+        return _core.asymmetric_levy_tamsd(
+            self.start_position,
+            self.alpha,
+            self.beta,
+            _duration,
+            _delta,
+            _step_size,
+            quad_order,
+        )
+
+    def eatamsd(
+        self,
+        duration: real,
+        delta: real,
+        particles: int,
+        step_size: float = 0.01,
+        quad_order: int = 10,
+    ) -> float:
+        _duration = validate_positive_float_param(duration, "duration")
+        _delta = validate_positive_float_param(delta, "delta")
+        _particles = validate_particles(particles)
+        _step_size = validate_positive_float_param(step_size, "step_size")
+        if not isinstance(quad_order, int) or quad_order <= 0:
+            raise ValueError("quad_order must be a positive integer.")
+
+        return _core.asymmetric_levy_eatamsd(
+            self.start_position,
+            self.alpha,
+            self.beta,
+            _duration,
+            _delta,
+            _particles,
+            _step_size,
+            quad_order,
         )
