@@ -81,7 +81,12 @@ class Bm(ContinuousProcess):
         )
 
     def moment(
-        self, duration: real, order: int, particles: int = 10_000, step_size: float = 0.01, central: bool = True
+        self,
+        duration: real,
+        order: int,
+        particles: int = 10_000,
+        step_size: float = 0.01,
+        central: bool = True,
     ) -> float:
         """
         Calculate the raw moment of the Brownian motion.
@@ -92,7 +97,7 @@ class Bm(ContinuousProcess):
             particles (int, optional): Number of particles (positive integer) for ensemble averaging. Defaults to 10_000.
             step_size (real, optional): Step size for the simulation. Defaults to 0.01.
             central (bool, optional): Whether to calculate the central moment. Defaults to True.
-            
+
         Raises:
             TypeError: If duration, order, particles, or step_size have incorrect types.
             ValueError: If order is negative, particles is not positive, or if duration or step_size are not positive.
@@ -108,20 +113,24 @@ class Bm(ContinuousProcess):
         if not isinstance(central, bool):
             raise TypeError("central must be a boolean")
 
-        result = _core.bm_raw_moment(
-            self.start_position,
-            self.diffusion_coefficient,
-            _duration,
-            _step_size,
-            _order,
-            _particles,
-        ) if not central else _core.bm_central_moment(
-            self.start_position,
-            self.diffusion_coefficient,
-            _duration,
-            _step_size,
-            _order,
-            _particles,
+        result = (
+            _core.bm_raw_moment(
+                self.start_position,
+                self.diffusion_coefficient,
+                _duration,
+                _step_size,
+                _order,
+                _particles,
+            )
+            if not central
+            else _core.bm_central_moment(
+                self.start_position,
+                self.diffusion_coefficient,
+                _duration,
+                _step_size,
+                _order,
+                _particles,
+            )
         )
         return result
 
@@ -177,7 +186,7 @@ class Bm(ContinuousProcess):
             step_size (real, optional): Step size. Defaults to 0.01.
             max_duration (real, optional): Maximum duration. Defaults to 1000.
             central (bool, optional): Whether to calculate the central moment. Defaults to True.
-            
+
         Returns:
             Optional[float]: The raw moment of FPT, or None if no passage for some particles.
         """
@@ -189,28 +198,31 @@ class Bm(ContinuousProcess):
 
         if not isinstance(central, bool):
             raise TypeError("central must be a boolean")
-        
-        result = _core.bm_fpt_raw_moment(
-            self.start_position,
-            self.diffusion_coefficient,
-            (_a, _b),
-            _order,
-            _particles,
-            _step_size,
-            _max_duration,
-        ) if not central else _core.bm_fpt_central_moment(
-            self.start_position,
-            self.diffusion_coefficient,
-            (_a, _b),
-            _order,
-            _particles,
-            _step_size,
-            _max_duration,
+
+        result = (
+            _core.bm_fpt_raw_moment(
+                self.start_position,
+                self.diffusion_coefficient,
+                (_a, _b),
+                _order,
+                _particles,
+                _step_size,
+                _max_duration,
+            )
+            if not central
+            else _core.bm_fpt_central_moment(
+                self.start_position,
+                self.diffusion_coefficient,
+                (_a, _b),
+                _order,
+                _particles,
+                _step_size,
+                _max_duration,
+            )
         )
-        
+
         return result
 
-    
     def occupation_time(
         self,
         domain: tuple[real, real],
@@ -275,22 +287,26 @@ class Bm(ContinuousProcess):
         if not isinstance(central, bool):
             raise TypeError("central must be a boolean")
 
-        result = _core.bm_occupation_time_raw_moment(
-            self.start_position,
-            self.diffusion_coefficient,
-            (_a, _b),
-            _order,
-            _particles,
-            _step_size,
-            _duration,
-        ) if not central else _core.bm_occupation_time_central_moment(
-            self.start_position,
-            self.diffusion_coefficient,
-            (_a, _b),
-            _order,
-            _particles,
-            _step_size,
-            _duration,
+        result = (
+            _core.bm_occupation_time_raw_moment(
+                self.start_position,
+                self.diffusion_coefficient,
+                (_a, _b),
+                _order,
+                _particles,
+                _step_size,
+                _duration,
+            )
+            if not central
+            else _core.bm_occupation_time_central_moment(
+                self.start_position,
+                self.diffusion_coefficient,
+                (_a, _b),
+                _order,
+                _particles,
+                _step_size,
+                _duration,
+            )
         )
         return result
 

@@ -5,8 +5,10 @@ import numpy as np
 
 real = Union[int, float]
 
-class StochasticProcess(ABC): 
+
+class StochasticProcess(ABC):
     pass
+
 
 class ContinuousProcess(StochasticProcess):
     @abstractmethod
@@ -23,15 +25,25 @@ class ContinuousProcess(StochasticProcess):
             tuple[np.ndarray, np.ndarray]: A tuple containing arrays for time points and process values.
         """
         pass
-    
+
     @abstractmethod
-    def moment(self, duration: real, order: int, step_size: float = 0.01, central: bool = True, particles: int = 10_000) -> float: 
+    def moment(
+        self,
+        duration: real,
+        order: int,
+        step_size: float = 0.01,
+        central: bool = True,
+        particles: int = 10_000,
+    ) -> float:
         pass
+
 
 class PointProcess(StochasticProcess):
     @abstractmethod
     def simulate(
-        self, duration: Optional[real] = None, num_step: Optional[int] = None,
+        self,
+        duration: Optional[real] = None,
+        num_step: Optional[int] = None,
     ) -> tuple[np.ndarray, np.ndarray]:
         """Simulate the point process.
 
@@ -43,7 +55,9 @@ class PointProcess(StochasticProcess):
             tuple[np.ndarray, np.ndarray]: A tuple containing arrays for time points and process values.
         """
         pass
-    
+
     @abstractmethod
-    def moment(self, duration: real, order: int, central: bool = True, particles: int = 10_000) -> float: 
+    def moment(
+        self, duration: real, order: int, central: bool = True, particles: int = 10_000
+    ) -> float:
         pass

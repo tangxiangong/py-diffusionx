@@ -66,7 +66,12 @@ class GeometricBM(ContinuousProcess):
         )
 
     def moment(
-        self, duration: real, order: int, central: bool = False, particles: int = 10_000, step_size: float = 0.01
+        self,
+        duration: real,
+        order: int,
+        central: bool = False,
+        particles: int = 10_000,
+        step_size: float = 0.01,
     ) -> float:
         _order = validate_order(order)
         _particles = validate_particles(particles)
@@ -79,22 +84,26 @@ class GeometricBM(ContinuousProcess):
         if _order == 0:
             return 1.0
 
-        result = _core.gb_raw_moment(
-            self.start_value,
-            self.mu,
-            self.sigma,
-            _duration,
-            _step_size,
-            _order,
-            _particles,
-        ) if not central else _core.gb_central_moment(
-            self.start_value,
-            self.mu,
-            self.sigma,
-            _duration,
-            _step_size,
-            _order,
-            _particles,
+        result = (
+            _core.gb_raw_moment(
+                self.start_value,
+                self.mu,
+                self.sigma,
+                _duration,
+                _step_size,
+                _order,
+                _particles,
+            )
+            if not central
+            else _core.gb_central_moment(
+                self.start_value,
+                self.mu,
+                self.sigma,
+                _duration,
+                _step_size,
+                _order,
+                _particles,
+            )
         )
 
         return result
@@ -145,24 +154,28 @@ class GeometricBM(ContinuousProcess):
         if not isinstance(central, bool):
             raise TypeError("central must be a boolean")
 
-        result = _core.gb_fpt_raw_moment(
-            self.start_value,
-            self.mu,
-            self.sigma,
-            (_a, _b),
-            _order,
-            _particles,
-            _step_size,
-            _max_duration,
-        ) if not central else _core.gb_fpt_central_moment(
-            self.start_value,
-            self.mu,
-            self.sigma,
-            (_a, _b),
-            _order,
-            _particles,
-            _step_size,
-            _max_duration,
+        result = (
+            _core.gb_fpt_raw_moment(
+                self.start_value,
+                self.mu,
+                self.sigma,
+                (_a, _b),
+                _order,
+                _particles,
+                _step_size,
+                _max_duration,
+            )
+            if not central
+            else _core.gb_fpt_central_moment(
+                self.start_value,
+                self.mu,
+                self.sigma,
+                (_a, _b),
+                _order,
+                _particles,
+                _step_size,
+                _max_duration,
+            )
         )
 
         return result
@@ -212,24 +225,28 @@ class GeometricBM(ContinuousProcess):
         if _order == 0:
             return 1.0
 
-        result = _core.gb_occupation_time_raw_moment(
-            self.start_value,
-            self.mu,
-            self.sigma,
-            (_a, _b),
-            _order,
-            _particles,
-            _step_size,
-            _duration,
-        ) if not central else _core.gb_occupation_time_central_moment(
-            self.start_value,
-            self.mu,
-            self.sigma,
-            (_a, _b),
-            _order,
-            _particles,
-            _step_size,
-            _duration,
+        result = (
+            _core.gb_occupation_time_raw_moment(
+                self.start_value,
+                self.mu,
+                self.sigma,
+                (_a, _b),
+                _order,
+                _particles,
+                _step_size,
+                _duration,
+            )
+            if not central
+            else _core.gb_occupation_time_central_moment(
+                self.start_value,
+                self.mu,
+                self.sigma,
+                (_a, _b),
+                _order,
+                _particles,
+                _step_size,
+                _duration,
+            )
         )
 
         return result

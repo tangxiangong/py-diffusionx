@@ -55,7 +55,6 @@ class LevyWalk(ContinuousProcess):
         self.beta = _beta
         self.start_position = _start_position
 
-    
     def simulate(
         self,
         duration: real,
@@ -73,7 +72,12 @@ class LevyWalk(ContinuousProcess):
         )
 
     def moment(
-        self, duration: real, order: int, center: bool = False, particles: int = 10_000, step_size: float = 0.01
+        self,
+        duration: real,
+        order: int,
+        center: bool = False,
+        particles: int = 10_000,
+        step_size: float = 0.01,
     ) -> float:
         _order = validate_order(order)
         _particles = validate_particles(particles)
@@ -83,22 +87,26 @@ class LevyWalk(ContinuousProcess):
         if _order == 0:
             return 1.0
 
-        result = _core.levy_walk_raw_moment(
-            self.start_position,
-            self.alpha,
-            self.beta,
-            _duration,
-            _step_size,
-            _order,
-            _particles,
-        ) if not center else _core.levy_walk_central_moment(
-            self.start_position,
-            self.alpha,
-            self.beta,
-            _duration,
-            _step_size,
-            _order,
-            _particles,
+        result = (
+            _core.levy_walk_raw_moment(
+                self.start_position,
+                self.alpha,
+                self.beta,
+                _duration,
+                _step_size,
+                _order,
+                _particles,
+            )
+            if not center
+            else _core.levy_walk_central_moment(
+                self.start_position,
+                self.alpha,
+                self.beta,
+                _duration,
+                _step_size,
+                _order,
+                _particles,
+            )
         )
 
         return result
@@ -137,24 +145,28 @@ class LevyWalk(ContinuousProcess):
         _step_size = validate_positive_float_param(step_size, "step_size")
         _max_duration = validate_positive_float_param(max_duration, "max_duration")
 
-        result = _core.levy_walk_fpt_raw_moment(
-            self.start_position,
-            self.alpha,
-            self.beta,
-            (_a, _b),
-            _order,
-            _particles,
-            _step_size,
-            _max_duration,
-        ) if not center else _core.levy_walk_fpt_central_moment(
-            self.start_position,
-            self.alpha,
-            self.beta,
-            (_a, _b),
-            _order,
-            _particles,
-            _step_size,
-            _max_duration,
+        result = (
+            _core.levy_walk_fpt_raw_moment(
+                self.start_position,
+                self.alpha,
+                self.beta,
+                (_a, _b),
+                _order,
+                _particles,
+                _step_size,
+                _max_duration,
+            )
+            if not center
+            else _core.levy_walk_fpt_central_moment(
+                self.start_position,
+                self.alpha,
+                self.beta,
+                (_a, _b),
+                _order,
+                _particles,
+                _step_size,
+                _max_duration,
+            )
         )
 
         return result
@@ -196,26 +208,30 @@ class LevyWalk(ContinuousProcess):
         if _order == 0:
             return 1.0
 
-        result = _core.levy_walk_occupation_time_raw_moment(
-            self.start_position,
-            self.alpha,
-            self.beta,
-            (_a, _b),
-            _order,
-            _particles,
-            _step_size,
-            _duration,
-        ) if not center else _core.levy_walk_occupation_time_central_moment(
-            self.start_position,
-            self.alpha,
-            self.beta,
-            (_a, _b),
-            _order,
-            _particles,
-            _step_size,
-            _duration,
+        result = (
+            _core.levy_walk_occupation_time_raw_moment(
+                self.start_position,
+                self.alpha,
+                self.beta,
+                (_a, _b),
+                _order,
+                _particles,
+                _step_size,
+                _duration,
+            )
+            if not center
+            else _core.levy_walk_occupation_time_central_moment(
+                self.start_position,
+                self.alpha,
+                self.beta,
+                (_a, _b),
+                _order,
+                _particles,
+                _step_size,
+                _duration,
+            )
         )
-        
+
         return result
 
     def tamsd(

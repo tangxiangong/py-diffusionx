@@ -49,7 +49,12 @@ class CTRW(PointProcess):
         self.beta = _beta
         self.start_position = _start_position
 
-    def simulate(self, duration: Optional[real] = None, num_step: Optional[int] = None, _step_size: float = 0.01) -> tuple[np.ndarray, np.ndarray]:
+    def simulate(
+        self,
+        duration: Optional[real] = None,
+        num_step: Optional[int] = None,
+        _step_size: float = 0.01,
+    ) -> tuple[np.ndarray, np.ndarray]:
         """
         Simulate the CTRW based on total duration.
 
@@ -98,32 +103,38 @@ class CTRW(PointProcess):
             )
         else:
             raise ValueError("Either duration or num_step must be provided")
-    
-    def moment(self, duration: real, order: int, central: bool = True, particles: int = 10_000) -> float: 
+
+    def moment(
+        self, duration: real, order: int, central: bool = True, particles: int = 10_000
+    ) -> float:
         _order = validate_order(order)
         _particles = validate_particles(particles)
         _duration = validate_positive_float_param(duration, "duration")
-        
+
         if not isinstance(central, bool):
             raise TypeError("central must be a boolean")
 
-        result = _core.ctrw_raw_moment(
-            self.alpha,
-            self.beta,
-            self.start_position,
-            _duration,
-            _order,
-            _particles,
-        ) if not central else _core.ctrw_central_moment(
-            self.alpha,
-            self.beta,
-            self.start_position,
-            _duration,
-            _order,
-            _particles,
+        result = (
+            _core.ctrw_raw_moment(
+                self.alpha,
+                self.beta,
+                self.start_position,
+                _duration,
+                _order,
+                _particles,
+            )
+            if not central
+            else _core.ctrw_central_moment(
+                self.alpha,
+                self.beta,
+                self.start_position,
+                _duration,
+                _order,
+                _particles,
+            )
         )
         return result
-            
+
     def fpt(
         self,
         domain: tuple[real, real],
@@ -168,27 +179,31 @@ class CTRW(PointProcess):
         _max_duration = validate_positive_float_param(max_duration, "max_duration")
 
         if not isinstance(central, bool):
-            raise TypeError("central must be a boolean")    
-        
-        result = _core.ctrw_fpt_raw_moment(
-            self.alpha,
-            self.beta,
-            self.start_position,
-            (_a, _b),
-            _order,
-            _particles,
-            _max_duration,
-        ) if not central else _core.ctrw_fpt_central_moment(
-            self.alpha,
-            self.beta,
-            self.start_position,
-            (_a, _b),
-            _order,
-            _particles,
-            _max_duration,
+            raise TypeError("central must be a boolean")
+
+        result = (
+            _core.ctrw_fpt_raw_moment(
+                self.alpha,
+                self.beta,
+                self.start_position,
+                (_a, _b),
+                _order,
+                _particles,
+                _max_duration,
+            )
+            if not central
+            else _core.ctrw_fpt_central_moment(
+                self.alpha,
+                self.beta,
+                self.start_position,
+                (_a, _b),
+                _order,
+                _particles,
+                _max_duration,
+            )
         )
         return result
-    
+
     def occupation_time(
         self,
         domain: tuple[real, real],
@@ -235,21 +250,25 @@ class CTRW(PointProcess):
         if not isinstance(central, bool):
             raise TypeError("central must be a boolean")
 
-        result = _core.ctrw_occupation_time_raw_moment(
-            self.alpha,
-            self.beta,
-            self.start_position,
-            (_a, _b),
-            _duration,
-            _order,
-            _particles,
-        ) if not central else _core.ctrw_occupation_time_central_moment(
-            self.alpha,
-            self.beta,
-            self.start_position,
-            (_a, _b),
-            _duration,
-            _order,
-            _particles,
+        result = (
+            _core.ctrw_occupation_time_raw_moment(
+                self.alpha,
+                self.beta,
+                self.start_position,
+                (_a, _b),
+                _duration,
+                _order,
+                _particles,
+            )
+            if not central
+            else _core.ctrw_occupation_time_central_moment(
+                self.alpha,
+                self.beta,
+                self.start_position,
+                (_a, _b),
+                _duration,
+                _order,
+                _particles,
+            )
         )
         return result

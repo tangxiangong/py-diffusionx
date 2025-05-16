@@ -107,7 +107,12 @@ class Langevin:
         )
 
     def moment(
-        self, duration: real, order: int, central: bool = True, particles: int = 10_000, time_step: real = 0.01
+        self,
+        duration: real,
+        order: int,
+        central: bool = True,
+        particles: int = 10_000,
+        time_step: real = 0.01,
     ) -> float:
         """
         Calculate the moment of the Langevin process.
@@ -170,23 +175,27 @@ class Langevin:
         if order == 0:
             return 1.0
 
-        result = _core.langevin_raw_moment(
-            self.drift_func,
-            self.diffusion_func,
-            self.start_position,
-            _duration,
-            order,
-            particles,
-            _time_step,
-        ) if not central else _core.langevin_central_moment(
-            self.drift_func,
-            self.diffusion_func,
-            self.start_position,
+        result = (
+            _core.langevin_raw_moment(
+                self.drift_func,
+                self.diffusion_func,
+                self.start_position,
                 _duration,
                 order,
                 particles,
                 _time_step,
             )
+            if not central
+            else _core.langevin_central_moment(
+                self.drift_func,
+                self.diffusion_func,
+                self.start_position,
+                _duration,
+                order,
+                particles,
+                _time_step,
+            )
+        )
 
         return result
 
@@ -224,24 +233,28 @@ class Langevin:
         _time_step = validate_positive_float_param(time_step, "time_step")
         _max_duration = validate_positive_float_param(max_duration, "max_duration")
 
-        result = _core.langevin_fpt_raw_moment(
-            self.start_position,
-            self.drift_func,
-            self.diffusion_func,
-            (_a, _b),
-            _order,
-            _particles,
-            _time_step,
-            _max_duration,
-        ) if not central else _core.langevin_fpt_central_moment(
-            self.start_position,
-            self.drift_func,
-            self.diffusion_func,
-            (_a, _b),
-            _order,
-            _particles,
-            _time_step,
-            _max_duration,
+        result = (
+            _core.langevin_fpt_raw_moment(
+                self.start_position,
+                self.drift_func,
+                self.diffusion_func,
+                (_a, _b),
+                _order,
+                _particles,
+                _time_step,
+                _max_duration,
+            )
+            if not central
+            else _core.langevin_fpt_central_moment(
+                self.start_position,
+                self.drift_func,
+                self.diffusion_func,
+                (_a, _b),
+                _order,
+                _particles,
+                _time_step,
+                _max_duration,
+            )
         )
         return result
 
@@ -282,27 +295,31 @@ class Langevin:
         if _order == 0:
             return 1.0
 
-        result = _core.langevin_occupation_time_raw_moment(
-            self.start_position,
-            self.drift_func,
-            self.diffusion_func,
-            (_a, _b),
-            _order,
-            _particles,
-            _time_step,
-            _duration,
-        ) if not central else _core.langevin_occupation_time_central_moment(
-            self.start_position,
-            self.drift_func,
-            self.diffusion_func,
-            (_a, _b),
-            _order,
-            _particles,
-            _time_step,
-            _duration,
+        result = (
+            _core.langevin_occupation_time_raw_moment(
+                self.start_position,
+                self.drift_func,
+                self.diffusion_func,
+                (_a, _b),
+                _order,
+                _particles,
+                _time_step,
+                _duration,
+            )
+            if not central
+            else _core.langevin_occupation_time_central_moment(
+                self.start_position,
+                self.drift_func,
+                self.diffusion_func,
+                (_a, _b),
+                _order,
+                _particles,
+                _time_step,
+                _duration,
+            )
         )
         return result
-    
+
     def tamsd(
         self,
         duration: real,
@@ -322,7 +339,7 @@ class Langevin:
             _time_step,
             quad_order,
         )
-    
+
     def eatamsd(
         self,
         duration: real,
@@ -341,7 +358,7 @@ class Langevin:
             self.diffusion_func,
             _duration,
             _delta,
-            _particles, 
+            _particles,
             _time_step,
             quad_order,
         )
@@ -401,7 +418,9 @@ class GeneralizedLangevin:
         self.start_position = _start_position
         self.alpha = _alpha
 
-    def simulate(self, duration: real, time_step: float = 0.01) -> tuple[ndarray, ndarray]:
+    def simulate(
+        self, duration: real, time_step: float = 0.01
+    ) -> tuple[ndarray, ndarray]:
         """
         Simulate the Generalized Langevin process.
 
@@ -453,7 +472,12 @@ class GeneralizedLangevin:
         )
 
     def moment(
-        self, duration: real, order: int, central: bool = True, particles: int = 10_000, time_step: real = 0.01
+        self,
+        duration: real,
+        order: int,
+        central: bool = True,
+        particles: int = 10_000,
+        time_step: real = 0.01,
     ) -> float:
         """
         Calculate the moment of the Generalized Langevin process.
@@ -515,24 +539,28 @@ class GeneralizedLangevin:
         if order == 0:
             return 1.0
 
-        result = _core.generalized_langevin_raw_moment(
-            self.drift_func,
-            self.diffusion_func,
-            self.start_position,
-            self.alpha,
-            _duration,
-            order,
-            particles,
-            _time_step,
-        ) if not central else _core.generalized_langevin_central_moment(
-            self.drift_func,
-            self.diffusion_func,
-            self.start_position,
-            self.alpha,
-            _duration,
-            order,
-            particles,
-            _time_step,
+        result = (
+            _core.generalized_langevin_raw_moment(
+                self.drift_func,
+                self.diffusion_func,
+                self.start_position,
+                self.alpha,
+                _duration,
+                order,
+                particles,
+                _time_step,
+            )
+            if not central
+            else _core.generalized_langevin_central_moment(
+                self.drift_func,
+                self.diffusion_func,
+                self.start_position,
+                self.alpha,
+                _duration,
+                order,
+                particles,
+                _time_step,
+            )
         )
         return result
 
@@ -565,32 +593,38 @@ class GeneralizedLangevin:
         time_step: float = 0.01,
         max_duration: real = 1000,
     ) -> Optional[float]:
-        _a, _b = validate_domain(domain, process_name="GeneralizedLangevin FPT raw moment")
+        _a, _b = validate_domain(
+            domain, process_name="GeneralizedLangevin FPT raw moment"
+        )
         _order = validate_order(order)
         _particles = validate_particles(particles)
         _time_step = validate_positive_float_param(time_step, "time_step")
         _max_duration = validate_positive_float_param(max_duration, "max_duration")
 
-        result = _core.generalized_langevin_fpt_raw_moment(
-            self.start_position,
-            self.drift_func,
-            self.diffusion_func,
-            self.alpha,
-            (_a, _b),
-            _order,
-            _particles,
-            _time_step,
-            _max_duration,
-        ) if not central else _core.generalized_langevin_fpt_central_moment(
-            self.start_position,
-            self.drift_func,
-            self.diffusion_func,
-            self.alpha,
-            (_a, _b),
-            _order,
-            _particles,
-            _time_step,
-            _max_duration,
+        result = (
+            _core.generalized_langevin_fpt_raw_moment(
+                self.start_position,
+                self.drift_func,
+                self.diffusion_func,
+                self.alpha,
+                (_a, _b),
+                _order,
+                _particles,
+                _time_step,
+                _max_duration,
+            )
+            if not central
+            else _core.generalized_langevin_fpt_central_moment(
+                self.start_position,
+                self.drift_func,
+                self.diffusion_func,
+                self.alpha,
+                (_a, _b),
+                _order,
+                _particles,
+                _time_step,
+                _max_duration,
+            )
         )
         return result
 
@@ -636,29 +670,33 @@ class GeneralizedLangevin:
         if _order == 0:
             return 1.0
 
-        result = _core.generalized_langevin_occupation_time_raw_moment(
-            self.start_position,
-            self.drift_func,
-            self.diffusion_func,
-            self.alpha,
-            (_a, _b),
-            _order,
-            _particles,
-            _time_step,
-            _duration,
-        ) if not central else _core.generalized_langevin_occupation_time_central_moment(
-            self.start_position,
-            self.drift_func,
-            self.diffusion_func,
-            self.alpha,
-            (_a, _b),
-            _order,
-            _particles,
-            _time_step,
-            _duration,
+        result = (
+            _core.generalized_langevin_occupation_time_raw_moment(
+                self.start_position,
+                self.drift_func,
+                self.diffusion_func,
+                self.alpha,
+                (_a, _b),
+                _order,
+                _particles,
+                _time_step,
+                _duration,
+            )
+            if not central
+            else _core.generalized_langevin_occupation_time_central_moment(
+                self.start_position,
+                self.drift_func,
+                self.diffusion_func,
+                self.alpha,
+                (_a, _b),
+                _order,
+                _particles,
+                _time_step,
+                _duration,
+            )
         )
         return result
-    
+
     def tamsd(
         self,
         duration: real,
@@ -679,7 +717,7 @@ class GeneralizedLangevin:
             _time_step,
             quad_order,
         )
-        
+
     def eatamsd(
         self,
         duration: real,
@@ -703,7 +741,7 @@ class GeneralizedLangevin:
             _time_step,
             quad_order,
         )
-        
+
 
 class SubordinatedLangevin:
     """
@@ -755,7 +793,9 @@ class SubordinatedLangevin:
         self.subordinator_alpha = _subordinator_alpha
         self.start_position = _start_position
 
-    def simulate(self, duration: real, time_step: float = 0.01) -> tuple[ndarray, ndarray]:
+    def simulate(
+        self, duration: real, time_step: float = 0.01
+    ) -> tuple[ndarray, ndarray]:
         """
         Simulate the Subordinated Langevin process.
         (Parameters, Raises, Returns are similar to Langevin.simulate)
@@ -787,7 +827,12 @@ class SubordinatedLangevin:
         )
 
     def moment(
-        self, duration: real, order: int, central: bool = True, particles: int = 10_000, time_step: float = 0.01
+        self,
+        duration: real,
+        order: int,
+        central: bool = True,
+        particles: int = 10_000,
+        time_step: float = 0.01,
     ) -> float:
         """
         Calculate the raw moment of the Subordinated Langevin process.
@@ -825,24 +870,28 @@ class SubordinatedLangevin:
         if order == 0:
             return 1.0
 
-        result = _core.subordinated_langevin_raw_moment(
-            self.drift_func,
-            self.diffusion_func,
-            self.subordinator_alpha,
-            self.start_position,
-            _duration,
-            order,
-            particles,
-            _time_step,
-        ) if not central else _core.subordinated_langevin_central_moment(
-            self.drift_func,
-            self.diffusion_func,
-            self.subordinator_alpha,
-            self.start_position,
-            _duration,
+        result = (
+            _core.subordinated_langevin_raw_moment(
+                self.drift_func,
+                self.diffusion_func,
+                self.subordinator_alpha,
+                self.start_position,
+                _duration,
+                order,
+                particles,
+                _time_step,
+            )
+            if not central
+            else _core.subordinated_langevin_central_moment(
+                self.drift_func,
+                self.diffusion_func,
+                self.subordinator_alpha,
+                self.start_position,
+                _duration,
+            )
         )
         return result
-    
+
     def fpt(
         self, domain: tuple[real, real], max_duration: real = 1000
     ) -> Optional[float]:  # No time_step here as per _core
@@ -875,26 +924,30 @@ class SubordinatedLangevin:
         _time_step = validate_positive_float_param(time_step, "time_step")
         _max_duration = validate_positive_float_param(max_duration, "max_duration")
 
-        result = _core.subordinated_langevin_fpt_raw_moment(
-            self.start_position,
-            self.drift_func,
-            self.diffusion_func,
-            self.subordinator_alpha,
-            (_a, _b),
-            _order,
-            _particles,
-            _time_step,
-            _max_duration,
-        ) if not central else _core.subordinated_langevin_fpt_central_moment(
-            self.start_position,
-            self.drift_func,
-            self.diffusion_func,
-            self.subordinator_alpha,
-            (_a, _b),
-            _order,
-            _particles,
-            _time_step,
-            _max_duration,
+        result = (
+            _core.subordinated_langevin_fpt_raw_moment(
+                self.start_position,
+                self.drift_func,
+                self.diffusion_func,
+                self.subordinator_alpha,
+                (_a, _b),
+                _order,
+                _particles,
+                _time_step,
+                _max_duration,
+            )
+            if not central
+            else _core.subordinated_langevin_fpt_central_moment(
+                self.start_position,
+                self.drift_func,
+                self.diffusion_func,
+                self.subordinator_alpha,
+                (_a, _b),
+                _order,
+                _particles,
+                _time_step,
+                _max_duration,
+            )
         )
         return result
 
@@ -940,26 +993,30 @@ class SubordinatedLangevin:
         if _order == 0:
             return 1.0
 
-        result = _core.subordinated_langevin_occupation_time_raw_moment(
-            self.start_position,
-            self.drift_func,
-            self.diffusion_func,
-            self.subordinator_alpha,
-            (_a, _b),
-            _order,
-            _particles,
-            _time_step,
-            _duration,
-        ) if not central else _core.subordinated_langevin_occupation_time_central_moment(
-            self.start_position,
-            self.drift_func,
-            self.diffusion_func,
-            self.subordinator_alpha,
-            (_a, _b),
-            _order,
-            _particles,
-            _time_step,
-            _duration,
+        result = (
+            _core.subordinated_langevin_occupation_time_raw_moment(
+                self.start_position,
+                self.drift_func,
+                self.diffusion_func,
+                self.subordinator_alpha,
+                (_a, _b),
+                _order,
+                _particles,
+                _time_step,
+                _duration,
+            )
+            if not central
+            else _core.subordinated_langevin_occupation_time_central_moment(
+                self.start_position,
+                self.drift_func,
+                self.diffusion_func,
+                self.subordinator_alpha,
+                (_a, _b),
+                _order,
+                _particles,
+                _time_step,
+                _duration,
+            )
         )
         return result
 

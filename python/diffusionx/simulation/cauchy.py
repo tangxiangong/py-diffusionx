@@ -49,31 +49,40 @@ class Cauchy(ContinuousProcess):
         )
 
     def moment(
-        self, duration: real, order: int, particles: int = 10_000, step_size: float = 0.01, central: bool = True
+        self,
+        duration: real,
+        order: int,
+        particles: int = 10_000,
+        step_size: float = 0.01,
+        central: bool = True,
     ) -> float:
         _order = validate_order(order)
         _particles = validate_particles(particles)
         _duration = validate_positive_float_param(duration, "duration")
         _step_size = validate_positive_float_param(step_size, "step_size")
-        
+
         if not isinstance(central, bool):
             raise TypeError("central must be a boolean")
 
-        result = _core.cauchy_raw_moment(
-            self.start_position,
-            _duration,
-            _step_size,
-            _order,
-            _particles,
-        ) if not central else _core.cauchy_central_moment(
-            self.start_position,
-            _duration,
-            _step_size,
-            _order,
-            _particles,
+        result = (
+            _core.cauchy_raw_moment(
+                self.start_position,
+                _duration,
+                _step_size,
+                _order,
+                _particles,
+            )
+            if not central
+            else _core.cauchy_central_moment(
+                self.start_position,
+                _duration,
+                _step_size,
+                _order,
+                _particles,
+            )
         )
         return result
-    
+
     def fpt(
         self,
         domain: tuple[real, real],
@@ -108,20 +117,24 @@ class Cauchy(ContinuousProcess):
         if not isinstance(central, bool):
             raise TypeError("central must be a boolean")
 
-        result = _core.cauchy_fpt_raw_moment(
-            self.start_position,
-            (_a, _b),
-            _order,
-            _particles,
-            _step_size,
-            _max_duration,
-        ) if not central else _core.cauchy_fpt_central_moment(
-            self.start_position,
-            (_a, _b),
-            _order,
-            _particles,
-            _step_size,
-            _max_duration,  
+        result = (
+            _core.cauchy_fpt_raw_moment(
+                self.start_position,
+                (_a, _b),
+                _order,
+                _particles,
+                _step_size,
+                _max_duration,
+            )
+            if not central
+            else _core.cauchy_fpt_central_moment(
+                self.start_position,
+                (_a, _b),
+                _order,
+                _particles,
+                _step_size,
+                _max_duration,
+            )
         )
         return result
 
@@ -159,21 +172,25 @@ class Cauchy(ContinuousProcess):
         if not isinstance(central, bool):
             raise TypeError("central must be a boolean")
 
-        result = _core.cauchy_occupation_time_raw_moment(
-            self.start_position,
-            (_a, _b),
-            _order,
-            _particles,
-            _step_size,
-            _duration,
-        ) if not central else _core.cauchy_occupation_time_central_moment(
-            self.start_position,
-            self.scale,
-            (_a, _b),
-            _order,
-            _particles,
-            _step_size,
-            _duration,
+        result = (
+            _core.cauchy_occupation_time_raw_moment(
+                self.start_position,
+                (_a, _b),
+                _order,
+                _particles,
+                _step_size,
+                _duration,
+            )
+            if not central
+            else _core.cauchy_occupation_time_central_moment(
+                self.start_position,
+                self.scale,
+                (_a, _b),
+                _order,
+                _particles,
+                _step_size,
+                _duration,
+            )
         )
         return result
 
@@ -235,7 +252,7 @@ class AsymmetricCauchy(ContinuousProcess):
         Args:
             beta (real, optional): Skewness parameter. Must be in [-1, 1]. Defaults to 0.0 (symmetric Cauchy).
             start_position (real, optional): Starting position. Defaults to 0.0.
-            
+
         Raises:
             TypeError: If start_position or beta are not numbers.
             ValueError: If beta is not in [-1, 1].
@@ -268,7 +285,12 @@ class AsymmetricCauchy(ContinuousProcess):
         )
 
     def moment(
-        self, duration: real, order: int, particles: int = 10_000, step_size: float = 0.01, central: bool = True
+        self,
+        duration: real,
+        order: int,
+        particles: int = 10_000,
+        step_size: float = 0.01,
+        central: bool = True,
     ) -> float:
         _order = validate_order(order)
         _particles = validate_particles(particles)
@@ -278,23 +300,27 @@ class AsymmetricCauchy(ContinuousProcess):
         if not isinstance(central, bool):
             raise TypeError("central must be a boolean")
 
-        result = _core.asymmetric_cauchy_raw_moment(
-            self.start_position,
-            self.beta,
-            _duration,
-            _step_size,
-            _order,
-            _particles,
-        ) if not central else _core.asymmetric_cauchy_central_moment(
-            self.start_position,
-            self.beta,
-            _duration,
-            _step_size,
-            _order,
-            _particles,
+        result = (
+            _core.asymmetric_cauchy_raw_moment(
+                self.start_position,
+                self.beta,
+                _duration,
+                _step_size,
+                _order,
+                _particles,
+            )
+            if not central
+            else _core.asymmetric_cauchy_central_moment(
+                self.start_position,
+                self.beta,
+                _duration,
+                _step_size,
+                _order,
+                _particles,
+            )
         )
         return result
-    
+
     def fpt(
         self,
         domain: tuple[real, real],
@@ -329,23 +355,27 @@ class AsymmetricCauchy(ContinuousProcess):
         _max_duration = validate_positive_float_param(max_duration, "max_duration")
         if not isinstance(central, bool):
             raise TypeError("central must be a boolean")
-        
-        result = _core.asymmetric_cauchy_fpt_raw_moment(
-            self.start_position,
-            self.beta,
-            (_a, _b),
-            _order,
-            _particles,
-            _step_size,
-            _max_duration,
-        ) if not central else _core.asymmetric_cauchy_fpt_central_moment(
-            self.start_position,
-            self.beta,
-            (_a, _b),
-            _order,
-            _particles,
-            _step_size,
-            _max_duration,
+
+        result = (
+            _core.asymmetric_cauchy_fpt_raw_moment(
+                self.start_position,
+                self.beta,
+                (_a, _b),
+                _order,
+                _particles,
+                _step_size,
+                _max_duration,
+            )
+            if not central
+            else _core.asymmetric_cauchy_fpt_central_moment(
+                self.start_position,
+                self.beta,
+                (_a, _b),
+                _order,
+                _particles,
+                _step_size,
+                _max_duration,
+            )
         )
         return result
 
@@ -388,25 +418,29 @@ class AsymmetricCauchy(ContinuousProcess):
         if not isinstance(central, bool):
             raise TypeError("central must be a boolean")
 
-        result = _core.asymmetric_cauchy_occupation_time_raw_moment(
-            self.start_position,
-            self.beta,
-            (_a, _b),
-            _order,
-            _particles,
-            _step_size,
-            _duration,
-        ) if not central else _core.asymmetric_cauchy_occupation_time_central_moment(
-            self.start_position,
-            self.beta,
-            (_a, _b),
-            _order,
-            _particles,
-            _step_size,
-            _duration,
+        result = (
+            _core.asymmetric_cauchy_occupation_time_raw_moment(
+                self.start_position,
+                self.beta,
+                (_a, _b),
+                _order,
+                _particles,
+                _step_size,
+                _duration,
+            )
+            if not central
+            else _core.asymmetric_cauchy_occupation_time_central_moment(
+                self.start_position,
+                self.beta,
+                (_a, _b),
+                _order,
+                _particles,
+                _step_size,
+                _duration,
+            )
         )
         return result
-    
+
     def tamsd(
         self,
         duration: real,

@@ -31,7 +31,12 @@ class BrownianExcursion(ContinuousProcess):
         )
 
     def moment(
-        self, duration: real, order: int, particles: int = 10_000, step_size: float = 0.01, central: bool = True
+        self,
+        duration: real,
+        order: int,
+        particles: int = 10_000,
+        step_size: float = 0.01,
+        central: bool = True,
     ) -> float:
         _order = validate_order(order)
         _particles = validate_particles(particles)
@@ -41,16 +46,20 @@ class BrownianExcursion(ContinuousProcess):
         if not isinstance(central, bool):
             raise TypeError("central must be a boolean")
 
-        result = _core.be_raw_moment(
-            _duration,
-            _step_size,
-            _order,
-            _particles,
-        ) if not central else _core.be_central_moment(
-            _duration,
-            _step_size,
-            _order,
-            _particles,
+        result = (
+            _core.be_raw_moment(
+                _duration,
+                _step_size,
+                _order,
+                _particles,
+            )
+            if not central
+            else _core.be_central_moment(
+                _duration,
+                _step_size,
+                _order,
+                _particles,
+            )
         )
         return result
 
@@ -81,7 +90,9 @@ class BrownianExcursion(ContinuousProcess):
         max_duration: real = 1000,
         step_size: float = 0.01,
     ) -> Optional[float]:
-        _a, _b = validate_domain(domain, process_name="Brownian excursion FPT raw moment")
+        _a, _b = validate_domain(
+            domain, process_name="Brownian excursion FPT raw moment"
+        )
         _order = validate_order(order)
         _particles = validate_particles(particles)
         _step_size = validate_positive_float_param(step_size, "step_size")
@@ -92,21 +103,24 @@ class BrownianExcursion(ContinuousProcess):
         if not isinstance(central, bool):
             raise TypeError("central must be a boolean")
 
-        result = _core.be_fpt_raw_moment(
-            (_a, _b),
-            _order,
-            _particles,
-            _step_size,
-            _max_duration,
-        ) if not central else _core.be_fpt_central_moment(
-            (_a, _b),
-            _order,
-            _particles,
-            _step_size,
-            _max_duration,
+        result = (
+            _core.be_fpt_raw_moment(
+                (_a, _b),
+                _order,
+                _particles,
+                _step_size,
+                _max_duration,
+            )
+            if not central
+            else _core.be_fpt_central_moment(
+                (_a, _b),
+                _order,
+                _particles,
+                _step_size,
+                _max_duration,
+            )
         )
         return result
-
 
     def occupation_time(
         self,
@@ -114,7 +128,9 @@ class BrownianExcursion(ContinuousProcess):
         duration: real,
         step_size: float = 0.01,
     ) -> float:
-        _a, _b = validate_domain(domain, process_name="Brownian excursion Occupation Time")
+        _a, _b = validate_domain(
+            domain, process_name="Brownian excursion Occupation Time"
+        )
         _duration = validate_positive_float_param(
             duration, "duration (excursion duration)"
         )
@@ -146,21 +162,25 @@ class BrownianExcursion(ContinuousProcess):
         if not isinstance(central, bool):
             raise TypeError("central must be a boolean")
 
-        result = _core.be_occupation_time_raw_moment(
-            (_a, _b),
-            _order,
-            _particles,
-            _step_size,
-            _duration,
-        ) if not central else _core.be_occupation_time_central_moment(
-            (_a, _b),
-            _order,
-            _particles,
-            _step_size,
-            _duration,
+        result = (
+            _core.be_occupation_time_raw_moment(
+                (_a, _b),
+                _order,
+                _particles,
+                _step_size,
+                _duration,
+            )
+            if not central
+            else _core.be_occupation_time_central_moment(
+                (_a, _b),
+                _order,
+                _particles,
+                _step_size,
+                _duration,
+            )
         )
         return result
-    
+
     def tamsd(
         self,
         duration: real,

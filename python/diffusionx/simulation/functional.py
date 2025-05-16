@@ -31,8 +31,9 @@ class FPT:
         self.sp = sp
         self.domain = (a, b)  # Store the float-converted domain
 
-    def simulate(self, max_duration: real = 1000,
-        step_size: float = 0.01) -> Optional[float]:
+    def simulate(
+        self, max_duration: real = 1000, step_size: float = 0.01
+    ) -> Optional[float]:
         try:
             max_duration = ensure_float(max_duration)
         except TypeError as e:
@@ -48,41 +49,53 @@ class FPT:
             raise ValueError("step_size must be positive")
 
         if isinstance(self.sp, ContinuousProcess):
-            try: 
+            try:
                 result = self.sp.fpt(self.domain, max_duration, step_size)
             except NotImplementedError:
                 raise NotImplementedError(
-                        f"FPT calculation is not implemented for process type {type(self.sp).__name__}"
-                    )
+                    f"FPT calculation is not implemented for process type {type(self.sp).__name__}"
+                )
         elif isinstance(self.sp, PointProcess):
-            try: 
+            try:
                 result = self.sp.fpt(self.domain, max_duration)
             except NotImplementedError:
                 raise NotImplementedError(
-                        f"FPT calculation is not implemented for process type {type(self.sp).__name__}"
-                    )
+                    f"FPT calculation is not implemented for process type {type(self.sp).__name__}"
+                )
         else:
             raise ValueError("sp must be a ContinuousProcess or PointProcess")
         return result
-    
-    def moment(self, order: int, central: bool = True, particles: int = 10_000, max_duration: real = 1000, step_size: float = 0.01) -> float: 
+
+    def moment(
+        self,
+        order: int,
+        central: bool = True,
+        particles: int = 10_000,
+        max_duration: real = 1000,
+        step_size: float = 0.01,
+    ) -> float:
         if isinstance(self.sp, ContinuousProcess):
-            try: 
-                result = self.sp.fpt_moment(self.domain, order, central, particles, max_duration, step_size)
+            try:
+                result = self.sp.fpt_moment(
+                    self.domain, order, central, particles, max_duration, step_size
+                )
             except NotImplementedError:
                 raise NotImplementedError(
-                        f"FPT moment calculation is not implemented for process type {type(self.sp).__name__}"
-                    )
+                    f"FPT moment calculation is not implemented for process type {type(self.sp).__name__}"
+                )
         elif isinstance(self.sp, PointProcess):
-            try: 
-                result = self.sp.fpt_moment(self.domain, order, central, particles, max_duration)
+            try:
+                result = self.sp.fpt_moment(
+                    self.domain, order, central, particles, max_duration
+                )
             except NotImplementedError:
                 raise NotImplementedError(
-                        f"FPT moment calculation is not implemented for process type {type(self.sp).__name__}"
-                    )
+                    f"FPT moment calculation is not implemented for process type {type(self.sp).__name__}"
+                )
         else:
             raise ValueError("sp must be a ContinuousProcess or PointProcess")
         return result
+
 
 class OccupationTime:
     def __init__(
@@ -127,14 +140,14 @@ class OccupationTime:
             if step_size <= 0:
                 raise ValueError("step_size must be positive")
 
-            try: 
+            try:
                 result = self.sp.occupation_time(self.domain, duration, step_size)
             except NotImplementedError:
                 raise NotImplementedError(
-                        f"Occupation time calculation is not implemented for process type {type(self.sp).__name__}"
-                    )
+                    f"Occupation time calculation is not implemented for process type {type(self.sp).__name__}"
+                )
         elif isinstance(self.sp, PointProcess):
-            try: 
+            try:
                 result = self.sp.occupation_time(self.domain, duration)
             except NotImplementedError:
                 raise NotImplementedError(
@@ -144,17 +157,28 @@ class OccupationTime:
             raise ValueError("sp must be a ContinuousProcess or PointProcess")
         return result
 
-    def moment(self, duration: real, order: int, central: bool = True, particles: int = 10_000, step_size: float = 0.01) -> float: 
+    def moment(
+        self,
+        duration: real,
+        order: int,
+        central: bool = True,
+        particles: int = 10_000,
+        step_size: float = 0.01,
+    ) -> float:
         if isinstance(self.sp, ContinuousProcess):
-            try: 
-                result = self.sp.occupation_time_moment(self.domain, duration, order, central, particles, step_size)
+            try:
+                result = self.sp.occupation_time_moment(
+                    self.domain, duration, order, central, particles, step_size
+                )
             except NotImplementedError:
                 raise NotImplementedError(
-                        f"Occupation time moment calculation is not implemented for process type {type(self.sp).__name__}"
-                    )
+                    f"Occupation time moment calculation is not implemented for process type {type(self.sp).__name__}"
+                )
         elif isinstance(self.sp, PointProcess):
-            try: 
-                result = self.sp.occupation_time_moment(self.domain, duration, order, central, particles)
+            try:
+                result = self.sp.occupation_time_moment(
+                    self.domain, duration, order, central, particles
+                )
             except NotImplementedError:
                 raise NotImplementedError(
                     f"Occupation time moment calculation is not implemented for process type {type(self.sp).__name__}"

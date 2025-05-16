@@ -163,23 +163,27 @@ class Levy(ContinuousProcess):
         _step_size = validate_positive_float_param(step_size, "step_size")
         _max_duration = validate_positive_float_param(max_duration, "max_duration")
 
-        result = _core.levy_fpt_raw_moment(
-            self.start_position,
-            self.alpha,
-            (_a, _b),
-            _order,
-            _particles,
-            _step_size,
-            _max_duration,
-        ) if not center else _core.levy_fpt_central_moment(
-            self.start_position,
-            self.alpha,
-            (_a, _b),
-            _order,
+        result = (
+            _core.levy_fpt_raw_moment(
+                self.start_position,
+                self.alpha,
+                (_a, _b),
+                _order,
                 _particles,
                 _step_size,
                 _max_duration,
             )
+            if not center
+            else _core.levy_fpt_central_moment(
+                self.start_position,
+                self.alpha,
+                (_a, _b),
+                _order,
+                _particles,
+                _step_size,
+                _max_duration,
+            )
+        )
 
         return result
 
@@ -201,22 +205,26 @@ class Levy(ContinuousProcess):
         if _order == 0:
             return 1.0
 
-        result = _core.levy_occupation_time_raw_moment(
-            self.start_position,
-            self.alpha,
-            (_a, _b),
-            _order,
-            _particles,
-            _step_size,
-            _duration,
-        ) if not center else _core.levy_occupation_time_central_moment(
-            self.start_position,
-            self.alpha,
-            (_a, _b),
-            _order,
-            _particles,
-            _step_size,
-            _duration,
+        result = (
+            _core.levy_occupation_time_raw_moment(
+                self.start_position,
+                self.alpha,
+                (_a, _b),
+                _order,
+                _particles,
+                _step_size,
+                _duration,
+            )
+            if not center
+            else _core.levy_occupation_time_central_moment(
+                self.start_position,
+                self.alpha,
+                (_a, _b),
+                _order,
+                _particles,
+                _step_size,
+                _duration,
+            )
         )
 
         return result
@@ -309,20 +317,24 @@ class Subordinator(ContinuousProcess):
         _step_size = validate_positive_float_param(step_size, "step_size")
         _max_duration = validate_positive_float_param(max_duration, "max_duration")
 
-        result = _core.subordinator_fpt_raw_moment(
-            self.alpha,
-            (_a, _b),
-            _order,
-            _particles,
-            _step_size,
-            _max_duration,
-        ) if not center else _core.subordinator_fpt_central_moment(
-            self.alpha,
-            (_a, _b),
-            _order,
-            _particles,
-            _step_size,
-            _max_duration,
+        result = (
+            _core.subordinator_fpt_raw_moment(
+                self.alpha,
+                (_a, _b),
+                _order,
+                _particles,
+                _step_size,
+                _max_duration,
+            )
+            if not center
+            else _core.subordinator_fpt_central_moment(
+                self.alpha,
+                (_a, _b),
+                _order,
+                _particles,
+                _step_size,
+                _max_duration,
+            )
         )
 
         return result
@@ -347,20 +359,24 @@ class Subordinator(ContinuousProcess):
         if _order == 0:
             return 1.0
 
-        result = _core.subordinator_occupation_time_raw_moment(
-            self.alpha,
-            (_a, _b),
-            _order,
-            _particles,
-            _step_size,
-            _duration,
-        ) if not center else _core.subordinator_occupation_time_central_moment(
-            self.alpha,
-            (_a, _b),
-            _order,
-            _particles,
-            _step_size,
-            _duration,
+        result = (
+            _core.subordinator_occupation_time_raw_moment(
+                self.alpha,
+                (_a, _b),
+                _order,
+                _particles,
+                _step_size,
+                _duration,
+            )
+            if not center
+            else _core.subordinator_occupation_time_central_moment(
+                self.alpha,
+                (_a, _b),
+                _order,
+                _particles,
+                _step_size,
+                _duration,
+            )
         )
 
         return result
@@ -446,22 +462,26 @@ class InvSubordinator(ContinuousProcess):
         _step_size = validate_positive_float_param(step_size, "step_size")
         _max_duration = validate_positive_float_param(max_duration, "max_duration")
 
-        result = _core.inv_subordinator_fpt_raw_moment(
-            self.alpha,
-            (_a, _b),
-            _order,
-            _particles,
-            _step_size,
-            _max_duration,
-        ) if not center else _core.inv_subordinator_fpt_central_moment(
-            self.alpha,
-            (_a, _b),
-            _order,
-            _particles,
-            _step_size,
-            _max_duration,
+        result = (
+            _core.inv_subordinator_fpt_raw_moment(
+                self.alpha,
+                (_a, _b),
+                _order,
+                _particles,
+                _step_size,
+                _max_duration,
+            )
+            if not center
+            else _core.inv_subordinator_fpt_central_moment(
+                self.alpha,
+                (_a, _b),
+                _order,
+                _particles,
+                _step_size,
+                _max_duration,
+            )
         )
-        
+
         return result
 
     def occupation_time_moment(
@@ -484,24 +504,28 @@ class InvSubordinator(ContinuousProcess):
         if _order == 0:
             return 1.0
 
-        result = _core.inv_subordinator_occupation_time_raw_moment(
-            self.alpha,
-            (_a, _b),
-            _order,
-            _particles,
-            _step_size,
-            _duration,
-        ) if not center else _core.inv_subordinator_occupation_time_central_moment(
-            self.alpha,
-            (_a, _b),
-            _order,
-            _particles,
-            _step_size,
-            _duration,
+        result = (
+            _core.inv_subordinator_occupation_time_raw_moment(
+                self.alpha,
+                (_a, _b),
+                _order,
+                _particles,
+                _step_size,
+                _duration,
+            )
+            if not center
+            else _core.inv_subordinator_occupation_time_central_moment(
+                self.alpha,
+                (_a, _b),
+                _order,
+                _particles,
+                _step_size,
+                _duration,
+            )
         )
-        
+
         return result
-    
+
 
 class AsymmetricLevy(ContinuousProcess):
     def __init__(
@@ -586,26 +610,30 @@ class AsymmetricLevy(ContinuousProcess):
         _step_size = validate_positive_float_param(step_size, "step_size")
         _max_duration = validate_positive_float_param(max_duration, "max_duration")
 
-        result = _core.asymmetric_levy_fpt_raw_moment(
-            self.start_position,
-            self.alpha,
-            self.beta,
-            (_a, _b),
-            _order,
-            _particles,
-            _step_size,
-            _max_duration,
-        ) if not center else _core.asymmetric_levy_fpt_central_moment(
-            self.start_position,
-            self.alpha,
-            self.beta,
-            (_a, _b),
-            _order,
-            _particles,
-            _step_size,
-            _max_duration,
+        result = (
+            _core.asymmetric_levy_fpt_raw_moment(
+                self.start_position,
+                self.alpha,
+                self.beta,
+                (_a, _b),
+                _order,
+                _particles,
+                _step_size,
+                _max_duration,
+            )
+            if not center
+            else _core.asymmetric_levy_fpt_central_moment(
+                self.start_position,
+                self.alpha,
+                self.beta,
+                (_a, _b),
+                _order,
+                _particles,
+                _step_size,
+                _max_duration,
+            )
         )
-        
+
         return result
 
     def occupation_time(
@@ -636,7 +664,9 @@ class AsymmetricLevy(ContinuousProcess):
         particles: int = 10_000,
         step_size: float = 0.01,
     ) -> float:
-        _a, _b = validate_domain(domain, process_name="AsymmetricLevy Occupation raw moment")
+        _a, _b = validate_domain(
+            domain, process_name="AsymmetricLevy Occupation raw moment"
+        )
         _order = validate_order(order)
         _particles = validate_particles(particles)
         _duration = validate_positive_float_param(duration, "duration")
@@ -645,26 +675,30 @@ class AsymmetricLevy(ContinuousProcess):
         if _order == 0:
             return 1.0
 
-        result = _core.asymmetric_levy_occupation_time_raw_moment(
-            self.start_position,
-            self.alpha,
-            self.beta,
-            (_a, _b),
-            _order,
-            _particles,
-            _step_size,
-            _duration,
-        ) if not center else _core.asymmetric_levy_occupation_time_central_moment(
-            self.start_position,
-            self.alpha,
-            self.beta,
-            (_a, _b),
-            _duration,
-            _order,
-            _particles,
-            _step_size,
+        result = (
+            _core.asymmetric_levy_occupation_time_raw_moment(
+                self.start_position,
+                self.alpha,
+                self.beta,
+                (_a, _b),
+                _order,
+                _particles,
+                _step_size,
+                _duration,
+            )
+            if not center
+            else _core.asymmetric_levy_occupation_time_central_moment(
+                self.start_position,
+                self.alpha,
+                self.beta,
+                (_a, _b),
+                _duration,
+                _order,
+                _particles,
+                _step_size,
+            )
         )
-        
+
         return result
 
     def tamsd(

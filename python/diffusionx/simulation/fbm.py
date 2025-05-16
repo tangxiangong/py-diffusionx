@@ -45,7 +45,6 @@ class FBM(ContinuousProcess):
         self.start_position = _start_position
         self.hurst_exponent = _hurst_exponent
 
-
     def simulate(
         self, duration: real, step_size: float = 0.01
     ) -> tuple[np.ndarray, np.ndarray]:
@@ -133,29 +132,38 @@ class FBM(ContinuousProcess):
 
         if not isinstance(central, bool):
             raise TypeError("central must be a boolean")
-        
-        result =_core.fbm_fpt_raw_moment(
-            self.start_position,
-            self.hurst_exponent,
-            (_a, _b),
-            _order,
-            _particles,
-            _step_size,
-            _max_duration,
-        ) if not central else _core.fbm_fpt_central_moment(
-            self.start_position,
-            self.hurst_exponent,
-            (_a, _b),
-            _order,
-            _particles,
-            _step_size,
-            _max_duration,
+
+        result = (
+            _core.fbm_fpt_raw_moment(
+                self.start_position,
+                self.hurst_exponent,
+                (_a, _b),
+                _order,
+                _particles,
+                _step_size,
+                _max_duration,
+            )
+            if not central
+            else _core.fbm_fpt_central_moment(
+                self.start_position,
+                self.hurst_exponent,
+                (_a, _b),
+                _order,
+                _particles,
+                _step_size,
+                _max_duration,
+            )
         )
 
         return result
 
     def moment(
-        self, duration: real, order: int, central: bool = False, particles: int = 10_000, step_size: float = 0.01
+        self,
+        duration: real,
+        order: int,
+        central: bool = False,
+        particles: int = 10_000,
+        step_size: float = 0.01,
     ) -> float:
         """
         Calculate the raw moment of the FBM.
@@ -181,20 +189,24 @@ class FBM(ContinuousProcess):
         if not isinstance(central, bool):
             raise TypeError("central must be a boolean")
 
-        result =  _core.fbm_raw_moment(
-            self.start_position,
-            self.hurst_exponent,
-            _duration,
-            _step_size,
-            _order,
-            _particles,
-        ) if not central else _core.fbm_central_moment(
-            self.start_position,
-            self.hurst_exponent,
-            _duration,
-            _step_size,
-            _order,
-            _particles, 
+        result = (
+            _core.fbm_raw_moment(
+                self.start_position,
+                self.hurst_exponent,
+                _duration,
+                _step_size,
+                _order,
+                _particles,
+            )
+            if not central
+            else _core.fbm_central_moment(
+                self.start_position,
+                self.hurst_exponent,
+                _duration,
+                _step_size,
+                _order,
+                _particles,
+            )
         )
 
         return result
@@ -250,22 +262,26 @@ class FBM(ContinuousProcess):
         if not isinstance(central, bool):
             raise TypeError("central must be a boolean")
 
-        result = _core.fbm_occupation_time_raw_moment(
-            self.start_position,
-            self.hurst_exponent,
-            (_a, _b),
-            _order,
-            _particles,
-            _step_size,
-            _duration,
-        ) if not central else _core.fbm_occupation_time_central_moment(
-            self.start_position,
-            self.hurst_exponent,
-            (_a, _b),
-            _order,
-            _particles,
-            _step_size,
-            _duration,
+        result = (
+            _core.fbm_occupation_time_raw_moment(
+                self.start_position,
+                self.hurst_exponent,
+                (_a, _b),
+                _order,
+                _particles,
+                _step_size,
+                _duration,
+            )
+            if not central
+            else _core.fbm_occupation_time_central_moment(
+                self.start_position,
+                self.hurst_exponent,
+                (_a, _b),
+                _order,
+                _particles,
+                _step_size,
+                _duration,
+            )
         )
 
         return result

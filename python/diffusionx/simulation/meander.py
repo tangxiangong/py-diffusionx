@@ -43,7 +43,6 @@ class BrownianMeander(ContinuousProcess):
         self.diffusion_coefficient = _diffusion_coefficient
         # start_position is implicitly 0
 
-
     def simulate(
         self, duration: real, step_size: float = 0.01
     ) -> tuple[np.ndarray, np.ndarray]:
@@ -57,7 +56,12 @@ class BrownianMeander(ContinuousProcess):
         )
 
     def moment(
-        self, duration: real, order: int, center: bool = False, particles: int = 10_000, step_size: float = 0.01
+        self,
+        duration: real,
+        order: int,
+        center: bool = False,
+        particles: int = 10_000,
+        step_size: float = 0.01,
     ) -> float:
         _order = validate_order(order)
         _particles = validate_particles(particles)
@@ -67,18 +71,22 @@ class BrownianMeander(ContinuousProcess):
         if _order == 0:
             return 1.0
 
-        result = _core.meander_raw_moment(
-            self.diffusion_coefficient,
-            _duration,
-            _step_size,
-            _order,
-            _particles,
-        ) if not center else _core.meander_central_moment(
-            self.diffusion_coefficient,
-            _duration,
-            _step_size,
-            _order,
-            _particles,
+        result = (
+            _core.meander_raw_moment(
+                self.diffusion_coefficient,
+                _duration,
+                _step_size,
+                _order,
+                _particles,
+            )
+            if not center
+            else _core.meander_central_moment(
+                self.diffusion_coefficient,
+                _duration,
+                _step_size,
+                _order,
+                _particles,
+            )
         )
 
         return result
@@ -121,24 +129,28 @@ class BrownianMeander(ContinuousProcess):
             max_duration, "max_duration (meander duration)"
         )
 
-        result = _core.meander_fpt_raw_moment(
-            self.diffusion_coefficient,
-            (_a, _b),
-            _order,
-            _particles,
-            _step_size,
-            _max_duration,
-        ) if not center else _core.meander_fpt_central_moment(
-            self.diffusion_coefficient,
-            (_a, _b),
-            _order,
-            _particles,
-            _step_size,
-            _max_duration,
+        result = (
+            _core.meander_fpt_raw_moment(
+                self.diffusion_coefficient,
+                (_a, _b),
+                _order,
+                _particles,
+                _step_size,
+                _max_duration,
+            )
+            if not center
+            else _core.meander_fpt_central_moment(
+                self.diffusion_coefficient,
+                (_a, _b),
+                _order,
+                _particles,
+                _step_size,
+                _max_duration,
+            )
         )
-        
+
         return result
-    
+
     def occupation_time(
         self,
         domain: tuple[real, real],
@@ -178,21 +190,25 @@ class BrownianMeander(ContinuousProcess):
         if _order == 0:
             return 1.0
 
-        result = _core.meander_occupation_time_raw_moment(
-            self.diffusion_coefficient,
-            (_a, _b),
-            _order,
-            _particles,
-            _step_size,
-            _duration,
-        ) if not center else _core.meander_occupation_time_central_moment(
-            self.diffusion_coefficient,
-            (_a, _b),
-            _duration,
-            _order,
-            _particles,
+        result = (
+            _core.meander_occupation_time_raw_moment(
+                self.diffusion_coefficient,
+                (_a, _b),
+                _order,
+                _particles,
+                _step_size,
+                _duration,
+            )
+            if not center
+            else _core.meander_occupation_time_central_moment(
+                self.diffusion_coefficient,
+                (_a, _b),
+                _duration,
+                _order,
+                _particles,
+            )
         )
-        
+
         return result
 
     def tamsd(

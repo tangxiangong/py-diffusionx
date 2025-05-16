@@ -95,7 +95,9 @@ class Poisson(ContinuousProcess):
             num_step,
         )
 
-    def moment(self, duration: real, order: int, center: bool = False, particles: int = 10_000) -> float:
+    def moment(
+        self, duration: real, order: int, center: bool = False, particles: int = 10_000
+    ) -> float:
         """
         Calculate the raw moment of the Poisson process at a given duration.
 
@@ -118,20 +120,24 @@ class Poisson(ContinuousProcess):
         if _order == 0:
             return 1.0
 
-        result = _core.poisson_raw_moment(
-            self.lambda_,
-            _duration,
-            _order,
-            _particles,
-        ) if not center else _core.poisson_central_moment(
-            self.lambda_,
-            _duration,
-            _order,
-            _particles,
+        result = (
+            _core.poisson_raw_moment(
+                self.lambda_,
+                _duration,
+                _order,
+                _particles,
+            )
+            if not center
+            else _core.poisson_central_moment(
+                self.lambda_,
+                _duration,
+                _order,
+                _particles,
+            )
         )
-        
+
         return result
-    
+
     def fpt(
         self,
         domain: tuple[real, real],
@@ -211,18 +217,22 @@ class Poisson(ContinuousProcess):
         _particles = validate_particles(particles)
         _max_duration = validate_positive_float_param(max_duration, "max_duration")
 
-        return _core.poisson_fpt_raw_moment(
-            self.lambda_,
-            (_a, _b),  # _core expects float tuple
-            _order,
-            _particles,
-            _max_duration,
-        ) if not center else _core.poisson_fpt_central_moment(
-            self.lambda_,
-            (_a, _b),
-            _order,
-            _particles,
-            _max_duration,
+        return (
+            _core.poisson_fpt_raw_moment(
+                self.lambda_,
+                (_a, _b),  # _core expects float tuple
+                _order,
+                _particles,
+                _max_duration,
+            )
+            if not center
+            else _core.poisson_fpt_central_moment(
+                self.lambda_,
+                (_a, _b),
+                _order,
+                _particles,
+                _max_duration,
+            )
         )
 
     def occupation_time_moment(
@@ -245,17 +255,20 @@ class Poisson(ContinuousProcess):
         if _order == 0:
             return 1.0
 
-        return _core.poisson_occupation_time_raw_moment(
-            self.lambda_,
-            (_a, _b),
-            _order,
-            _particles,
-            _duration,
-        ) if not center else _core.poisson_occupation_time_central_moment(
-            self.lambda_,
-            (_a, _b),
-            _order,
-            _particles,
-            _duration,
+        return (
+            _core.poisson_occupation_time_raw_moment(
+                self.lambda_,
+                (_a, _b),
+                _order,
+                _particles,
+                _duration,
+            )
+            if not center
+            else _core.poisson_occupation_time_central_moment(
+                self.lambda_,
+                (_a, _b),
+                _order,
+                _particles,
+                _duration,
+            )
         )
-

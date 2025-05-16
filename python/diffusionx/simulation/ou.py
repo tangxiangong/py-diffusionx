@@ -53,7 +53,6 @@ class Ou(ContinuousProcess):
         self.sigma = _sigma
         self.start_position = _start_position
 
-
     def simulate(
         self, duration: real, step_size: float = 0.01
     ) -> tuple[np.ndarray, np.ndarray]:
@@ -70,7 +69,12 @@ class Ou(ContinuousProcess):
         )
 
     def moment(
-        self, duration: real, order: int, center: bool = False, particles: int = 10_000, step_size: float = 0.01
+        self,
+        duration: real,
+        order: int,
+        center: bool = False,
+        particles: int = 10_000,
+        step_size: float = 0.01,
     ) -> float:
         _order = validate_order(order)
         _particles = validate_particles(particles)
@@ -80,28 +84,32 @@ class Ou(ContinuousProcess):
         if _order == 0:
             return 1.0
 
-        result = _core.ou_raw_moment(
-            self.start_position,
-            self.theta,
-            self.mu,
-            self.sigma,
-            _duration,
-            _step_size,
-            _order,
-            _particles,
-        ) if not center else _core.ou_central_moment(
-            self.start_position,
-            self.theta,
-            self.mu,
-            self.sigma,
-            _duration,
-            _step_size,
-            _order,
-            _particles,
+        result = (
+            _core.ou_raw_moment(
+                self.start_position,
+                self.theta,
+                self.mu,
+                self.sigma,
+                _duration,
+                _step_size,
+                _order,
+                _particles,
+            )
+            if not center
+            else _core.ou_central_moment(
+                self.start_position,
+                self.theta,
+                self.mu,
+                self.sigma,
+                _duration,
+                _step_size,
+                _order,
+                _particles,
+            )
         )
-        
+
         return result
-    
+
     def fpt(
         self,
         domain: tuple[real, real],
@@ -137,30 +145,34 @@ class Ou(ContinuousProcess):
         _step_size = validate_positive_float_param(step_size, "step_size")
         _max_duration = validate_positive_float_param(max_duration, "max_duration")
 
-        result = _core.ou_fpt_raw_moment(
-            self.start_position,
-            self.theta,
-            self.mu,
-            self.sigma,
-            (_a, _b),
-            _order,
-            _particles,
-            _step_size,
-            _max_duration,
-        ) if not center else _core.ou_fpt_central_moment(
-            self.start_position,
-            self.theta,
-            self.mu,
-            self.sigma,
-            (_a, _b),
-            _order,
-            _particles,
-            _step_size,
-            _max_duration,
+        result = (
+            _core.ou_fpt_raw_moment(
+                self.start_position,
+                self.theta,
+                self.mu,
+                self.sigma,
+                (_a, _b),
+                _order,
+                _particles,
+                _step_size,
+                _max_duration,
+            )
+            if not center
+            else _core.ou_fpt_central_moment(
+                self.start_position,
+                self.theta,
+                self.mu,
+                self.sigma,
+                (_a, _b),
+                _order,
+                _particles,
+                _step_size,
+                _max_duration,
+            )
         )
-        
+
         return result
-    
+
     def occupation_time(
         self,
         domain: tuple[real, real],
@@ -199,30 +211,34 @@ class Ou(ContinuousProcess):
         if _order == 0:
             return 1.0
 
-        result = _core.ou_occupation_time_raw_moment(
-            self.start_position,
-            self.theta,
-            self.mu,
-            self.sigma,
-            (_a, _b),
-            _order,
-            _particles,
-            _step_size,
-            _duration,
-        ) if not center else _core.ou_occupation_time_central_moment(
-            self.start_position,
-            self.theta,
-            self.mu,
-            self.sigma,
-            (_a, _b),
-            _order,
-            _particles,
-            _step_size,
-            _duration,
+        result = (
+            _core.ou_occupation_time_raw_moment(
+                self.start_position,
+                self.theta,
+                self.mu,
+                self.sigma,
+                (_a, _b),
+                _order,
+                _particles,
+                _step_size,
+                _duration,
+            )
+            if not center
+            else _core.ou_occupation_time_central_moment(
+                self.start_position,
+                self.theta,
+                self.mu,
+                self.sigma,
+                (_a, _b),
+                _order,
+                _particles,
+                _step_size,
+                _duration,
+            )
         )
-        
+
         return result
-    
+
     def tamsd(
         self,
         duration: real,
@@ -246,8 +262,7 @@ class Ou(ContinuousProcess):
             _step_size,
             quad_order,
         )
-            
-    
+
     def eatamsd(
         self,
         duration: real,
