@@ -13,7 +13,7 @@ import numpy as np
 real = Union[float, int]
 
 
-class Ou(ContinuousProcess):
+class OrnsteinUhlenbeck(ContinuousProcess):
     def __init__(
         self,
         theta: real,  # Mean reversion rate
