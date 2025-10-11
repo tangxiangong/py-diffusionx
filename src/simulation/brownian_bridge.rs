@@ -6,7 +6,7 @@ use diffusionx::simulation::{continuous::BrownianBridge, prelude::*};
 use pyo3::prelude::*;
 
 #[pyfunction]
-pub fn bb_simulate(py: Python, duration: f64, step_size: f64) -> XPyResult<PyArrayPair<'_>> {
+pub fn bb_simulate(py: Python<'_>, duration: f64, step_size: f64) -> XPyResult<PyArrayPair<'_>> {
     let bb = BrownianBridge;
     let (times, positions) = bb.simulate(duration, step_size)?;
     Ok(vec_to_pyarray(py, times, positions))

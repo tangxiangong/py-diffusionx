@@ -10,7 +10,7 @@ use pyo3::prelude::*;
 
 #[pyfunction]
 pub fn subordinator_simulate(
-    py: Python,
+    py: Python<'_>,
     alpha: f64,
     duration: f64,
     step_size: f64,
@@ -106,7 +106,7 @@ pub fn subordinator_occupation_time_central_moment(
 
 #[pyfunction]
 pub fn inv_subordinator_simulate(
-    py: Python,
+    py: Python<'_>,
     alpha: f64,
     duration: f64,
     step_size: f64,

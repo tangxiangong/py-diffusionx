@@ -7,7 +7,7 @@ use pyo3::prelude::*;
 
 #[pyfunction]
 pub fn ou_simulate(
-    py: Python,
+    py: Python<'_>,
     theta: f64,
     sigma: f64,
     start_position: f64,

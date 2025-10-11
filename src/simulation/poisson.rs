@@ -7,7 +7,7 @@ use pyo3::prelude::*;
 
 #[pyfunction]
 pub fn poisson_simulate_duration(
-    py: Python,
+    py: Python<'_>,
     lambda: f64,
     duration: f64,
 ) -> XPyResult<PyArrayPair<'_>> {
@@ -18,7 +18,7 @@ pub fn poisson_simulate_duration(
 
 #[pyfunction]
 pub fn poisson_simulate_step(
-    py: Python,
+    py: Python<'_>,
     lambda: f64,
     num_step: usize,
 ) -> XPyResult<PyArrayPair<'_>> {

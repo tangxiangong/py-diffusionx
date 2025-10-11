@@ -7,7 +7,7 @@ use pyo3::prelude::*;
 
 #[pyfunction]
 pub fn bm_simulate(
-    py: Python,
+    py: Python<'_>,
     start_position: f64,
     diffusion_coefficient: f64,
     duration: f64,

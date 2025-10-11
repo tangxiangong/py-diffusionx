@@ -6,7 +6,7 @@ use diffusionx::simulation::{continuous::BrownianExcursion, prelude::*};
 use pyo3::prelude::*;
 
 #[pyfunction]
-pub fn be_simulate(py: Python, duration: f64, step_size: f64) -> XPyResult<PyArrayPair<'_>> {
+pub fn be_simulate(py: Python<'_>, duration: f64, step_size: f64) -> XPyResult<PyArrayPair<'_>> {
     let be = BrownianExcursion;
     let (times, positions) = be.simulate(duration, step_size)?;
     Ok(vec_to_pyarray(py, times, positions))

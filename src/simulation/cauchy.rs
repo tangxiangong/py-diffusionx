@@ -10,7 +10,7 @@ use pyo3::prelude::*;
 
 #[pyfunction]
 pub fn cauchy_simulate(
-    py: Python,
+    py: Python<'_>,
     start_position: f64,
     duration: f64,
     step_size: f64,
@@ -159,7 +159,7 @@ pub fn cauchy_eatamsd(
 
 #[pyfunction]
 pub fn asymmetric_cauchy_simulate(
-    py: Python,
+    py: Python<'_>,
     start_position: f64,
     beta: f64,
     duration: f64,

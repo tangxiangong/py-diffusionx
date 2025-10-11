@@ -20,7 +20,7 @@ pub fn exp_rand(scale: f64) -> XPyResult<f64> {
 
 #[pyfunction]
 #[pyo3(signature = (n, /, scale = 1.0))]
-pub fn exp_rands(py: Python, n: usize, scale: f64) -> XPyResult<Bound<'_, PyArray<f64, Ix1>>> {
+pub fn exp_rands(py: Python<'_>, n: usize, scale: f64) -> XPyResult<Bound<'_, PyArray<f64, Ix1>>> {
     let result = if scale == 1.0 {
         exponential::standard_rands(n)
     } else {
@@ -64,7 +64,7 @@ where
 #[pyfunction]
 #[pyo3(signature = (n, /, low = 0.0, high = 1.0, end = false))]
 pub fn uniform_rands_float(
-    py: Python,
+    py: Python<'_>,
     n: usize,
     low: f64,
     high: f64,
@@ -82,7 +82,7 @@ pub fn uniform_rands_float(
 #[pyfunction]
 #[pyo3(signature = (n, low, high, /, end = false))]
 pub fn uniform_rands_int(
-    py: Python,
+    py: Python<'_>,
     n: usize,
     low: i64,
     high: i64,
@@ -120,7 +120,7 @@ pub fn normal_rand(mu: f64, sigma: f64) -> XPyResult<f64> {
 #[pyfunction]
 #[pyo3(signature = (n, /, mu = 0.0, sigma = 1.0))]
 pub fn normal_rands(
-    py: Python,
+    py: Python<'_>,
     n: usize,
     mu: f64,
     sigma: f64,
@@ -136,7 +136,7 @@ pub fn normal_rands(
 
 #[pyfunction]
 #[pyo3(signature = (lambda_ = 1.0))]
-pub fn poisson_rand(lambda_: f64) -> XPyResult<u64> {
+pub fn poisson_rand(lambda_: f64) -> XPyResult<usize> {
     let result = poisson::rand(lambda_)?;
     Ok(result)
 }
@@ -144,10 +144,10 @@ pub fn poisson_rand(lambda_: f64) -> XPyResult<u64> {
 #[pyfunction]
 #[pyo3(signature = (n, /, lambda_ = 1.0))]
 pub fn poisson_rands(
-    py: Python,
+    py: Python<'_>,
     n: usize,
     lambda_: f64,
-) -> XPyResult<Bound<'_, PyArray<u64, Ix1>>> {
+) -> XPyResult<Bound<'_, PyArray<usize, Ix1>>> {
     let result = poisson::rands(lambda_, n)?;
     let result = result.into_pyarray(py);
     Ok(result)
@@ -167,7 +167,7 @@ pub fn stable_rand(alpha: f64, beta: f64, sigma: f64, mu: f64) -> XPyResult<f64>
 #[pyfunction]
 #[pyo3(signature = (n, /, alpha, beta, sigma = 1.0, mu = 0.0))]
 pub fn stable_rands(
-    py: Python,
+    py: Python<'_>,
     n: usize,
     alpha: f64,
     beta: f64,
@@ -189,7 +189,7 @@ pub fn skew_stable_rand(alpha: f64) -> XPyResult<f64> {
 #[pyfunction]
 #[pyo3(signature = (n, alpha))]
 pub fn skew_stable_rands(
-    py: Python,
+    py: Python<'_>,
     n: usize,
     alpha: f64,
 ) -> XPyResult<Bound<'_, PyArray<f64, Ix1>>> {
@@ -207,7 +207,7 @@ pub fn bool_rand(p: f64) -> XPyResult<bool> {
 
 #[pyfunction]
 #[pyo3(signature = (n, /, p = 0.5))]
-pub fn bool_rands(py: Python, n: usize, p: f64) -> XPyResult<Bound<'_, PyArray<bool, Ix1>>> {
+pub fn bool_rands(py: Python<'_>, n: usize, p: f64) -> XPyResult<Bound<'_, PyArray<bool, Ix1>>> {
     let result = uniform::bool_rands(p, n)?;
     let result = result.into_pyarray(py);
     Ok(result)

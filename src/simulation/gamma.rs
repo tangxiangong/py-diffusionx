@@ -7,7 +7,7 @@ use pyo3::prelude::*;
 
 #[pyfunction]
 pub fn gamma_simulate(
-    py: Python,
+    py: Python<'_>,
     shape: f64,
     rate: f64,
     duration: f64,

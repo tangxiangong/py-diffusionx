@@ -7,7 +7,7 @@ use pyo3::prelude::*;
 
 #[pyfunction]
 pub fn ctrw_simulate_duration(
-    py: Python,
+    py: Python<'_>,
     alpha: f64,
     beta: f64,
     start_position: f64,
@@ -20,7 +20,7 @@ pub fn ctrw_simulate_duration(
 
 #[pyfunction]
 pub fn ctrw_simulate_step(
-    py: Python,
+    py: Python<'_>,
     alpha: f64,
     beta: f64,
     start_position: f64,

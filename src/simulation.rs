@@ -4,8 +4,8 @@ use numpy::{IntoPyArray, Ix1, PyArray};
 use pyo3::prelude::*;
 
 /// 封装从Python调用函数的辅助方法，处理错误情况
-pub(crate) fn call_py_func(func: &PyObject, args: (f64, f64)) -> f64 {
-    let res = Python::with_gil(|py| {
+pub(crate) fn call_py_func(func: &Py<PyAny>, args: (f64, f64)) -> f64 {
+    let res = Python::attach(|py| {
         func.call1(py, args)
             .and_then(|result| result.extract::<f64>(py))
     });

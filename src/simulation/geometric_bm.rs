@@ -7,7 +7,7 @@ use pyo3::prelude::*;
 
 #[pyfunction]
 pub fn gb_simulate(
-    py: Python,
+    py: Python<'_>,
     start_position: f64,
     mu: f64,
     sigma: f64,

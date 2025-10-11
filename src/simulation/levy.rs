@@ -10,7 +10,7 @@ use pyo3::prelude::*;
 
 #[pyfunction]
 pub fn levy_simulate(
-    py: Python,
+    py: Python<'_>,
     start_position: f64,
     alpha: f64,
     duration: f64,
@@ -142,7 +142,7 @@ pub fn levy_eatamsd(
 
 #[pyfunction]
 pub fn asymmetric_levy_simulate(
-    py: Python,
+    py: Python<'_>,
     start_position: f64,
     alpha: f64,
     beta: f64,

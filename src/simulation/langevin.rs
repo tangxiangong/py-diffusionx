@@ -10,9 +10,9 @@ use pyo3::prelude::*;
 
 #[pyfunction]
 pub fn langevin_simulate(
-    py: Python,
-    drift_func: PyObject,
-    diffusion_func: PyObject,
+    py: Python<'_>,
+    drift_func: Py<PyAny>,
+    diffusion_func: Py<PyAny>,
     start_position: f64,
     duration: f64,
     time_step: f64,
@@ -32,8 +32,8 @@ pub fn langevin_simulate(
 
 #[pyfunction]
 pub fn langevin_raw_moment(
-    drift_func: PyObject,
-    diffusion_func: PyObject,
+    drift_func: Py<PyAny>,
+    diffusion_func: Py<PyAny>,
     start_position: f64,
     duration: f64,
     order: i32,
@@ -54,8 +54,8 @@ pub fn langevin_raw_moment(
 
 #[pyfunction]
 pub fn langevin_central_moment(
-    drift_func: PyObject,
-    diffusion_func: PyObject,
+    drift_func: Py<PyAny>,
+    diffusion_func: Py<PyAny>,
     start_position: f64,
     duration: f64,
     order: i32,
@@ -76,8 +76,8 @@ pub fn langevin_central_moment(
 
 #[pyfunction]
 pub fn langevin_fpt(
-    drift_func: PyObject,
-    diffusion_func: PyObject,
+    drift_func: Py<PyAny>,
+    diffusion_func: Py<PyAny>,
     start_position: f64,
     domain: (f64, f64),
     max_duration: f64,
@@ -97,8 +97,8 @@ pub fn langevin_fpt(
 
 #[pyfunction]
 pub fn langevin_fpt_raw_moment(
-    drift_func: PyObject,
-    diffusion_func: PyObject,
+    drift_func: Py<PyAny>,
+    diffusion_func: Py<PyAny>,
     start_position: f64,
     domain: (f64, f64),
     max_duration: f64,
@@ -120,8 +120,8 @@ pub fn langevin_fpt_raw_moment(
 
 #[pyfunction]
 pub fn langevin_fpt_central_moment(
-    drift_func: PyObject,
-    diffusion_func: PyObject,
+    drift_func: Py<PyAny>,
+    diffusion_func: Py<PyAny>,
     start_position: f64,
     domain: (f64, f64),
     max_duration: f64,
@@ -143,8 +143,8 @@ pub fn langevin_fpt_central_moment(
 
 #[pyfunction]
 pub fn langevin_occupation_time(
-    drift_func: PyObject,
-    diffusion_func: PyObject,
+    drift_func: Py<PyAny>,
+    diffusion_func: Py<PyAny>,
     start_position: f64,
     domain: (f64, f64),
     duration: f64,
@@ -163,8 +163,8 @@ pub fn langevin_occupation_time(
 
 #[pyfunction]
 pub fn langevin_occupation_time_raw_moment(
-    drift_func: PyObject,
-    diffusion_func: PyObject,
+    drift_func: Py<PyAny>,
+    diffusion_func: Py<PyAny>,
     start_position: f64,
     domain: (f64, f64),
     duration: f64,
@@ -186,8 +186,8 @@ pub fn langevin_occupation_time_raw_moment(
 
 #[pyfunction]
 pub fn langevin_occupation_time_central_moment(
-    drift_func: PyObject,
-    diffusion_func: PyObject,
+    drift_func: Py<PyAny>,
+    diffusion_func: Py<PyAny>,
     start_position: f64,
     domain: (f64, f64),
     duration: f64,
@@ -209,8 +209,8 @@ pub fn langevin_occupation_time_central_moment(
 
 #[pyfunction]
 pub fn langevin_tamsd(
-    drift_func: PyObject,
-    diffusion_func: PyObject,
+    drift_func: Py<PyAny>,
+    diffusion_func: Py<PyAny>,
     start_position: f64,
     duration: f64,
     delta: f64,
@@ -230,8 +230,8 @@ pub fn langevin_tamsd(
 
 #[pyfunction]
 pub fn langevin_eatamsd(
-    drift_func: PyObject,
-    diffusion_func: PyObject,
+    drift_func: Py<PyAny>,
+    diffusion_func: Py<PyAny>,
     start_position: f64,
     duration: f64,
     delta: f64,
@@ -253,9 +253,9 @@ pub fn langevin_eatamsd(
 /// Py function wrapper for GeneralizedLangevin simulation
 #[pyfunction]
 pub fn generalized_langevin_simulate(
-    py: Python,
-    drift_func: PyObject,
-    diffusion_func: PyObject,
+    py: Python<'_>,
+    drift_func: Py<PyAny>,
+    diffusion_func: Py<PyAny>,
     start_position: f64,
     alpha: f64,
     duration: f64,
@@ -276,8 +276,8 @@ pub fn generalized_langevin_simulate(
 
 #[pyfunction]
 pub fn generalized_langevin_raw_moment(
-    drift_func: PyObject,
-    diffusion_func: PyObject,
+    drift_func: Py<PyAny>,
+    diffusion_func: Py<PyAny>,
     start_position: f64,
     alpha: f64,
     duration: f64,
@@ -299,8 +299,8 @@ pub fn generalized_langevin_raw_moment(
 
 #[pyfunction]
 pub fn generalized_langevin_central_moment(
-    drift_func: PyObject,
-    diffusion_func: PyObject,
+    drift_func: Py<PyAny>,
+    diffusion_func: Py<PyAny>,
     start_position: f64,
     alpha: f64,
     duration: f64,
@@ -322,8 +322,8 @@ pub fn generalized_langevin_central_moment(
 
 #[pyfunction]
 pub fn generalized_langevin_fpt(
-    drift_func: PyObject,
-    diffusion_func: PyObject,
+    drift_func: Py<PyAny>,
+    diffusion_func: Py<PyAny>,
     start_position: f64,
     alpha: f64,
     domain: (f64, f64),
@@ -344,8 +344,8 @@ pub fn generalized_langevin_fpt(
 
 #[pyfunction]
 pub fn generalized_langevin_fpt_raw_moment(
-    drift_func: PyObject,
-    diffusion_func: PyObject,
+    drift_func: Py<PyAny>,
+    diffusion_func: Py<PyAny>,
     start_position: f64,
     alpha: f64,
     domain: (f64, f64),
@@ -368,8 +368,8 @@ pub fn generalized_langevin_fpt_raw_moment(
 
 #[pyfunction]
 pub fn generalized_langevin_fpt_central_moment(
-    drift_func: PyObject,
-    diffusion_func: PyObject,
+    drift_func: Py<PyAny>,
+    diffusion_func: Py<PyAny>,
     start_position: f64,
     alpha: f64,
     domain: (f64, f64),
@@ -392,8 +392,8 @@ pub fn generalized_langevin_fpt_central_moment(
 
 #[pyfunction]
 pub fn generalized_langevin_occupation_time(
-    drift_func: PyObject,
-    diffusion_func: PyObject,
+    drift_func: Py<PyAny>,
+    diffusion_func: Py<PyAny>,
     start_position: f64,
     alpha: f64,
     domain: (f64, f64),
@@ -413,8 +413,8 @@ pub fn generalized_langevin_occupation_time(
 
 #[pyfunction]
 pub fn generalized_langevin_occupation_time_raw_moment(
-    drift_func: PyObject,
-    diffusion_func: PyObject,
+    drift_func: Py<PyAny>,
+    diffusion_func: Py<PyAny>,
     start_position: f64,
     alpha: f64,
     domain: (f64, f64),
@@ -437,8 +437,8 @@ pub fn generalized_langevin_occupation_time_raw_moment(
 
 #[pyfunction]
 pub fn generalized_langevin_occupation_time_central_moment(
-    drift_func: PyObject,
-    diffusion_func: PyObject,
+    drift_func: Py<PyAny>,
+    diffusion_func: Py<PyAny>,
     start_position: f64,
     alpha: f64,
     domain: (f64, f64),
@@ -461,8 +461,8 @@ pub fn generalized_langevin_occupation_time_central_moment(
 
 #[pyfunction]
 pub fn generalized_langevin_tamsd(
-    drift_func: PyObject,
-    diffusion_func: PyObject,
+    drift_func: Py<PyAny>,
+    diffusion_func: Py<PyAny>,
     start_position: f64,
     alpha: f64,
     duration: f64,
@@ -483,8 +483,8 @@ pub fn generalized_langevin_tamsd(
 
 #[pyfunction]
 pub fn generalized_langevin_eatamsd(
-    drift_func: PyObject,
-    diffusion_func: PyObject,
+    drift_func: Py<PyAny>,
+    diffusion_func: Py<PyAny>,
     start_position: f64,
     alpha: f64,
     duration: f64,
@@ -506,9 +506,9 @@ pub fn generalized_langevin_eatamsd(
 
 #[pyfunction]
 pub fn subordinated_langevin_simulate(
-    py: Python,
-    drift_func: PyObject,
-    diffusion_func: PyObject,
+    py: Python<'_>,
+    drift_func: Py<PyAny>,
+    diffusion_func: Py<PyAny>,
     start_position: f64,
     alpha: f64,
     duration: f64,
@@ -529,8 +529,8 @@ pub fn subordinated_langevin_simulate(
 
 #[pyfunction]
 pub fn subordinated_langevin_raw_moment(
-    drift_func: PyObject,
-    diffusion_func: PyObject,
+    drift_func: Py<PyAny>,
+    diffusion_func: Py<PyAny>,
     start_position: f64,
     alpha: f64,
     duration: f64,
@@ -552,8 +552,8 @@ pub fn subordinated_langevin_raw_moment(
 
 #[pyfunction]
 pub fn subordinated_langevin_central_moment(
-    drift_func: PyObject,
-    diffusion_func: PyObject,
+    drift_func: Py<PyAny>,
+    diffusion_func: Py<PyAny>,
     start_position: f64,
     alpha: f64,
     duration: f64,
@@ -575,8 +575,8 @@ pub fn subordinated_langevin_central_moment(
 
 #[pyfunction]
 pub fn subordinated_langevin_fpt(
-    drift_func: PyObject,
-    diffusion_func: PyObject,
+    drift_func: Py<PyAny>,
+    diffusion_func: Py<PyAny>,
     start_position: f64,
     alpha: f64,
     domain: (f64, f64),
@@ -597,8 +597,8 @@ pub fn subordinated_langevin_fpt(
 
 #[pyfunction]
 pub fn subordinated_langevin_fpt_raw_moment(
-    drift_func: PyObject,
-    diffusion_func: PyObject,
+    drift_func: Py<PyAny>,
+    diffusion_func: Py<PyAny>,
     start_position: f64,
     alpha: f64,
     domain: (f64, f64),
@@ -621,8 +621,8 @@ pub fn subordinated_langevin_fpt_raw_moment(
 
 #[pyfunction]
 pub fn subordinated_langevin_fpt_central_moment(
-    drift_func: PyObject,
-    diffusion_func: PyObject,
+    drift_func: Py<PyAny>,
+    diffusion_func: Py<PyAny>,
     start_position: f64,
     alpha: f64,
     domain: (f64, f64),
@@ -645,8 +645,8 @@ pub fn subordinated_langevin_fpt_central_moment(
 
 #[pyfunction]
 pub fn subordinated_langevin_occupation_time(
-    drift_func: PyObject,
-    diffusion_func: PyObject,
+    drift_func: Py<PyAny>,
+    diffusion_func: Py<PyAny>,
     start_position: f64,
     alpha: f64,
     domain: (f64, f64),
@@ -666,8 +666,8 @@ pub fn subordinated_langevin_occupation_time(
 
 #[pyfunction]
 pub fn subordinated_langevin_occupation_time_raw_moment(
-    drift_func: PyObject,
-    diffusion_func: PyObject,
+    drift_func: Py<PyAny>,
+    diffusion_func: Py<PyAny>,
     start_position: f64,
     alpha: f64,
     domain: (f64, f64),
@@ -690,8 +690,8 @@ pub fn subordinated_langevin_occupation_time_raw_moment(
 
 #[pyfunction]
 pub fn subordinated_langevin_occupation_time_central_moment(
-    drift_func: PyObject,
-    diffusion_func: PyObject,
+    drift_func: Py<PyAny>,
+    diffusion_func: Py<PyAny>,
     start_position: f64,
     alpha: f64,
     domain: (f64, f64),
@@ -714,8 +714,8 @@ pub fn subordinated_langevin_occupation_time_central_moment(
 
 #[pyfunction]
 pub fn subordinated_langevin_tamsd(
-    drift_func: PyObject,
-    diffusion_func: PyObject,
+    drift_func: Py<PyAny>,
+    diffusion_func: Py<PyAny>,
     start_position: f64,
     alpha: f64,
     duration: f64,
@@ -736,8 +736,8 @@ pub fn subordinated_langevin_tamsd(
 
 #[pyfunction]
 pub fn subordinated_langevin_eatamsd(
-    drift_func: PyObject,
-    diffusion_func: PyObject,
+    drift_func: Py<PyAny>,
+    diffusion_func: Py<PyAny>,
     start_position: f64,
     alpha: f64,
     duration: f64,

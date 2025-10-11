@@ -6,7 +6,11 @@ use diffusionx::simulation::{continuous::BrownianMeander, prelude::*};
 use pyo3::prelude::*;
 
 #[pyfunction]
-pub fn meander_simulate(py: Python, duration: f64, step_size: f64) -> XPyResult<PyArrayPair<'_>> {
+pub fn meander_simulate(
+    py: Python<'_>,
+    duration: f64,
+    step_size: f64,
+) -> XPyResult<PyArrayPair<'_>> {
     let bm = BrownianMeander;
     let (times, positions) = bm.simulate(duration, step_size)?;
     Ok(vec_to_pyarray(py, times, positions))
