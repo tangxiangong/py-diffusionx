@@ -2,7 +2,7 @@
 name = "py-diffusionx"
 authors = ["xiangong tang <tangxiangong@gmail.com>"]
 edition = "2024"
-version = "0.1.7"
+version = "0.1.2"
 
 [lib]
 name = "_core"
