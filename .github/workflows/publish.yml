@@ -36,6 +36,11 @@ jobs:
           fetch-depth: 0
           submodules: recursive
 
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
       - name: Build wheels
         uses: PyO3/maturin-action@v1
         with:
@@ -63,6 +68,11 @@ jobs:
         with:
           fetch-depth: 0
           submodules: recursive
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
 
       - name: Build wheels
         uses: PyO3/maturin-action@v1
