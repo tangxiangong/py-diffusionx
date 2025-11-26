@@ -10,81 +10,97 @@ on:
 env:
   CARGO_TERM_COLOR: always
   RUST_BACKTRACE: 1
-  RUSTFLAGS: "-C target-cpu=native"
 
 # Required setup:
 # 1. Create a PyPI account and enable two-factor authentication
 # 2. Set up trusted publisher in PyPI project settings:
 #    - Owner: [Your GitHub username/org]
 #    - Repository: py-diffusionx
-#    - Workflow name: Publish
+#    - Workflow name: publish.yml
 #    - Environment: pypi
 # 3. Create a 'pypi' environment in GitHub repository settings
 #    Settings -> Environments -> New environment -> Name: pypi
 
 jobs:
-  build-wheels:
-    name: Build wheels on ${{ matrix.os }}
-    runs-on: ${{ matrix.os }}
+  # Build wheels for Linux using manylinux
+  build-linux:
+    name: Build Linux wheels
+    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
-        python-version: ['3.12', '3.11', '3.10', '3.9']
         target: [x86_64, aarch64]
-        exclude:
-          - os: windows-latest
-            target: aarch64
-          - os: ubuntu-latest
-            target: aarch64
-
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
           submodules: recursive
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - name: Build wheels
+        uses: PyO3/maturin-action@v1
         with:
-          python-version: ${{ matrix.python-version }}
-          cache: 'pip'
-
-      - name: Install Rust
-        uses: dtolnay/rust-toolchain@stable
-        with:
-          toolchain: stable
-          components: rustfmt, clippy
-          target: ${{ matrix.target == 'x86_64' && 'x86_64-unknown-linux-gnu' || 'aarch64-unknown-linux-gnu' }}
-
-      - name: Cache Rust dependencies
-        uses: Swatinem/rust-cache@v2
-        with:
-          shared-key: "rust-cache-${{ matrix.target }}"
-
-      - name: Print debugging information
-        run: |
-          pwd
-          echo "GITHUB_WORKSPACE: $GITHUB_WORKSPACE"
-          ls -la $GITHUB_WORKSPACE
-          find $GITHUB_WORKSPACE -name "Cargo.toml" | sort
-          find $GITHUB_WORKSPACE -name "pyproject.toml" | sort
-
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          python -m pip install uv
-          uv pip install --system pytest numpy matplotlib scipy jupyterlab ipykernel numba maturin sccache
-
-      - name: Build wheels with maturin
-        run: |
-          mkdir -p dist
-          maturin build --release --out dist ${{ matrix.target == 'aarch64' && format('--target {0}-unknown-linux-gnu', matrix.target) || '' }}
+          target: ${{ matrix.target }}
+          args: --release --out dist
+          manylinux: auto
 
       - name: Upload wheels
         uses: actions/upload-artifact@v4
         with:
-          name: wheels-${{ matrix.os }}-${{ matrix.target }}-py${{ matrix.python-version }}
+          name: wheels-linux-${{ matrix.target }}
+          path: dist
+          if-no-files-found: error
+
+  # Build wheels for Windows
+  build-windows:
+    name: Build Windows wheels
+    runs-on: windows-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        target: [x64]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          submodules: recursive
+
+      - name: Build wheels
+        uses: PyO3/maturin-action@v1
+        with:
+          target: ${{ matrix.target }}
+          args: --release --out dist
+
+      - name: Upload wheels
+        uses: actions/upload-artifact@v4
+        with:
+          name: wheels-windows-${{ matrix.target }}
+          path: dist
+          if-no-files-found: error
+
+  # Build wheels for macOS
+  build-macos:
+    name: Build macOS wheels
+    runs-on: macos-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        target: [x86_64, aarch64]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          submodules: recursive
+
+      - name: Build wheels
+        uses: PyO3/maturin-action@v1
+        with:
+          target: ${{ matrix.target == 'aarch64' && 'aarch64-apple-darwin' || 'x86_64-apple-darwin' }}
+          args: --release --out dist
+
+      - name: Upload wheels
+        uses: actions/upload-artifact@v4
+        with:
+          name: wheels-macos-${{ matrix.target }}
           path: dist
           if-no-files-found: error
 
@@ -97,28 +113,11 @@ jobs:
           fetch-depth: 0
           submodules: recursive
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-
-      - name: Print debugging information
-        run: |
-          pwd
-          echo "GITHUB_WORKSPACE: $GITHUB_WORKSPACE"
-          ls -la $GITHUB_WORKSPACE
-          find $GITHUB_WORKSPACE -name "Cargo.toml" | sort
-          find $GITHUB_WORKSPACE -name "pyproject.toml" | sort
-
-      - name: Install maturin
-        run: |
-          python -m pip install --upgrade pip
-          pip install maturin
-
       - name: Build sdist
-        run: |
-          mkdir -p dist
-          maturin sdist --out dist
+        uses: PyO3/maturin-action@v1
+        with:
+          command: sdist
+          args: --out dist
 
       - name: Upload sdist
         uses: actions/upload-artifact@v4
@@ -129,7 +128,7 @@ jobs:
 
   publish:
     name: Publish to PyPI
-    needs: [build-wheels, build-sdist]
+    needs: [build-linux, build-windows, build-macos, build-sdist]
     runs-on: ubuntu-latest
     # Environment configuration for PyPI trusted publishing
     environment:
