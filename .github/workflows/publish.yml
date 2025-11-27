@@ -47,6 +47,9 @@ jobs:
           target: ${{ matrix.target }}
           args: --release --out dist
           manylinux: auto
+        env:
+          # Fix for aarch64 cross-compilation: older GCC doesn't support -Wdate-time
+          CFLAGS_aarch64_unknown_linux_gnu: "-Wno-error"
 
       - name: Upload wheels
         uses: actions/upload-artifact@v4
