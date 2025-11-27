@@ -4,7 +4,9 @@ use crate::{
 };
 use diffusionx::simulation::{continuous::LevyWalk, prelude::*};
 use pyo3::prelude::*;
+use pyo3_stub_gen::derive::gen_stub_pyfunction;
 
+#[gen_stub_pyfunction]
 #[pyfunction]
 pub fn levy_walk_simulate(
     py: Python<'_>,
@@ -18,6 +20,7 @@ pub fn levy_walk_simulate(
     Ok(vec_to_pyarray(py, times, positions))
 }
 
+#[gen_stub_pyfunction]
 #[pyfunction]
 pub fn levy_walk_raw_moment(
     alpha: f64,
@@ -32,6 +35,7 @@ pub fn levy_walk_raw_moment(
     Ok(result)
 }
 
+#[gen_stub_pyfunction]
 #[pyfunction]
 pub fn levy_walk_central_moment(
     alpha: f64,
@@ -46,6 +50,7 @@ pub fn levy_walk_central_moment(
     Ok(result)
 }
 
+#[gen_stub_pyfunction]
 #[pyfunction]
 pub fn levy_walk_fpt(
     alpha: f64,

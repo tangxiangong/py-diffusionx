@@ -7,15 +7,19 @@ version = "0.1.2"
 [lib]
 name = "_core"
 # "cdylib" is necessary to produce a shared library for Python to import from.
-crate-type = ["cdylib"]
+crate-type = ["cdylib", "rlib"]
+
+[[bin]]
+name = "stub_gen"
+path = "src/bin/stub_gen.rs"
+
 
 [dependencies]
-diffusionx = "0.7"
+diffusionx = "0.8"
 num_cpus = "1.17"
 numpy = "0.27"
-# "extension-module" tells pyo3 we want to build an extension module (skips linking against libpython.so)
-# "abi3-py39" tells pyo3 (and maturin) to build using the stable ABI with minimum Python version 3.9
-pyo3 = { version = "0.27", features = ["extension-module", "abi3-py310"] }
+pyo3 = { version = "0.27", features = ["abi3-py310"] }
+pyo3-stub-gen = "0.17.2"
 rand = "0.9"
 rayon = "1.11"
 thiserror = "2"

@@ -4,7 +4,9 @@ use crate::{
 };
 use diffusionx::simulation::{continuous::OrnsteinUhlenbeck, prelude::*};
 use pyo3::prelude::*;
+use pyo3_stub_gen::derive::gen_stub_pyfunction;
 
+#[gen_stub_pyfunction]
 #[pyfunction]
 pub fn ou_simulate(
     py: Python<'_>,
@@ -19,6 +21,7 @@ pub fn ou_simulate(
     Ok(vec_to_pyarray(py, times, positions))
 }
 
+#[gen_stub_pyfunction]
 #[pyfunction]
 pub fn ou_raw_moment(
     theta: f64,
@@ -34,6 +37,7 @@ pub fn ou_raw_moment(
     Ok(result)
 }
 
+#[gen_stub_pyfunction]
 #[pyfunction]
 pub fn ou_central_moment(
     theta: f64,
@@ -49,6 +53,7 @@ pub fn ou_central_moment(
     Ok(result)
 }
 
+#[gen_stub_pyfunction]
 #[pyfunction]
 pub fn ou_fpt(
     theta: f64,
@@ -63,6 +68,7 @@ pub fn ou_fpt(
     Ok(result)
 }
 
+#[gen_stub_pyfunction]
 #[pyfunction]
 pub fn ou_fpt_raw_moment(
     theta: f64,
@@ -80,6 +86,7 @@ pub fn ou_fpt_raw_moment(
     Ok(result)
 }
 
+#[gen_stub_pyfunction]
 #[pyfunction]
 pub fn ou_fpt_central_moment(
     theta: f64,
@@ -97,6 +104,7 @@ pub fn ou_fpt_central_moment(
     Ok(result)
 }
 
+#[gen_stub_pyfunction]
 #[pyfunction]
 pub fn ou_occupation_time(
     theta: f64,
@@ -111,6 +119,7 @@ pub fn ou_occupation_time(
     Ok(result)
 }
 
+#[gen_stub_pyfunction]
 #[pyfunction]
 pub fn ou_occupation_time_raw_moment(
     theta: f64,
@@ -128,6 +137,7 @@ pub fn ou_occupation_time_raw_moment(
     Ok(result)
 }
 
+#[gen_stub_pyfunction]
 #[pyfunction]
 pub fn ou_occupation_time_central_moment(
     theta: f64,
@@ -145,6 +155,7 @@ pub fn ou_occupation_time_central_moment(
     Ok(result)
 }
 
+#[gen_stub_pyfunction]
 #[pyfunction]
 pub fn ou_tamsd(
     theta: f64,
@@ -160,6 +171,7 @@ pub fn ou_tamsd(
     Ok(result)
 }
 
+#[gen_stub_pyfunction]
 #[pyfunction]
 pub fn ou_eatamsd(
     theta: f64,

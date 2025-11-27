@@ -4,7 +4,9 @@ use crate::{
 };
 use diffusionx::simulation::{point::CTRW, prelude::*};
 use pyo3::prelude::*;
+use pyo3_stub_gen::derive::gen_stub_pyfunction;
 
+#[gen_stub_pyfunction]
 #[pyfunction]
 pub fn ctrw_simulate_duration(
     py: Python<'_>,
@@ -18,6 +20,7 @@ pub fn ctrw_simulate_duration(
     Ok(vec_to_pyarray(py, times, positions))
 }
 
+#[gen_stub_pyfunction]
 #[pyfunction]
 pub fn ctrw_simulate_step(
     py: Python<'_>,
@@ -31,6 +34,7 @@ pub fn ctrw_simulate_step(
     Ok(vec_to_pyarray(py, times, positions))
 }
 
+#[gen_stub_pyfunction]
 #[pyfunction]
 pub fn ctrw_raw_moment(
     alpha: f64,
@@ -45,6 +49,7 @@ pub fn ctrw_raw_moment(
     Ok(result)
 }
 
+#[gen_stub_pyfunction]
 #[pyfunction]
 pub fn ctrw_central_moment(
     alpha: f64,
@@ -59,6 +64,7 @@ pub fn ctrw_central_moment(
     Ok(result)
 }
 
+#[gen_stub_pyfunction]
 #[pyfunction]
 pub fn ctrw_fpt(
     alpha: f64,
@@ -72,6 +78,7 @@ pub fn ctrw_fpt(
     Ok(result)
 }
 
+#[gen_stub_pyfunction]
 #[pyfunction]
 pub fn ctrw_fpt_raw_moment(
     alpha: f64,
@@ -88,6 +95,7 @@ pub fn ctrw_fpt_raw_moment(
     Ok(result)
 }
 
+#[gen_stub_pyfunction]
 #[pyfunction]
 pub fn ctrw_fpt_central_moment(
     alpha: f64,
@@ -104,6 +112,7 @@ pub fn ctrw_fpt_central_moment(
     Ok(result)
 }
 
+#[gen_stub_pyfunction]
 #[pyfunction]
 pub fn ctrw_occupation_time(
     alpha: f64,
@@ -117,6 +126,7 @@ pub fn ctrw_occupation_time(
     Ok(result)
 }
 
+#[gen_stub_pyfunction]
 #[pyfunction]
 pub fn ctrw_occupation_time_raw_moment(
     alpha: f64,
@@ -133,6 +143,7 @@ pub fn ctrw_occupation_time_raw_moment(
     Ok(result)
 }
 
+#[gen_stub_pyfunction]
 #[pyfunction]
 pub fn ctrw_occupation_time_central_moment(
     alpha: f64,

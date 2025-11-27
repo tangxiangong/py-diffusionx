@@ -4,7 +4,9 @@ use crate::{
 };
 use diffusionx::simulation::{continuous::Gamma, prelude::*};
 use pyo3::prelude::*;
+use pyo3_stub_gen::derive::gen_stub_pyfunction;
 
+#[gen_stub_pyfunction]
 #[pyfunction]
 pub fn gamma_simulate(
     py: Python<'_>,
@@ -18,6 +20,7 @@ pub fn gamma_simulate(
     Ok(vec_to_pyarray(py, times, positions))
 }
 
+#[gen_stub_pyfunction]
 #[pyfunction]
 pub fn gamma_raw_moment(
     shape: f64,
@@ -32,6 +35,7 @@ pub fn gamma_raw_moment(
     Ok(result)
 }
 
+#[gen_stub_pyfunction]
 #[pyfunction]
 pub fn gamma_central_moment(
     shape: f64,
@@ -46,6 +50,7 @@ pub fn gamma_central_moment(
     Ok(result)
 }
 
+#[gen_stub_pyfunction]
 #[pyfunction]
 pub fn gamma_fpt(
     shape: f64,
@@ -59,6 +64,7 @@ pub fn gamma_fpt(
     Ok(result)
 }
 
+#[gen_stub_pyfunction]
 #[pyfunction]
 pub fn gamma_fpt_raw_moment(
     shape: f64,
@@ -75,6 +81,7 @@ pub fn gamma_fpt_raw_moment(
     Ok(result)
 }
 
+#[gen_stub_pyfunction]
 #[pyfunction]
 pub fn gamma_fpt_central_moment(
     shape: f64,
@@ -91,6 +98,7 @@ pub fn gamma_fpt_central_moment(
     Ok(result)
 }
 
+#[gen_stub_pyfunction]
 #[pyfunction]
 pub fn gamma_occupation_time(
     shape: f64,
@@ -104,6 +112,7 @@ pub fn gamma_occupation_time(
     Ok(result)
 }
 
+#[gen_stub_pyfunction]
 #[pyfunction]
 pub fn gamma_occupation_time_raw_moment(
     shape: f64,
@@ -120,6 +129,7 @@ pub fn gamma_occupation_time_raw_moment(
     Ok(result)
 }
 
+#[gen_stub_pyfunction]
 #[pyfunction]
 pub fn gamma_occupation_time_central_moment(
     shape: f64,
@@ -136,6 +146,7 @@ pub fn gamma_occupation_time_central_moment(
     Ok(result)
 }
 
+#[gen_stub_pyfunction]
 #[pyfunction]
 pub fn gamma_tamsd(
     shape: f64,
@@ -150,6 +161,7 @@ pub fn gamma_tamsd(
     Ok(result)
 }
 
+#[gen_stub_pyfunction]
 #[pyfunction]
 pub fn gamma_eatamsd(
     shape: f64,

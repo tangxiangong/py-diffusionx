@@ -2,6 +2,7 @@ use pyo3::prelude::*;
 
 mod error;
 pub use error::*;
+use pyo3_stub_gen::define_stub_info_gatherer;
 
 pub mod random;
 
@@ -294,3 +295,5 @@ fn _core(_py: Python, m: &Bound<'_, PyModule>) -> PyResult<()> {
     );
     Ok(())
 }
+
+define_stub_info_gatherer!(stub_info);

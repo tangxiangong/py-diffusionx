@@ -4,7 +4,9 @@ use crate::{
 };
 use diffusionx::simulation::{continuous::BrownianMeander, prelude::*};
 use pyo3::prelude::*;
+use pyo3_stub_gen::derive::gen_stub_pyfunction;
 
+#[gen_stub_pyfunction]
 #[pyfunction]
 pub fn meander_simulate(
     py: Python<'_>,
@@ -16,6 +18,7 @@ pub fn meander_simulate(
     Ok(vec_to_pyarray(py, times, positions))
 }
 
+#[gen_stub_pyfunction]
 #[pyfunction]
 pub fn meander_raw_moment(
     duration: f64,
@@ -28,6 +31,7 @@ pub fn meander_raw_moment(
     Ok(result)
 }
 
+#[gen_stub_pyfunction]
 #[pyfunction]
 pub fn meander_central_moment(
     duration: f64,
@@ -40,6 +44,7 @@ pub fn meander_central_moment(
     Ok(result)
 }
 
+#[gen_stub_pyfunction]
 #[pyfunction]
 pub fn meander_fpt(step_size: f64, domain: (f64, f64)) -> XPyResult<Option<f64>> {
     let bm = BrownianMeander;
@@ -47,6 +52,7 @@ pub fn meander_fpt(step_size: f64, domain: (f64, f64)) -> XPyResult<Option<f64>>
     Ok(result)
 }
 
+#[gen_stub_pyfunction]
 #[pyfunction]
 pub fn meander_fpt_raw_moment(
     domain: (f64, f64),
@@ -61,6 +67,7 @@ pub fn meander_fpt_raw_moment(
     Ok(result)
 }
 
+#[gen_stub_pyfunction]
 #[pyfunction]
 pub fn meander_fpt_central_moment(
     domain: (f64, f64),
@@ -75,6 +82,7 @@ pub fn meander_fpt_central_moment(
     Ok(result)
 }
 
+#[gen_stub_pyfunction]
 #[pyfunction]
 pub fn meander_occupation_time(
     domain: (f64, f64),
@@ -86,6 +94,7 @@ pub fn meander_occupation_time(
     Ok(result)
 }
 
+#[gen_stub_pyfunction]
 #[pyfunction]
 pub fn meander_occupation_time_raw_moment(
     domain: (f64, f64),
@@ -100,6 +109,7 @@ pub fn meander_occupation_time_raw_moment(
     Ok(result)
 }
 
+#[gen_stub_pyfunction]
 #[pyfunction]
 pub fn meander_occupation_time_central_moment(
     domain: (f64, f64),
@@ -114,6 +124,7 @@ pub fn meander_occupation_time_central_moment(
     Ok(result)
 }
 
+#[gen_stub_pyfunction]
 #[pyfunction]
 pub fn meander_tamsd(
     duration: f64,
@@ -126,6 +137,7 @@ pub fn meander_tamsd(
     Ok(result)
 }
 
+#[gen_stub_pyfunction]
 #[pyfunction]
 pub fn meander_eatamsd(
     duration: f64,
