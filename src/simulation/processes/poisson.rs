@@ -4,9 +4,10 @@ use crate::{
 };
 use diffusionx::simulation::{point::Poisson, prelude::*};
 use pyo3::prelude::*;
+#[cfg(feature = "stub_gen")]
 use pyo3_stub_gen::derive::gen_stub_pyfunction;
 
-#[gen_stub_pyfunction]
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn poisson_simulate_duration(
     py: Python<'_>,
@@ -18,7 +19,7 @@ pub fn poisson_simulate_duration(
     Ok(vec_to_pyarray(py, times, positions))
 }
 
-#[gen_stub_pyfunction]
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn poisson_simulate_step(
     py: Python<'_>,
@@ -30,7 +31,7 @@ pub fn poisson_simulate_step(
     Ok(vec_to_pyarray(py, times, positions))
 }
 
-#[gen_stub_pyfunction]
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn poisson_raw_moment(
     lambda_: f64,
@@ -43,7 +44,7 @@ pub fn poisson_raw_moment(
     Ok(result)
 }
 
-#[gen_stub_pyfunction]
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn poisson_central_moment(
     lambda_: f64,
@@ -56,7 +57,7 @@ pub fn poisson_central_moment(
     Ok(result)
 }
 
-#[gen_stub_pyfunction]
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn poisson_fpt(lambda_: f64, domain: (f64, f64), max_duration: f64) -> XPyResult<Option<f64>> {
     let poisson = Poisson::new(lambda_)?;
@@ -64,7 +65,7 @@ pub fn poisson_fpt(lambda_: f64, domain: (f64, f64), max_duration: f64) -> XPyRe
     Ok(result)
 }
 
-#[gen_stub_pyfunction]
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn poisson_fpt_raw_moment(
     lambda_: f64,
@@ -79,7 +80,7 @@ pub fn poisson_fpt_raw_moment(
     Ok(result)
 }
 
-#[gen_stub_pyfunction]
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn poisson_fpt_central_moment(
     lambda_: f64,
@@ -94,7 +95,7 @@ pub fn poisson_fpt_central_moment(
     Ok(result)
 }
 
-#[gen_stub_pyfunction]
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn poisson_occupation_time(lambda_: f64, domain: (f64, f64), duration: f64) -> XPyResult<f64> {
     let poisson = Poisson::new(lambda_)?;
@@ -102,7 +103,7 @@ pub fn poisson_occupation_time(lambda_: f64, domain: (f64, f64), duration: f64) 
     Ok(result)
 }
 
-#[gen_stub_pyfunction]
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn poisson_occupation_time_raw_moment(
     lambda_: f64,
@@ -117,7 +118,7 @@ pub fn poisson_occupation_time_raw_moment(
     Ok(result)
 }
 
-#[gen_stub_pyfunction]
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn poisson_occupation_time_central_moment(
     lambda_: f64,

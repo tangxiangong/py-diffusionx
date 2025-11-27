@@ -7,9 +7,10 @@ use diffusionx::simulation::{
     prelude::*,
 };
 use pyo3::prelude::*;
+#[cfg(feature = "stub_gen")]
 use pyo3_stub_gen::derive::gen_stub_pyfunction;
 
-#[gen_stub_pyfunction]
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn langevin_simulate(
     py: Python<'_>,
@@ -32,7 +33,7 @@ pub fn langevin_simulate(
     Ok(vec_to_pyarray(py, times, positions))
 }
 
-#[gen_stub_pyfunction]
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn langevin_raw_moment(
     drift_func: Py<PyAny>,
@@ -55,7 +56,7 @@ pub fn langevin_raw_moment(
     Ok(result)
 }
 
-#[gen_stub_pyfunction]
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn langevin_central_moment(
     drift_func: Py<PyAny>,
@@ -78,7 +79,7 @@ pub fn langevin_central_moment(
     Ok(result)
 }
 
-#[gen_stub_pyfunction]
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn langevin_fpt(
     drift_func: Py<PyAny>,
@@ -100,7 +101,7 @@ pub fn langevin_fpt(
     Ok(result)
 }
 
-#[gen_stub_pyfunction]
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn langevin_fpt_raw_moment(
     drift_func: Py<PyAny>,
@@ -124,7 +125,7 @@ pub fn langevin_fpt_raw_moment(
     Ok(result)
 }
 
-#[gen_stub_pyfunction]
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn langevin_fpt_central_moment(
     drift_func: Py<PyAny>,
@@ -148,7 +149,7 @@ pub fn langevin_fpt_central_moment(
     Ok(result)
 }
 
-#[gen_stub_pyfunction]
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn langevin_occupation_time(
     drift_func: Py<PyAny>,
@@ -169,7 +170,7 @@ pub fn langevin_occupation_time(
     Ok(result)
 }
 
-#[gen_stub_pyfunction]
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn langevin_occupation_time_raw_moment(
     drift_func: Py<PyAny>,
@@ -193,7 +194,7 @@ pub fn langevin_occupation_time_raw_moment(
     Ok(result)
 }
 
-#[gen_stub_pyfunction]
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn langevin_occupation_time_central_moment(
     drift_func: Py<PyAny>,
@@ -217,7 +218,7 @@ pub fn langevin_occupation_time_central_moment(
     Ok(result)
 }
 
-#[gen_stub_pyfunction]
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn langevin_tamsd(
     drift_func: Py<PyAny>,
@@ -239,7 +240,7 @@ pub fn langevin_tamsd(
     Ok(result)
 }
 
-#[gen_stub_pyfunction]
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn langevin_eatamsd(
     drift_func: Py<PyAny>,
@@ -286,7 +287,7 @@ pub fn generalized_langevin_simulate(
     Ok(vec_to_pyarray(py, times, positions))
 }
 
-#[gen_stub_pyfunction]
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn generalized_langevin_raw_moment(
     drift_func: Py<PyAny>,
@@ -310,7 +311,7 @@ pub fn generalized_langevin_raw_moment(
     Ok(result)
 }
 
-#[gen_stub_pyfunction]
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn generalized_langevin_central_moment(
     drift_func: Py<PyAny>,
@@ -334,7 +335,7 @@ pub fn generalized_langevin_central_moment(
     Ok(result)
 }
 
-#[gen_stub_pyfunction]
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn generalized_langevin_fpt(
     drift_func: Py<PyAny>,
@@ -357,7 +358,7 @@ pub fn generalized_langevin_fpt(
     Ok(result)
 }
 
-#[gen_stub_pyfunction]
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn generalized_langevin_fpt_raw_moment(
     drift_func: Py<PyAny>,
@@ -382,7 +383,7 @@ pub fn generalized_langevin_fpt_raw_moment(
     Ok(result)
 }
 
-#[gen_stub_pyfunction]
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn generalized_langevin_fpt_central_moment(
     drift_func: Py<PyAny>,
@@ -407,7 +408,7 @@ pub fn generalized_langevin_fpt_central_moment(
     Ok(result)
 }
 
-#[gen_stub_pyfunction]
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn generalized_langevin_occupation_time(
     drift_func: Py<PyAny>,
@@ -429,7 +430,7 @@ pub fn generalized_langevin_occupation_time(
     Ok(result)
 }
 
-#[gen_stub_pyfunction]
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn generalized_langevin_occupation_time_raw_moment(
     drift_func: Py<PyAny>,
@@ -454,7 +455,7 @@ pub fn generalized_langevin_occupation_time_raw_moment(
     Ok(result)
 }
 
-#[gen_stub_pyfunction]
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn generalized_langevin_occupation_time_central_moment(
     drift_func: Py<PyAny>,
@@ -479,7 +480,7 @@ pub fn generalized_langevin_occupation_time_central_moment(
     Ok(result)
 }
 
-#[gen_stub_pyfunction]
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn generalized_langevin_tamsd(
     drift_func: Py<PyAny>,
@@ -502,7 +503,7 @@ pub fn generalized_langevin_tamsd(
     Ok(result)
 }
 
-#[gen_stub_pyfunction]
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn generalized_langevin_eatamsd(
     drift_func: Py<PyAny>,
@@ -526,7 +527,7 @@ pub fn generalized_langevin_eatamsd(
     Ok(result)
 }
 
-#[gen_stub_pyfunction]
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn subordinated_langevin_simulate(
     py: Python<'_>,
@@ -550,7 +551,7 @@ pub fn subordinated_langevin_simulate(
     Ok(vec_to_pyarray(py, times, positions))
 }
 
-#[gen_stub_pyfunction]
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn subordinated_langevin_raw_moment(
     drift_func: Py<PyAny>,
@@ -574,7 +575,7 @@ pub fn subordinated_langevin_raw_moment(
     Ok(result)
 }
 
-#[gen_stub_pyfunction]
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn subordinated_langevin_central_moment(
     drift_func: Py<PyAny>,
@@ -598,7 +599,7 @@ pub fn subordinated_langevin_central_moment(
     Ok(result)
 }
 
-#[gen_stub_pyfunction]
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn subordinated_langevin_fpt(
     drift_func: Py<PyAny>,
@@ -621,7 +622,7 @@ pub fn subordinated_langevin_fpt(
     Ok(result)
 }
 
-#[gen_stub_pyfunction]
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn subordinated_langevin_fpt_raw_moment(
     drift_func: Py<PyAny>,
@@ -646,7 +647,7 @@ pub fn subordinated_langevin_fpt_raw_moment(
     Ok(result)
 }
 
-#[gen_stub_pyfunction]
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn subordinated_langevin_fpt_central_moment(
     drift_func: Py<PyAny>,
@@ -671,7 +672,7 @@ pub fn subordinated_langevin_fpt_central_moment(
     Ok(result)
 }
 
-#[gen_stub_pyfunction]
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn subordinated_langevin_occupation_time(
     drift_func: Py<PyAny>,
@@ -693,7 +694,7 @@ pub fn subordinated_langevin_occupation_time(
     Ok(result)
 }
 
-#[gen_stub_pyfunction]
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn subordinated_langevin_occupation_time_raw_moment(
     drift_func: Py<PyAny>,
@@ -718,7 +719,7 @@ pub fn subordinated_langevin_occupation_time_raw_moment(
     Ok(result)
 }
 
-#[gen_stub_pyfunction]
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn subordinated_langevin_occupation_time_central_moment(
     drift_func: Py<PyAny>,
@@ -743,7 +744,7 @@ pub fn subordinated_langevin_occupation_time_central_moment(
     Ok(result)
 }
 
-#[gen_stub_pyfunction]
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn subordinated_langevin_tamsd(
     drift_func: Py<PyAny>,
@@ -766,7 +767,7 @@ pub fn subordinated_langevin_tamsd(
     Ok(result)
 }
 
-#[gen_stub_pyfunction]
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn subordinated_langevin_eatamsd(
     drift_func: Py<PyAny>,

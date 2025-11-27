@@ -2,6 +2,7 @@ use crate::{XPyResult, simulation::PyArrayPair};
 use diffusionx::{XResult, simulation::prelude::*};
 use numpy::PyArrayMethods;
 use pyo3::prelude::*;
+#[cfg(feature = "stub_gen")]
 use pyo3_stub_gen::derive::gen_stub_pyfunction;
 use std::sync::Arc;
 
@@ -50,7 +51,7 @@ impl ContinuousProcess for PyContinuousProcessWrapper {
 unsafe impl Send for PyContinuousProcessWrapper {}
 unsafe impl Sync for PyContinuousProcessWrapper {}
 
-#[gen_stub_pyfunction]
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn moment(
     process: Bound<'_, PyAny>,
@@ -68,7 +69,7 @@ pub fn moment(
     })
 }
 
-#[gen_stub_pyfunction]
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn mean(
     process: Bound<'_, PyAny>,
@@ -80,7 +81,7 @@ pub fn mean(
     Ok(py_wrapper.mean(duration, particles, time_step)?)
 }
 
-#[gen_stub_pyfunction]
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn msd(
     process: Bound<'_, PyAny>,
@@ -92,7 +93,7 @@ pub fn msd(
     Ok(py_wrapper.msd(duration, particles, time_step)?)
 }
 
-#[gen_stub_pyfunction]
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn fpt(
     process: Bound<'_, PyAny>,
@@ -104,7 +105,7 @@ pub fn fpt(
     Ok(py_wrapper.fpt(domain, max_duration, time_step)?)
 }
 
-#[gen_stub_pyfunction]
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn occupation_time(
     process: Bound<'_, PyAny>,
@@ -116,7 +117,7 @@ pub fn occupation_time(
     Ok(py_wrapper.occupation_time(domain, duration, time_step)?)
 }
 
-#[gen_stub_pyfunction]
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn tamsd(
     process: Bound<'_, PyAny>,
@@ -129,7 +130,7 @@ pub fn tamsd(
     Ok(py_wrapper.tamsd(duration, delta, time_step, quad_order)?)
 }
 
-#[gen_stub_pyfunction]
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn eatamsd(
     process: Bound<'_, PyAny>,

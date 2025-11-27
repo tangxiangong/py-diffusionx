@@ -6,1714 +6,447 @@ import numpy
 import numpy.typing
 import typing
 
-def asymmetric_cauchy_central_moment(
-    start_position: builtins.float,
-    beta: builtins.float,
-    duration: builtins.float,
-    step_size: builtins.float,
-    order: builtins.int,
-    particles: builtins.int,
-) -> builtins.float: ...
-def asymmetric_cauchy_eatamsd(
-    start_position: builtins.float,
-    beta: builtins.float,
-    duration: builtins.float,
-    delta: builtins.float,
-    particles: builtins.int,
-    step_size: builtins.float,
-    quad_order: builtins.int,
-) -> builtins.float: ...
-def asymmetric_cauchy_fpt(
-    start_position: builtins.float,
-    beta: builtins.float,
-    step_size: builtins.float,
-    domain: tuple[builtins.float, builtins.float],
-    max_duration: builtins.float,
-) -> typing.Optional[builtins.float]: ...
-def asymmetric_cauchy_fpt_central_moment(
-    start_position: builtins.float,
-    beta: builtins.float,
-    domain: tuple[builtins.float, builtins.float],
-    order: builtins.int,
-    particles: builtins.int,
-    step_size: builtins.float,
-    max_duration: builtins.float,
-) -> typing.Optional[builtins.float]: ...
-def asymmetric_cauchy_fpt_raw_moment(
-    start_position: builtins.float,
-    beta: builtins.float,
-    domain: tuple[builtins.float, builtins.float],
-    order: builtins.int,
-    particles: builtins.int,
-    step_size: builtins.float,
-    max_duration: builtins.float,
-) -> typing.Optional[builtins.float]: ...
-def asymmetric_cauchy_occupation_time(
-    start_position: builtins.float,
-    beta: builtins.float,
-    domain: tuple[builtins.float, builtins.float],
-    step_size: builtins.float,
-    duration: builtins.float,
-) -> builtins.float: ...
-def asymmetric_cauchy_occupation_time_central_moment(
-    start_position: builtins.float,
-    beta: builtins.float,
-    domain: tuple[builtins.float, builtins.float],
-    order: builtins.int,
-    particles: builtins.int,
-    step_size: builtins.float,
-    duration: builtins.float,
-) -> builtins.float: ...
-def asymmetric_cauchy_occupation_time_raw_moment(
-    start_position: builtins.float,
-    beta: builtins.float,
-    domain: tuple[builtins.float, builtins.float],
-    order: builtins.int,
-    particles: builtins.int,
-    step_size: builtins.float,
-    duration: builtins.float,
-) -> builtins.float: ...
-def asymmetric_cauchy_raw_moment(
-    start_position: builtins.float,
-    beta: builtins.float,
-    duration: builtins.float,
-    step_size: builtins.float,
-    order: builtins.int,
-    particles: builtins.int,
-) -> builtins.float: ...
-def asymmetric_cauchy_simulate(
-    start_position: builtins.float,
-    beta: builtins.float,
-    duration: builtins.float,
-    step_size: builtins.float,
-) -> tuple[
-    numpy.typing.NDArray[numpy.float64], numpy.typing.NDArray[numpy.float64]
-]: ...
-def asymmetric_cauchy_tamsd(
-    start_position: builtins.float,
-    beta: builtins.float,
-    duration: builtins.float,
-    delta: builtins.float,
-    step_size: builtins.float,
-    quad_order: builtins.int,
-) -> builtins.float: ...
-def asymmetric_levy_eatamsd(
-    start_position: builtins.float,
-    alpha: builtins.float,
-    beta: builtins.float,
-    duration: builtins.float,
-    delta: builtins.float,
-    particles: builtins.int,
-    step_size: builtins.float,
-    quad_order: builtins.int,
-) -> builtins.float: ...
-def asymmetric_levy_fpt(
-    start_position: builtins.float,
-    alpha: builtins.float,
-    beta: builtins.float,
-    step_size: builtins.float,
-    domain: tuple[builtins.float, builtins.float],
-    max_duration: builtins.float,
-) -> typing.Optional[builtins.float]: ...
-def asymmetric_levy_fpt_central_moment(
-    start_position: builtins.float,
-    alpha: builtins.float,
-    beta: builtins.float,
-    domain: tuple[builtins.float, builtins.float],
-    order: builtins.int,
-    particles: builtins.int,
-    max_duration: builtins.float,
-    step_size: builtins.float,
-) -> typing.Optional[builtins.float]: ...
-def asymmetric_levy_fpt_raw_moment(
-    start_position: builtins.float,
-    alpha: builtins.float,
-    beta: builtins.float,
-    domain: tuple[builtins.float, builtins.float],
-    order: builtins.int,
-    particles: builtins.int,
-    max_duration: builtins.float,
-    step_size: builtins.float,
-) -> typing.Optional[builtins.float]: ...
-def asymmetric_levy_occupation_time(
-    start_position: builtins.float,
-    alpha: builtins.float,
-    beta: builtins.float,
-    step_size: builtins.float,
-    domain: tuple[builtins.float, builtins.float],
-    duration: builtins.float,
-) -> builtins.float: ...
-def asymmetric_levy_occupation_time_central_moment(
-    start_position: builtins.float,
-    alpha: builtins.float,
-    beta: builtins.float,
-    domain: tuple[builtins.float, builtins.float],
-    duration: builtins.float,
-    order: builtins.int,
-    particles: builtins.int,
-    step_size: builtins.float,
-) -> builtins.float: ...
-def asymmetric_levy_occupation_time_raw_moment(
-    start_position: builtins.float,
-    alpha: builtins.float,
-    beta: builtins.float,
-    domain: tuple[builtins.float, builtins.float],
-    duration: builtins.float,
-    order: builtins.int,
-    particles: builtins.int,
-    step_size: builtins.float,
-) -> builtins.float: ...
-def asymmetric_levy_simulate(
-    start_position: builtins.float,
-    alpha: builtins.float,
-    beta: builtins.float,
-    duration: builtins.float,
-    step_size: builtins.float,
-) -> tuple[
-    numpy.typing.NDArray[numpy.float64], numpy.typing.NDArray[numpy.float64]
-]: ...
-def asymmetric_levy_tamsd(
-    start_position: builtins.float,
-    alpha: builtins.float,
-    beta: builtins.float,
-    duration: builtins.float,
-    delta: builtins.float,
-    step_size: builtins.float,
-    quad_order: builtins.int,
-) -> builtins.float: ...
-def bb_central_moment(
-    duration: builtins.float,
-    step_size: builtins.float,
-    order: builtins.int,
-    particles: builtins.int,
-) -> builtins.float: ...
-def bb_eatamsd(
-    duration: builtins.float,
-    delta: builtins.float,
-    particles: builtins.int,
-    step_size: builtins.float,
-    quad_order: builtins.int,
-) -> builtins.float: ...
-def bb_fpt(
-    step_size: builtins.float,
-    domain: tuple[builtins.float, builtins.float],
-    max_duration: builtins.float,
-) -> typing.Optional[builtins.float]: ...
-def bb_fpt_central_moment(
-    domain: tuple[builtins.float, builtins.float],
-    order: builtins.int,
-    particles: builtins.int,
-    step_size: builtins.float,
-    max_duration: builtins.float,
-) -> typing.Optional[builtins.float]: ...
-def bb_fpt_raw_moment(
-    domain: tuple[builtins.float, builtins.float],
-    order: builtins.int,
-    particles: builtins.int,
-    step_size: builtins.float,
-    max_duration: builtins.float,
-) -> typing.Optional[builtins.float]: ...
-def bb_occupation_time(
-    domain: tuple[builtins.float, builtins.float],
-    step_size: builtins.float,
-    duration: builtins.float,
-) -> builtins.float: ...
-def bb_occupation_time_central_moment(
-    domain: tuple[builtins.float, builtins.float],
-    order: builtins.int,
-    particles: builtins.int,
-    step_size: builtins.float,
-    duration: builtins.float,
-) -> builtins.float: ...
-def bb_occupation_time_raw_moment(
-    domain: tuple[builtins.float, builtins.float],
-    order: builtins.int,
-    particles: builtins.int,
-    step_size: builtins.float,
-    duration: builtins.float,
-) -> builtins.float: ...
-def bb_raw_moment(
-    duration: builtins.float,
-    step_size: builtins.float,
-    order: builtins.int,
-    particles: builtins.int,
-) -> builtins.float: ...
-def bb_simulate(
-    duration: builtins.float, step_size: builtins.float
-) -> tuple[
-    numpy.typing.NDArray[numpy.float64], numpy.typing.NDArray[numpy.float64]
-]: ...
-def bb_tamsd(
-    duration: builtins.float,
-    delta: builtins.float,
-    step_size: builtins.float,
-    quad_order: builtins.int,
-) -> builtins.float: ...
-def be_central_moment(
-    duration: builtins.float,
-    step_size: builtins.float,
-    order: builtins.int,
-    particles: builtins.int,
-) -> builtins.float: ...
-def be_eatamsd(
-    duration: builtins.float,
-    delta: builtins.float,
-    particles: builtins.int,
-    step_size: builtins.float,
-    quad_order: builtins.int,
-) -> builtins.float: ...
-def be_fpt(
-    step_size: builtins.float, domain: tuple[builtins.float, builtins.float]
-) -> typing.Optional[builtins.float]: ...
-def be_fpt_central_moment(
-    domain: tuple[builtins.float, builtins.float],
-    order: builtins.int,
-    particles: builtins.int,
-    step_size: builtins.float,
-    max_duration: builtins.float,
-) -> typing.Optional[builtins.float]: ...
-def be_fpt_raw_moment(
-    domain: tuple[builtins.float, builtins.float],
-    order: builtins.int,
-    particles: builtins.int,
-    step_size: builtins.float,
-    max_duration: builtins.float,
-) -> typing.Optional[builtins.float]: ...
-def be_occupation_time(
-    domain: tuple[builtins.float, builtins.float],
-    step_size: builtins.float,
-    duration: builtins.float,
-) -> builtins.float: ...
-def be_occupation_time_central_moment(
-    domain: tuple[builtins.float, builtins.float],
-    order: builtins.int,
-    particles: builtins.int,
-    step_size: builtins.float,
-    duration: builtins.float,
-) -> builtins.float: ...
-def be_occupation_time_raw_moment(
-    domain: tuple[builtins.float, builtins.float],
-    order: builtins.int,
-    particles: builtins.int,
-    step_size: builtins.float,
-    duration: builtins.float,
-) -> builtins.float: ...
-def be_raw_moment(
-    duration: builtins.float,
-    step_size: builtins.float,
-    order: builtins.int,
-    particles: builtins.int,
-) -> builtins.float: ...
-def be_simulate(
-    duration: builtins.float, step_size: builtins.float
-) -> tuple[
-    numpy.typing.NDArray[numpy.float64], numpy.typing.NDArray[numpy.float64]
-]: ...
-def be_tamsd(
-    duration: builtins.float,
-    delta: builtins.float,
-    step_size: builtins.float,
-    quad_order: builtins.int,
-) -> builtins.float: ...
-def bm_central_moment(
-    start_position: builtins.float,
-    diffusion_coefficient: builtins.float,
-    duration: builtins.float,
-    step_size: builtins.float,
-    order: builtins.int,
-    particles: builtins.int,
-) -> builtins.float: ...
-def bm_eatamsd(
-    start_position: builtins.float,
-    diffusion_coefficient: builtins.float,
-    duration: builtins.float,
-    delta: builtins.float,
-    particles: builtins.int,
-    step_size: builtins.float,
-    quad_order: builtins.int,
-) -> builtins.float: ...
-def bm_fpt(
-    start_position: builtins.float,
-    diffusion_coefficient: builtins.float,
-    step_size: builtins.float,
-    domain: tuple[builtins.float, builtins.float],
-    max_duration: builtins.float,
-) -> typing.Optional[builtins.float]: ...
-def bm_fpt_central_moment(
-    start_position: builtins.float,
-    diffusion_coefficient: builtins.float,
-    domain: tuple[builtins.float, builtins.float],
-    order: builtins.int,
-    particles: builtins.int,
-    step_size: builtins.float,
-    max_duration: builtins.float,
-) -> typing.Optional[builtins.float]: ...
-def bm_fpt_raw_moment(
-    start_position: builtins.float,
-    diffusion_coefficient: builtins.float,
-    domain: tuple[builtins.float, builtins.float],
-    order: builtins.int,
-    particles: builtins.int,
-    step_size: builtins.float,
-    max_duration: builtins.float,
-) -> typing.Optional[builtins.float]: ...
-def bm_occupation_time(
-    start_position: builtins.float,
-    diffusion_coefficient: builtins.float,
-    step_size: builtins.float,
-    domain: tuple[builtins.float, builtins.float],
-    duration: builtins.float,
-) -> builtins.float: ...
-def bm_occupation_time_central_moment(
-    start_position: builtins.float,
-    diffusion_coefficient: builtins.float,
-    domain: tuple[builtins.float, builtins.float],
-    order: builtins.int,
-    particles: builtins.int,
-    step_size: builtins.float,
-    duration: builtins.float,
-) -> builtins.float: ...
-def bm_occupation_time_raw_moment(
-    start_position: builtins.float,
-    diffusion_coefficient: builtins.float,
-    domain: tuple[builtins.float, builtins.float],
-    order: builtins.int,
-    particles: builtins.int,
-    step_size: builtins.float,
-    duration: builtins.float,
-) -> builtins.float: ...
-def bm_raw_moment(
-    start_position: builtins.float,
-    diffusion_coefficient: builtins.float,
-    duration: builtins.float,
-    step_size: builtins.float,
-    order: builtins.int,
-    particles: builtins.int,
-) -> builtins.float: ...
-def bm_simulate(
-    start_position: builtins.float,
-    diffusion_coefficient: builtins.float,
-    duration: builtins.float,
-    step_size: builtins.float,
-) -> tuple[
-    numpy.typing.NDArray[numpy.float64], numpy.typing.NDArray[numpy.float64]
-]: ...
-def bm_tamsd(
-    start_position: builtins.float,
-    diffusion_coefficient: builtins.float,
-    duration: builtins.float,
-    delta: builtins.float,
-    step_size: builtins.float,
-    quad_order: builtins.int,
-) -> builtins.float: ...
-def bool_rands(
-    n: builtins.int, /, p: builtins.float = 0.5
-) -> typing.Annotated[numpy.typing.NDArray[numpy.bool], typing.Literal["N"]]: ...
-def cauchy_central_moment(
-    start_position: builtins.float,
-    duration: builtins.float,
-    step_size: builtins.float,
-    order: builtins.int,
-    particles: builtins.int,
-) -> builtins.float: ...
-def cauchy_eatamsd(
-    start_position: builtins.float,
-    duration: builtins.float,
-    delta: builtins.float,
-    particles: builtins.int,
-    step_size: builtins.float,
-    quad_order: builtins.int,
-) -> builtins.float: ...
-def cauchy_fpt(
-    start_position: builtins.float,
-    step_size: builtins.float,
-    domain: tuple[builtins.float, builtins.float],
-    max_duration: builtins.float,
-) -> typing.Optional[builtins.float]: ...
-def cauchy_fpt_central_moment(
-    start_position: builtins.float,
-    domain: tuple[builtins.float, builtins.float],
-    order: builtins.int,
-    particles: builtins.int,
-    step_size: builtins.float,
-    max_duration: builtins.float,
-) -> typing.Optional[builtins.float]: ...
-def cauchy_fpt_raw_moment(
-    start_position: builtins.float,
-    domain: tuple[builtins.float, builtins.float],
-    order: builtins.int,
-    particles: builtins.int,
-    step_size: builtins.float,
-    max_duration: builtins.float,
-) -> typing.Optional[builtins.float]: ...
-def cauchy_occupation_time(
-    start_position: builtins.float,
-    domain: tuple[builtins.float, builtins.float],
-    step_size: builtins.float,
-    duration: builtins.float,
-) -> builtins.float: ...
-def cauchy_occupation_time_central_moment(
-    start_position: builtins.float,
-    domain: tuple[builtins.float, builtins.float],
-    order: builtins.int,
-    particles: builtins.int,
-    step_size: builtins.float,
-    duration: builtins.float,
-) -> builtins.float: ...
-def cauchy_occupation_time_raw_moment(
-    start_position: builtins.float,
-    domain: tuple[builtins.float, builtins.float],
-    order: builtins.int,
-    particles: builtins.int,
-    step_size: builtins.float,
-    duration: builtins.float,
-) -> builtins.float: ...
-def cauchy_raw_moment(
-    start_position: builtins.float,
-    duration: builtins.float,
-    step_size: builtins.float,
-    order: builtins.int,
-    particles: builtins.int,
-) -> builtins.float: ...
-def cauchy_simulate(
-    start_position: builtins.float, duration: builtins.float, step_size: builtins.float
-) -> tuple[
-    numpy.typing.NDArray[numpy.float64], numpy.typing.NDArray[numpy.float64]
-]: ...
-def cauchy_tamsd(
-    start_position: builtins.float,
-    duration: builtins.float,
-    delta: builtins.float,
-    step_size: builtins.float,
-    quad_order: builtins.int,
-) -> builtins.float: ...
-def ctrw_central_moment(
-    alpha: builtins.float,
-    beta: builtins.float,
-    start_position: builtins.float,
-    duration: builtins.float,
-    order: builtins.int,
-    particles: builtins.int,
-) -> builtins.float: ...
-def ctrw_fpt(
-    alpha: builtins.float,
-    beta: builtins.float,
-    start_position: builtins.float,
-    domain: tuple[builtins.float, builtins.float],
-    max_duration: builtins.float,
-) -> typing.Optional[builtins.float]: ...
-def ctrw_fpt_central_moment(
-    alpha: builtins.float,
-    beta: builtins.float,
-    start_position: builtins.float,
-    domain: tuple[builtins.float, builtins.float],
-    order: builtins.int,
-    particles: builtins.int,
-    max_duration: builtins.float,
-) -> typing.Optional[builtins.float]: ...
-def ctrw_fpt_raw_moment(
-    alpha: builtins.float,
-    beta: builtins.float,
-    start_position: builtins.float,
-    domain: tuple[builtins.float, builtins.float],
-    order: builtins.int,
-    particles: builtins.int,
-    max_duration: builtins.float,
-) -> typing.Optional[builtins.float]: ...
-def ctrw_occupation_time(
-    alpha: builtins.float,
-    beta: builtins.float,
-    start_position: builtins.float,
-    domain: tuple[builtins.float, builtins.float],
-    duration: builtins.float,
-) -> builtins.float: ...
-def ctrw_occupation_time_central_moment(
-    alpha: builtins.float,
-    beta: builtins.float,
-    start_position: builtins.float,
-    domain: tuple[builtins.float, builtins.float],
-    duration: builtins.float,
-    order: builtins.int,
-    particles: builtins.int,
-) -> builtins.float: ...
-def ctrw_occupation_time_raw_moment(
-    alpha: builtins.float,
-    beta: builtins.float,
-    start_position: builtins.float,
-    domain: tuple[builtins.float, builtins.float],
-    duration: builtins.float,
-    order: builtins.int,
-    particles: builtins.int,
-) -> builtins.float: ...
-def ctrw_raw_moment(
-    alpha: builtins.float,
-    beta: builtins.float,
-    start_position: builtins.float,
-    duration: builtins.float,
-    order: builtins.int,
-    particles: builtins.int,
-) -> builtins.float: ...
-def ctrw_simulate_duration(
-    alpha: builtins.float,
-    beta: builtins.float,
-    start_position: builtins.float,
-    duration: builtins.float,
-) -> tuple[
-    numpy.typing.NDArray[numpy.float64], numpy.typing.NDArray[numpy.float64]
-]: ...
-def ctrw_simulate_step(
-    alpha: builtins.float,
-    beta: builtins.float,
-    start_position: builtins.float,
-    num_step: builtins.int,
-) -> tuple[
-    numpy.typing.NDArray[numpy.float64], numpy.typing.NDArray[numpy.float64]
-]: ...
-def eatamsd(
-    process: typing.Any,
-    duration: builtins.float,
-    delta: builtins.float,
-    particles: builtins.int,
-    time_step: builtins.float,
-    quad_order: builtins.int,
-) -> builtins.float: ...
+def asymmetric_cauchy_central_moment(start_position: builtins.float, beta: builtins.float, duration: builtins.float, step_size: builtins.float, order: builtins.int, particles: builtins.int) -> builtins.float: ...
+
+def asymmetric_cauchy_eatamsd(start_position: builtins.float, beta: builtins.float, duration: builtins.float, delta: builtins.float, particles: builtins.int, step_size: builtins.float, quad_order: builtins.int) -> builtins.float: ...
+
+def asymmetric_cauchy_fpt(start_position: builtins.float, beta: builtins.float, step_size: builtins.float, domain: tuple[builtins.float, builtins.float], max_duration: builtins.float) -> typing.Optional[builtins.float]: ...
+
+def asymmetric_cauchy_fpt_central_moment(start_position: builtins.float, beta: builtins.float, domain: tuple[builtins.float, builtins.float], order: builtins.int, particles: builtins.int, step_size: builtins.float, max_duration: builtins.float) -> typing.Optional[builtins.float]: ...
+
+def asymmetric_cauchy_fpt_raw_moment(start_position: builtins.float, beta: builtins.float, domain: tuple[builtins.float, builtins.float], order: builtins.int, particles: builtins.int, step_size: builtins.float, max_duration: builtins.float) -> typing.Optional[builtins.float]: ...
+
+def asymmetric_cauchy_occupation_time(start_position: builtins.float, beta: builtins.float, domain: tuple[builtins.float, builtins.float], step_size: builtins.float, duration: builtins.float) -> builtins.float: ...
+
+def asymmetric_cauchy_occupation_time_central_moment(start_position: builtins.float, beta: builtins.float, domain: tuple[builtins.float, builtins.float], order: builtins.int, particles: builtins.int, step_size: builtins.float, duration: builtins.float) -> builtins.float: ...
+
+def asymmetric_cauchy_occupation_time_raw_moment(start_position: builtins.float, beta: builtins.float, domain: tuple[builtins.float, builtins.float], order: builtins.int, particles: builtins.int, step_size: builtins.float, duration: builtins.float) -> builtins.float: ...
+
+def asymmetric_cauchy_raw_moment(start_position: builtins.float, beta: builtins.float, duration: builtins.float, step_size: builtins.float, order: builtins.int, particles: builtins.int) -> builtins.float: ...
+
+def asymmetric_cauchy_simulate(start_position: builtins.float, beta: builtins.float, duration: builtins.float, step_size: builtins.float) -> tuple[numpy.typing.NDArray[numpy.float64], numpy.typing.NDArray[numpy.float64]]: ...
+
+def asymmetric_cauchy_tamsd(start_position: builtins.float, beta: builtins.float, duration: builtins.float, delta: builtins.float, step_size: builtins.float, quad_order: builtins.int) -> builtins.float: ...
+
+def asymmetric_levy_eatamsd(start_position: builtins.float, alpha: builtins.float, beta: builtins.float, duration: builtins.float, delta: builtins.float, particles: builtins.int, step_size: builtins.float, quad_order: builtins.int) -> builtins.float: ...
+
+def asymmetric_levy_fpt(start_position: builtins.float, alpha: builtins.float, beta: builtins.float, step_size: builtins.float, domain: tuple[builtins.float, builtins.float], max_duration: builtins.float) -> typing.Optional[builtins.float]: ...
+
+def asymmetric_levy_fpt_central_moment(start_position: builtins.float, alpha: builtins.float, beta: builtins.float, domain: tuple[builtins.float, builtins.float], order: builtins.int, particles: builtins.int, max_duration: builtins.float, step_size: builtins.float) -> typing.Optional[builtins.float]: ...
+
+def asymmetric_levy_fpt_raw_moment(start_position: builtins.float, alpha: builtins.float, beta: builtins.float, domain: tuple[builtins.float, builtins.float], order: builtins.int, particles: builtins.int, max_duration: builtins.float, step_size: builtins.float) -> typing.Optional[builtins.float]: ...
+
+def asymmetric_levy_occupation_time(start_position: builtins.float, alpha: builtins.float, beta: builtins.float, step_size: builtins.float, domain: tuple[builtins.float, builtins.float], duration: builtins.float) -> builtins.float: ...
+
+def asymmetric_levy_occupation_time_central_moment(start_position: builtins.float, alpha: builtins.float, beta: builtins.float, domain: tuple[builtins.float, builtins.float], duration: builtins.float, order: builtins.int, particles: builtins.int, step_size: builtins.float) -> builtins.float: ...
+
+def asymmetric_levy_occupation_time_raw_moment(start_position: builtins.float, alpha: builtins.float, beta: builtins.float, domain: tuple[builtins.float, builtins.float], duration: builtins.float, order: builtins.int, particles: builtins.int, step_size: builtins.float) -> builtins.float: ...
+
+def asymmetric_levy_simulate(start_position: builtins.float, alpha: builtins.float, beta: builtins.float, duration: builtins.float, step_size: builtins.float) -> tuple[numpy.typing.NDArray[numpy.float64], numpy.typing.NDArray[numpy.float64]]: ...
+
+def asymmetric_levy_tamsd(start_position: builtins.float, alpha: builtins.float, beta: builtins.float, duration: builtins.float, delta: builtins.float, step_size: builtins.float, quad_order: builtins.int) -> builtins.float: ...
+
+def bb_central_moment(duration: builtins.float, step_size: builtins.float, order: builtins.int, particles: builtins.int) -> builtins.float: ...
+
+def bb_eatamsd(duration: builtins.float, delta: builtins.float, particles: builtins.int, step_size: builtins.float, quad_order: builtins.int) -> builtins.float: ...
+
+def bb_fpt(step_size: builtins.float, domain: tuple[builtins.float, builtins.float], max_duration: builtins.float) -> typing.Optional[builtins.float]: ...
+
+def bb_fpt_central_moment(domain: tuple[builtins.float, builtins.float], order: builtins.int, particles: builtins.int, step_size: builtins.float, max_duration: builtins.float) -> typing.Optional[builtins.float]: ...
+
+def bb_fpt_raw_moment(domain: tuple[builtins.float, builtins.float], order: builtins.int, particles: builtins.int, step_size: builtins.float, max_duration: builtins.float) -> typing.Optional[builtins.float]: ...
+
+def bb_occupation_time(domain: tuple[builtins.float, builtins.float], step_size: builtins.float, duration: builtins.float) -> builtins.float: ...
+
+def bb_occupation_time_central_moment(domain: tuple[builtins.float, builtins.float], order: builtins.int, particles: builtins.int, step_size: builtins.float, duration: builtins.float) -> builtins.float: ...
+
+def bb_occupation_time_raw_moment(domain: tuple[builtins.float, builtins.float], order: builtins.int, particles: builtins.int, step_size: builtins.float, duration: builtins.float) -> builtins.float: ...
+
+def bb_raw_moment(duration: builtins.float, step_size: builtins.float, order: builtins.int, particles: builtins.int) -> builtins.float: ...
+
+def bb_simulate(duration: builtins.float, step_size: builtins.float) -> tuple[numpy.typing.NDArray[numpy.float64], numpy.typing.NDArray[numpy.float64]]: ...
+
+def bb_tamsd(duration: builtins.float, delta: builtins.float, step_size: builtins.float, quad_order: builtins.int) -> builtins.float: ...
+
+def be_central_moment(duration: builtins.float, step_size: builtins.float, order: builtins.int, particles: builtins.int) -> builtins.float: ...
+
+def be_eatamsd(duration: builtins.float, delta: builtins.float, particles: builtins.int, step_size: builtins.float, quad_order: builtins.int) -> builtins.float: ...
+
+def be_fpt(step_size: builtins.float, domain: tuple[builtins.float, builtins.float]) -> typing.Optional[builtins.float]: ...
+
+def be_fpt_central_moment(domain: tuple[builtins.float, builtins.float], order: builtins.int, particles: builtins.int, step_size: builtins.float, max_duration: builtins.float) -> typing.Optional[builtins.float]: ...
+
+def be_fpt_raw_moment(domain: tuple[builtins.float, builtins.float], order: builtins.int, particles: builtins.int, step_size: builtins.float, max_duration: builtins.float) -> typing.Optional[builtins.float]: ...
+
+def be_occupation_time(domain: tuple[builtins.float, builtins.float], step_size: builtins.float, duration: builtins.float) -> builtins.float: ...
+
+def be_occupation_time_central_moment(domain: tuple[builtins.float, builtins.float], order: builtins.int, particles: builtins.int, step_size: builtins.float, duration: builtins.float) -> builtins.float: ...
+
+def be_occupation_time_raw_moment(domain: tuple[builtins.float, builtins.float], order: builtins.int, particles: builtins.int, step_size: builtins.float, duration: builtins.float) -> builtins.float: ...
+
+def be_raw_moment(duration: builtins.float, step_size: builtins.float, order: builtins.int, particles: builtins.int) -> builtins.float: ...
+
+def be_simulate(duration: builtins.float, step_size: builtins.float) -> tuple[numpy.typing.NDArray[numpy.float64], numpy.typing.NDArray[numpy.float64]]: ...
+
+def be_tamsd(duration: builtins.float, delta: builtins.float, step_size: builtins.float, quad_order: builtins.int) -> builtins.float: ...
+
+def bm_central_moment(start_position: builtins.float, diffusion_coefficient: builtins.float, duration: builtins.float, step_size: builtins.float, order: builtins.int, particles: builtins.int) -> builtins.float: ...
+
+def bm_eatamsd(start_position: builtins.float, diffusion_coefficient: builtins.float, duration: builtins.float, delta: builtins.float, particles: builtins.int, step_size: builtins.float, quad_order: builtins.int) -> builtins.float: ...
+
+def bm_fpt(start_position: builtins.float, diffusion_coefficient: builtins.float, step_size: builtins.float, domain: tuple[builtins.float, builtins.float], max_duration: builtins.float) -> typing.Optional[builtins.float]: ...
+
+def bm_fpt_central_moment(start_position: builtins.float, diffusion_coefficient: builtins.float, domain: tuple[builtins.float, builtins.float], order: builtins.int, particles: builtins.int, step_size: builtins.float, max_duration: builtins.float) -> typing.Optional[builtins.float]: ...
+
+def bm_fpt_raw_moment(start_position: builtins.float, diffusion_coefficient: builtins.float, domain: tuple[builtins.float, builtins.float], order: builtins.int, particles: builtins.int, step_size: builtins.float, max_duration: builtins.float) -> typing.Optional[builtins.float]: ...
+
+def bm_occupation_time(start_position: builtins.float, diffusion_coefficient: builtins.float, step_size: builtins.float, domain: tuple[builtins.float, builtins.float], duration: builtins.float) -> builtins.float: ...
+
+def bm_occupation_time_central_moment(start_position: builtins.float, diffusion_coefficient: builtins.float, domain: tuple[builtins.float, builtins.float], order: builtins.int, particles: builtins.int, step_size: builtins.float, duration: builtins.float) -> builtins.float: ...
+
+def bm_occupation_time_raw_moment(start_position: builtins.float, diffusion_coefficient: builtins.float, domain: tuple[builtins.float, builtins.float], order: builtins.int, particles: builtins.int, step_size: builtins.float, duration: builtins.float) -> builtins.float: ...
+
+def bm_raw_moment(start_position: builtins.float, diffusion_coefficient: builtins.float, duration: builtins.float, step_size: builtins.float, order: builtins.int, particles: builtins.int) -> builtins.float: ...
+
+def bm_simulate(start_position: builtins.float, diffusion_coefficient: builtins.float, duration: builtins.float, step_size: builtins.float) -> tuple[numpy.typing.NDArray[numpy.float64], numpy.typing.NDArray[numpy.float64]]: ...
+
+def bm_tamsd(start_position: builtins.float, diffusion_coefficient: builtins.float, duration: builtins.float, delta: builtins.float, step_size: builtins.float, quad_order: builtins.int) -> builtins.float: ...
+
+def bool_rands(n: builtins.int, /, p: builtins.float = 0.5) -> typing.Annotated[numpy.typing.NDArray[numpy.bool], typing.Literal["N"]]: ...
+
+def cauchy_central_moment(start_position: builtins.float, duration: builtins.float, step_size: builtins.float, order: builtins.int, particles: builtins.int) -> builtins.float: ...
+
+def cauchy_eatamsd(start_position: builtins.float, duration: builtins.float, delta: builtins.float, particles: builtins.int, step_size: builtins.float, quad_order: builtins.int) -> builtins.float: ...
+
+def cauchy_fpt(start_position: builtins.float, step_size: builtins.float, domain: tuple[builtins.float, builtins.float], max_duration: builtins.float) -> typing.Optional[builtins.float]: ...
+
+def cauchy_fpt_central_moment(start_position: builtins.float, domain: tuple[builtins.float, builtins.float], order: builtins.int, particles: builtins.int, step_size: builtins.float, max_duration: builtins.float) -> typing.Optional[builtins.float]: ...
+
+def cauchy_fpt_raw_moment(start_position: builtins.float, domain: tuple[builtins.float, builtins.float], order: builtins.int, particles: builtins.int, step_size: builtins.float, max_duration: builtins.float) -> typing.Optional[builtins.float]: ...
+
+def cauchy_occupation_time(start_position: builtins.float, domain: tuple[builtins.float, builtins.float], step_size: builtins.float, duration: builtins.float) -> builtins.float: ...
+
+def cauchy_occupation_time_central_moment(start_position: builtins.float, domain: tuple[builtins.float, builtins.float], order: builtins.int, particles: builtins.int, step_size: builtins.float, duration: builtins.float) -> builtins.float: ...
+
+def cauchy_occupation_time_raw_moment(start_position: builtins.float, domain: tuple[builtins.float, builtins.float], order: builtins.int, particles: builtins.int, step_size: builtins.float, duration: builtins.float) -> builtins.float: ...
+
+def cauchy_raw_moment(start_position: builtins.float, duration: builtins.float, step_size: builtins.float, order: builtins.int, particles: builtins.int) -> builtins.float: ...
+
+def cauchy_simulate(start_position: builtins.float, duration: builtins.float, step_size: builtins.float) -> tuple[numpy.typing.NDArray[numpy.float64], numpy.typing.NDArray[numpy.float64]]: ...
+
+def cauchy_tamsd(start_position: builtins.float, duration: builtins.float, delta: builtins.float, step_size: builtins.float, quad_order: builtins.int) -> builtins.float: ...
+
+def ctrw_central_moment(alpha: builtins.float, beta: builtins.float, start_position: builtins.float, duration: builtins.float, order: builtins.int, particles: builtins.int) -> builtins.float: ...
+
+def ctrw_fpt(alpha: builtins.float, beta: builtins.float, start_position: builtins.float, domain: tuple[builtins.float, builtins.float], max_duration: builtins.float) -> typing.Optional[builtins.float]: ...
+
+def ctrw_fpt_central_moment(alpha: builtins.float, beta: builtins.float, start_position: builtins.float, domain: tuple[builtins.float, builtins.float], order: builtins.int, particles: builtins.int, max_duration: builtins.float) -> typing.Optional[builtins.float]: ...
+
+def ctrw_fpt_raw_moment(alpha: builtins.float, beta: builtins.float, start_position: builtins.float, domain: tuple[builtins.float, builtins.float], order: builtins.int, particles: builtins.int, max_duration: builtins.float) -> typing.Optional[builtins.float]: ...
+
+def ctrw_occupation_time(alpha: builtins.float, beta: builtins.float, start_position: builtins.float, domain: tuple[builtins.float, builtins.float], duration: builtins.float) -> builtins.float: ...
+
+def ctrw_occupation_time_central_moment(alpha: builtins.float, beta: builtins.float, start_position: builtins.float, domain: tuple[builtins.float, builtins.float], duration: builtins.float, order: builtins.int, particles: builtins.int) -> builtins.float: ...
+
+def ctrw_occupation_time_raw_moment(alpha: builtins.float, beta: builtins.float, start_position: builtins.float, domain: tuple[builtins.float, builtins.float], duration: builtins.float, order: builtins.int, particles: builtins.int) -> builtins.float: ...
+
+def ctrw_raw_moment(alpha: builtins.float, beta: builtins.float, start_position: builtins.float, duration: builtins.float, order: builtins.int, particles: builtins.int) -> builtins.float: ...
+
+def ctrw_simulate_duration(alpha: builtins.float, beta: builtins.float, start_position: builtins.float, duration: builtins.float) -> tuple[numpy.typing.NDArray[numpy.float64], numpy.typing.NDArray[numpy.float64]]: ...
+
+def ctrw_simulate_step(alpha: builtins.float, beta: builtins.float, start_position: builtins.float, num_step: builtins.int) -> tuple[numpy.typing.NDArray[numpy.float64], numpy.typing.NDArray[numpy.float64]]: ...
+
+def eatamsd(process: typing.Any, duration: builtins.float, delta: builtins.float, particles: builtins.int, time_step: builtins.float, quad_order: builtins.int) -> builtins.float: ...
+
 def exp_rand(scale: builtins.float = 1.0) -> builtins.float: ...
-def exp_rands(
-    n: builtins.int, /, scale: builtins.float = 1.0
-) -> numpy.typing.NDArray[numpy.float64]: ...
-def fbm_central_moment(
-    start_position: builtins.float,
-    hurst_exponent: builtins.float,
-    duration: builtins.float,
-    step_size: builtins.float,
-    order: builtins.int,
-    particles: builtins.int,
-) -> builtins.float: ...
-def fbm_eatamsd(
-    start_position: builtins.float,
-    hurst_exponent: builtins.float,
-    duration: builtins.float,
-    delta: builtins.float,
-    particles: builtins.int,
-    step_size: builtins.float,
-    quad_order: builtins.int,
-) -> builtins.float: ...
-def fbm_fpt(
-    start_position: builtins.float,
-    hurst_exponent: builtins.float,
-    step_size: builtins.float,
-    domain: tuple[builtins.float, builtins.float],
-    max_duration: builtins.float,
-) -> typing.Optional[builtins.float]: ...
-def fbm_fpt_central_moment(
-    start_position: builtins.float,
-    hurst_exponent: builtins.float,
-    domain: tuple[builtins.float, builtins.float],
-    order: builtins.int,
-    particles: builtins.int,
-    step_size: builtins.float,
-    max_duration: builtins.float,
-) -> typing.Optional[builtins.float]: ...
-def fbm_fpt_raw_moment(
-    start_position: builtins.float,
-    hurst_exponent: builtins.float,
-    domain: tuple[builtins.float, builtins.float],
-    order: builtins.int,
-    particles: builtins.int,
-    step_size: builtins.float,
-    max_duration: builtins.float,
-) -> typing.Optional[builtins.float]: ...
-def fbm_occupation_time(
-    start_position: builtins.float,
-    hurst_exponent: builtins.float,
-    step_size: builtins.float,
-    domain: tuple[builtins.float, builtins.float],
-    duration: builtins.float,
-) -> builtins.float: ...
-def fbm_occupation_time_central_moment(
-    start_position: builtins.float,
-    hurst_exponent: builtins.float,
-    domain: tuple[builtins.float, builtins.float],
-    order: builtins.int,
-    particles: builtins.int,
-    step_size: builtins.float,
-    duration: builtins.float,
-) -> builtins.float: ...
-def fbm_occupation_time_raw_moment(
-    start_position: builtins.float,
-    hurst_exponent: builtins.float,
-    domain: tuple[builtins.float, builtins.float],
-    order: builtins.int,
-    particles: builtins.int,
-    step_size: builtins.float,
-    duration: builtins.float,
-) -> builtins.float: ...
-def fbm_raw_moment(
-    start_position: builtins.float,
-    hurst_exponent: builtins.float,
-    duration: builtins.float,
-    step_size: builtins.float,
-    order: builtins.int,
-    particles: builtins.int,
-) -> builtins.float: ...
-def fbm_simulate(
-    start_position: builtins.float,
-    hurst_exponent: builtins.float,
-    duration: builtins.float,
-    step_size: builtins.float,
-) -> tuple[
-    numpy.typing.NDArray[numpy.float64], numpy.typing.NDArray[numpy.float64]
-]: ...
-def fbm_tamsd(
-    start_position: builtins.float,
-    hurst_exponent: builtins.float,
-    duration: builtins.float,
-    delta: builtins.float,
-    step_size: builtins.float,
-    quad_order: builtins.int,
-) -> builtins.float: ...
-def fpt(
-    process: typing.Any,
-    domain: tuple[builtins.float, builtins.float],
-    max_duration: builtins.float,
-    time_step: builtins.float,
-) -> typing.Optional[builtins.float]: ...
-def gamma_central_moment(
-    shape: builtins.float,
-    rate: builtins.float,
-    duration: builtins.float,
-    step_size: builtins.float,
-    order: builtins.int,
-    particles: builtins.int,
-) -> builtins.float: ...
-def gamma_eatamsd(
-    shape: builtins.float,
-    rate: builtins.float,
-    duration: builtins.float,
-    delta: builtins.float,
-    particles: builtins.int,
-    step_size: builtins.float,
-    quad_order: builtins.int,
-) -> builtins.float: ...
-def gamma_fpt(
-    shape: builtins.float,
-    rate: builtins.float,
-    step_size: builtins.float,
-    domain: tuple[builtins.float, builtins.float],
-    max_duration: builtins.float,
-) -> typing.Optional[builtins.float]: ...
-def gamma_fpt_central_moment(
-    shape: builtins.float,
-    rate: builtins.float,
-    domain: tuple[builtins.float, builtins.float],
-    order: builtins.int,
-    particles: builtins.int,
-    step_size: builtins.float,
-    max_duration: builtins.float,
-) -> typing.Optional[builtins.float]: ...
-def gamma_fpt_raw_moment(
-    shape: builtins.float,
-    rate: builtins.float,
-    domain: tuple[builtins.float, builtins.float],
-    order: builtins.int,
-    particles: builtins.int,
-    step_size: builtins.float,
-    max_duration: builtins.float,
-) -> typing.Optional[builtins.float]: ...
-def gamma_occupation_time(
-    shape: builtins.float,
-    rate: builtins.float,
-    domain: tuple[builtins.float, builtins.float],
-    step_size: builtins.float,
-    duration: builtins.float,
-) -> builtins.float: ...
-def gamma_occupation_time_central_moment(
-    shape: builtins.float,
-    rate: builtins.float,
-    domain: tuple[builtins.float, builtins.float],
-    order: builtins.int,
-    particles: builtins.int,
-    step_size: builtins.float,
-    duration: builtins.float,
-) -> builtins.float: ...
-def gamma_occupation_time_raw_moment(
-    shape: builtins.float,
-    rate: builtins.float,
-    domain: tuple[builtins.float, builtins.float],
-    order: builtins.int,
-    particles: builtins.int,
-    step_size: builtins.float,
-    duration: builtins.float,
-) -> builtins.float: ...
-def gamma_raw_moment(
-    shape: builtins.float,
-    rate: builtins.float,
-    duration: builtins.float,
-    step_size: builtins.float,
-    order: builtins.int,
-    particles: builtins.int,
-) -> builtins.float: ...
-def gamma_simulate(
-    shape: builtins.float,
-    rate: builtins.float,
-    duration: builtins.float,
-    step_size: builtins.float,
-) -> tuple[
-    numpy.typing.NDArray[numpy.float64], numpy.typing.NDArray[numpy.float64]
-]: ...
-def gamma_tamsd(
-    shape: builtins.float,
-    rate: builtins.float,
-    duration: builtins.float,
-    delta: builtins.float,
-    step_size: builtins.float,
-    quad_order: builtins.int,
-) -> builtins.float: ...
-def gb_central_moment(
-    start_position: builtins.float,
-    mu: builtins.float,
-    sigma: builtins.float,
-    duration: builtins.float,
-    step_size: builtins.float,
-    order: builtins.int,
-    particles: builtins.int,
-) -> builtins.float: ...
-def gb_eatamsd(
-    start_position: builtins.float,
-    mu: builtins.float,
-    sigma: builtins.float,
-    duration: builtins.float,
-    delta: builtins.float,
-    particles: builtins.int,
-    step_size: builtins.float,
-    quad_order: builtins.int,
-) -> builtins.float: ...
-def gb_fpt(
-    start_position: builtins.float,
-    mu: builtins.float,
-    sigma: builtins.float,
-    step_size: builtins.float,
-    domain: tuple[builtins.float, builtins.float],
-    max_duration: builtins.float,
-) -> typing.Optional[builtins.float]: ...
-def gb_fpt_central_moment(
-    start_position: builtins.float,
-    mu: builtins.float,
-    sigma: builtins.float,
-    domain: tuple[builtins.float, builtins.float],
-    order: builtins.int,
-    particles: builtins.int,
-    step_size: builtins.float,
-    max_duration: builtins.float,
-) -> typing.Optional[builtins.float]: ...
-def gb_fpt_raw_moment(
-    start_position: builtins.float,
-    mu: builtins.float,
-    sigma: builtins.float,
-    domain: tuple[builtins.float, builtins.float],
-    order: builtins.int,
-    particles: builtins.int,
-    step_size: builtins.float,
-    max_duration: builtins.float,
-) -> typing.Optional[builtins.float]: ...
-def gb_occupation_time(
-    start_position: builtins.float,
-    mu: builtins.float,
-    sigma: builtins.float,
-    domain: tuple[builtins.float, builtins.float],
-    step_size: builtins.float,
-    duration: builtins.float,
-) -> builtins.float: ...
-def gb_occupation_time_central_moment(
-    start_position: builtins.float,
-    mu: builtins.float,
-    sigma: builtins.float,
-    domain: tuple[builtins.float, builtins.float],
-    order: builtins.int,
-    particles: builtins.int,
-    step_size: builtins.float,
-    duration: builtins.float,
-) -> builtins.float: ...
-def gb_occupation_time_raw_moment(
-    start_position: builtins.float,
-    mu: builtins.float,
-    sigma: builtins.float,
-    domain: tuple[builtins.float, builtins.float],
-    order: builtins.int,
-    particles: builtins.int,
-    step_size: builtins.float,
-    duration: builtins.float,
-) -> builtins.float: ...
-def gb_raw_moment(
-    start_position: builtins.float,
-    mu: builtins.float,
-    sigma: builtins.float,
-    duration: builtins.float,
-    step_size: builtins.float,
-    order: builtins.int,
-    particles: builtins.int,
-) -> builtins.float: ...
-def gb_simulate(
-    start_position: builtins.float,
-    mu: builtins.float,
-    sigma: builtins.float,
-    duration: builtins.float,
-    step_size: builtins.float,
-) -> tuple[
-    numpy.typing.NDArray[numpy.float64], numpy.typing.NDArray[numpy.float64]
-]: ...
-def gb_tamsd(
-    start_position: builtins.float,
-    mu: builtins.float,
-    sigma: builtins.float,
-    duration: builtins.float,
-    delta: builtins.float,
-    step_size: builtins.float,
-    quad_order: builtins.int,
-) -> builtins.float: ...
-def generalized_langevin_central_moment(
-    drift_func: typing.Any,
-    diffusion_func: typing.Any,
-    start_position: builtins.float,
-    alpha: builtins.float,
-    duration: builtins.float,
-    order: builtins.int,
-    particles: builtins.int,
-    time_step: builtins.float,
-) -> builtins.float: ...
-def generalized_langevin_eatamsd(
-    drift_func: typing.Any,
-    diffusion_func: typing.Any,
-    start_position: builtins.float,
-    alpha: builtins.float,
-    duration: builtins.float,
-    delta: builtins.float,
-    particles: builtins.int,
-    step_size: builtins.float,
-    quad_order: builtins.int,
-) -> builtins.float: ...
-def generalized_langevin_fpt(
-    drift_func: typing.Any,
-    diffusion_func: typing.Any,
-    start_position: builtins.float,
-    alpha: builtins.float,
-    domain: tuple[builtins.float, builtins.float],
-    max_duration: builtins.float,
-    step_size: builtins.float,
-) -> typing.Optional[builtins.float]: ...
-def generalized_langevin_fpt_central_moment(
-    drift_func: typing.Any,
-    diffusion_func: typing.Any,
-    start_position: builtins.float,
-    alpha: builtins.float,
-    domain: tuple[builtins.float, builtins.float],
-    max_duration: builtins.float,
-    order: builtins.int,
-    particles: builtins.int,
-    step_size: builtins.float,
-) -> typing.Optional[builtins.float]: ...
-def generalized_langevin_fpt_raw_moment(
-    drift_func: typing.Any,
-    diffusion_func: typing.Any,
-    start_position: builtins.float,
-    alpha: builtins.float,
-    domain: tuple[builtins.float, builtins.float],
-    max_duration: builtins.float,
-    order: builtins.int,
-    particles: builtins.int,
-    step_size: builtins.float,
-) -> typing.Optional[builtins.float]: ...
-def generalized_langevin_occupation_time(
-    drift_func: typing.Any,
-    diffusion_func: typing.Any,
-    start_position: builtins.float,
-    alpha: builtins.float,
-    domain: tuple[builtins.float, builtins.float],
-    duration: builtins.float,
-    step_size: builtins.float,
-) -> builtins.float: ...
-def generalized_langevin_occupation_time_central_moment(
-    drift_func: typing.Any,
-    diffusion_func: typing.Any,
-    start_position: builtins.float,
-    alpha: builtins.float,
-    domain: tuple[builtins.float, builtins.float],
-    duration: builtins.float,
-    order: builtins.int,
-    particles: builtins.int,
-    step_size: builtins.float,
-) -> builtins.float: ...
-def generalized_langevin_occupation_time_raw_moment(
-    drift_func: typing.Any,
-    diffusion_func: typing.Any,
-    start_position: builtins.float,
-    alpha: builtins.float,
-    domain: tuple[builtins.float, builtins.float],
-    duration: builtins.float,
-    order: builtins.int,
-    particles: builtins.int,
-    step_size: builtins.float,
-) -> builtins.float: ...
-def generalized_langevin_raw_moment(
-    drift_func: typing.Any,
-    diffusion_func: typing.Any,
-    start_position: builtins.float,
-    alpha: builtins.float,
-    duration: builtins.float,
-    order: builtins.int,
-    particles: builtins.int,
-    time_step: builtins.float,
-) -> builtins.float: ...
-def generalized_langevin_tamsd(
-    drift_func: typing.Any,
-    diffusion_func: typing.Any,
-    start_position: builtins.float,
-    alpha: builtins.float,
-    duration: builtins.float,
-    delta: builtins.float,
-    step_size: builtins.float,
-    quad_order: builtins.int,
-) -> builtins.float: ...
-def inv_subordinator_central_moment(
-    alpha: builtins.float,
-    duration: builtins.float,
-    step_size: builtins.float,
-    order: builtins.int,
-    particles: builtins.int,
-) -> builtins.float: ...
-def inv_subordinator_fpt(
-    alpha: builtins.float,
-    domain: tuple[builtins.float, builtins.float],
-    max_duration: builtins.float,
-    step_size: builtins.float,
-) -> typing.Optional[builtins.float]: ...
-def inv_subordinator_fpt_central_moment(
-    alpha: builtins.float,
-    domain: tuple[builtins.float, builtins.float],
-    max_duration: builtins.float,
-    step_size: builtins.float,
-    order: builtins.int,
-    particles: builtins.int,
-) -> typing.Optional[builtins.float]: ...
-def inv_subordinator_fpt_raw_moment(
-    alpha: builtins.float,
-    domain: tuple[builtins.float, builtins.float],
-    max_duration: builtins.float,
-    step_size: builtins.float,
-    order: builtins.int,
-    particles: builtins.int,
-) -> typing.Optional[builtins.float]: ...
-def inv_subordinator_occupation_time(
-    alpha: builtins.float,
-    domain: tuple[builtins.float, builtins.float],
-    duration: builtins.float,
-    step_size: builtins.float,
-) -> builtins.float: ...
-def inv_subordinator_occupation_time_central_moment(
-    alpha: builtins.float,
-    domain: tuple[builtins.float, builtins.float],
-    duration: builtins.float,
-    step_size: builtins.float,
-    order: builtins.int,
-    particles: builtins.int,
-) -> builtins.float: ...
-def inv_subordinator_occupation_time_raw_moment(
-    alpha: builtins.float,
-    domain: tuple[builtins.float, builtins.float],
-    duration: builtins.float,
-    step_size: builtins.float,
-    order: builtins.int,
-    particles: builtins.int,
-) -> builtins.float: ...
-def inv_subordinator_raw_moment(
-    alpha: builtins.float,
-    duration: builtins.float,
-    step_size: builtins.float,
-    order: builtins.int,
-    particles: builtins.int,
-) -> builtins.float: ...
-def inv_subordinator_simulate(
-    alpha: builtins.float, duration: builtins.float, step_size: builtins.float
-) -> tuple[
-    numpy.typing.NDArray[numpy.float64], numpy.typing.NDArray[numpy.float64]
-]: ...
-def langevin_central_moment(
-    drift_func: typing.Any,
-    diffusion_func: typing.Any,
-    start_position: builtins.float,
-    duration: builtins.float,
-    order: builtins.int,
-    particles: builtins.int,
-    time_step: builtins.float,
-) -> builtins.float: ...
-def langevin_eatamsd(
-    drift_func: typing.Any,
-    diffusion_func: typing.Any,
-    start_position: builtins.float,
-    duration: builtins.float,
-    delta: builtins.float,
-    particles: builtins.int,
-    step_size: builtins.float,
-    quad_order: builtins.int,
-) -> builtins.float: ...
-def langevin_fpt(
-    drift_func: typing.Any,
-    diffusion_func: typing.Any,
-    start_position: builtins.float,
-    domain: tuple[builtins.float, builtins.float],
-    max_duration: builtins.float,
-    step_size: builtins.float,
-) -> typing.Optional[builtins.float]: ...
-def langevin_fpt_central_moment(
-    drift_func: typing.Any,
-    diffusion_func: typing.Any,
-    start_position: builtins.float,
-    domain: tuple[builtins.float, builtins.float],
-    max_duration: builtins.float,
-    order: builtins.int,
-    particles: builtins.int,
-    step_size: builtins.float,
-) -> typing.Optional[builtins.float]: ...
-def langevin_fpt_raw_moment(
-    drift_func: typing.Any,
-    diffusion_func: typing.Any,
-    start_position: builtins.float,
-    domain: tuple[builtins.float, builtins.float],
-    max_duration: builtins.float,
-    order: builtins.int,
-    particles: builtins.int,
-    step_size: builtins.float,
-) -> typing.Optional[builtins.float]: ...
-def langevin_occupation_time(
-    drift_func: typing.Any,
-    diffusion_func: typing.Any,
-    start_position: builtins.float,
-    domain: tuple[builtins.float, builtins.float],
-    duration: builtins.float,
-    step_size: builtins.float,
-) -> builtins.float: ...
-def langevin_occupation_time_central_moment(
-    drift_func: typing.Any,
-    diffusion_func: typing.Any,
-    start_position: builtins.float,
-    domain: tuple[builtins.float, builtins.float],
-    duration: builtins.float,
-    order: builtins.int,
-    particles: builtins.int,
-    step_size: builtins.float,
-) -> builtins.float: ...
-def langevin_occupation_time_raw_moment(
-    drift_func: typing.Any,
-    diffusion_func: typing.Any,
-    start_position: builtins.float,
-    domain: tuple[builtins.float, builtins.float],
-    duration: builtins.float,
-    order: builtins.int,
-    particles: builtins.int,
-    step_size: builtins.float,
-) -> builtins.float: ...
-def langevin_raw_moment(
-    drift_func: typing.Any,
-    diffusion_func: typing.Any,
-    start_position: builtins.float,
-    duration: builtins.float,
-    order: builtins.int,
-    particles: builtins.int,
-    time_step: builtins.float,
-) -> builtins.float: ...
-def langevin_simulate(
-    drift_func: typing.Any,
-    diffusion_func: typing.Any,
-    start_position: builtins.float,
-    duration: builtins.float,
-    time_step: builtins.float,
-) -> tuple[
-    numpy.typing.NDArray[numpy.float64], numpy.typing.NDArray[numpy.float64]
-]: ...
-def langevin_tamsd(
-    drift_func: typing.Any,
-    diffusion_func: typing.Any,
-    start_position: builtins.float,
-    duration: builtins.float,
-    delta: builtins.float,
-    step_size: builtins.float,
-    quad_order: builtins.int,
-) -> builtins.float: ...
-def levy_eatamsd(
-    start_position: builtins.float,
-    alpha: builtins.float,
-    duration: builtins.float,
-    delta: builtins.float,
-    particles: builtins.int,
-    step_size: builtins.float,
-    quad_order: builtins.int,
-) -> builtins.float: ...
-def levy_fpt(
-    start_position: builtins.float,
-    alpha: builtins.float,
-    step_size: builtins.float,
-    domain: tuple[builtins.float, builtins.float],
-    max_duration: builtins.float,
-) -> typing.Optional[builtins.float]: ...
-def levy_fpt_central_moment(
-    start_position: builtins.float,
-    alpha: builtins.float,
-    domain: tuple[builtins.float, builtins.float],
-    order: builtins.int,
-    particles: builtins.int,
-    max_duration: builtins.float,
-    step_size: builtins.float,
-) -> typing.Optional[builtins.float]: ...
-def levy_fpt_raw_moment(
-    start_position: builtins.float,
-    alpha: builtins.float,
-    domain: tuple[builtins.float, builtins.float],
-    order: builtins.int,
-    particles: builtins.int,
-    max_duration: builtins.float,
-    step_size: builtins.float,
-) -> typing.Optional[builtins.float]: ...
-def levy_occupation_time(
-    start_position: builtins.float,
-    alpha: builtins.float,
-    step_size: builtins.float,
-    domain: tuple[builtins.float, builtins.float],
-    duration: builtins.float,
-) -> builtins.float: ...
-def levy_occupation_time_central_moment(
-    start_position: builtins.float,
-    alpha: builtins.float,
-    domain: tuple[builtins.float, builtins.float],
-    duration: builtins.float,
-    order: builtins.int,
-    particles: builtins.int,
-    step_size: builtins.float,
-) -> builtins.float: ...
-def levy_occupation_time_raw_moment(
-    start_position: builtins.float,
-    alpha: builtins.float,
-    domain: tuple[builtins.float, builtins.float],
-    duration: builtins.float,
-    order: builtins.int,
-    particles: builtins.int,
-    step_size: builtins.float,
-) -> builtins.float: ...
-def levy_simulate(
-    start_position: builtins.float,
-    alpha: builtins.float,
-    duration: builtins.float,
-    step_size: builtins.float,
-) -> tuple[
-    numpy.typing.NDArray[numpy.float64], numpy.typing.NDArray[numpy.float64]
-]: ...
-def levy_tamsd(
-    start_position: builtins.float,
-    alpha: builtins.float,
-    duration: builtins.float,
-    delta: builtins.float,
-    step_size: builtins.float,
-    quad_order: builtins.int,
-) -> builtins.float: ...
-def levy_walk_central_moment(
-    alpha: builtins.float,
-    velocity: builtins.float,
-    start_position: builtins.float,
-    duration: builtins.float,
-    order: builtins.int,
-    particles: builtins.int,
-) -> builtins.float: ...
-def levy_walk_fpt(
-    alpha: builtins.float,
-    velocity: builtins.float,
-    start_position: builtins.float,
-    domain: tuple[builtins.float, builtins.float],
-    max_duration: builtins.float,
-) -> typing.Optional[builtins.float]: ...
-def levy_walk_raw_moment(
-    alpha: builtins.float,
-    velocity: builtins.float,
-    start_position: builtins.float,
-    duration: builtins.float,
-    order: builtins.int,
-    particles: builtins.int,
-) -> builtins.float: ...
-def levy_walk_simulate(
-    alpha: builtins.float,
-    velocity: builtins.float,
-    start_position: builtins.float,
-    duration: builtins.float,
-) -> tuple[
-    numpy.typing.NDArray[numpy.float64], numpy.typing.NDArray[numpy.float64]
-]: ...
-def mean(
-    process: typing.Any,
-    duration: builtins.float,
-    time_step: builtins.float,
-    particles: builtins.int,
-) -> builtins.float: ...
-def meander_central_moment(
-    duration: builtins.float,
-    step_size: builtins.float,
-    order: builtins.int,
-    particles: builtins.int,
-) -> builtins.float: ...
-def meander_eatamsd(
-    duration: builtins.float,
-    delta: builtins.float,
-    particles: builtins.int,
-    step_size: builtins.float,
-    quad_order: builtins.int,
-) -> builtins.float: ...
-def meander_fpt(
-    step_size: builtins.float, domain: tuple[builtins.float, builtins.float]
-) -> typing.Optional[builtins.float]: ...
-def meander_fpt_central_moment(
-    domain: tuple[builtins.float, builtins.float],
-    order: builtins.int,
-    particles: builtins.int,
-    step_size: builtins.float,
-    max_duration: builtins.float,
-) -> typing.Optional[builtins.float]: ...
-def meander_fpt_raw_moment(
-    domain: tuple[builtins.float, builtins.float],
-    order: builtins.int,
-    particles: builtins.int,
-    step_size: builtins.float,
-    max_duration: builtins.float,
-) -> typing.Optional[builtins.float]: ...
-def meander_occupation_time(
-    domain: tuple[builtins.float, builtins.float],
-    step_size: builtins.float,
-    duration: builtins.float,
-) -> builtins.float: ...
-def meander_occupation_time_central_moment(
-    domain: tuple[builtins.float, builtins.float],
-    order: builtins.int,
-    particles: builtins.int,
-    step_size: builtins.float,
-    duration: builtins.float,
-) -> builtins.float: ...
-def meander_occupation_time_raw_moment(
-    domain: tuple[builtins.float, builtins.float],
-    order: builtins.int,
-    particles: builtins.int,
-    step_size: builtins.float,
-    duration: builtins.float,
-) -> builtins.float: ...
-def meander_raw_moment(
-    duration: builtins.float,
-    step_size: builtins.float,
-    order: builtins.int,
-    particles: builtins.int,
-) -> builtins.float: ...
-def meander_simulate(
-    duration: builtins.float, step_size: builtins.float
-) -> tuple[
-    numpy.typing.NDArray[numpy.float64], numpy.typing.NDArray[numpy.float64]
-]: ...
-def meander_tamsd(
-    duration: builtins.float,
-    delta: builtins.float,
-    step_size: builtins.float,
-    quad_order: builtins.int,
-) -> builtins.float: ...
-def moment(
-    process: typing.Any,
-    central: builtins.bool,
-    order: builtins.int,
-    duration: builtins.float,
-    time_step: builtins.float,
-    particles: builtins.int,
-) -> builtins.float: ...
-def msd(
-    process: typing.Any,
-    duration: builtins.float,
-    time_step: builtins.float,
-    particles: builtins.int,
-) -> builtins.float: ...
-def normal_rand(
-    mu: builtins.float = 0.0, sigma: builtins.float = 1.0
-) -> builtins.float: ...
-def normal_rands(
-    n: builtins.int, /, mu: builtins.float = 0.0, sigma: builtins.float = 1.0
-) -> numpy.typing.NDArray[numpy.float64]: ...
-def occupation_time(
-    process: typing.Any,
-    domain: tuple[builtins.float, builtins.float],
-    duration: builtins.float,
-    time_step: builtins.float,
-) -> builtins.float: ...
-def ou_central_moment(
-    theta: builtins.float,
-    sigma: builtins.float,
-    start_position: builtins.float,
-    duration: builtins.float,
-    step_size: builtins.float,
-    order: builtins.int,
-    particles: builtins.int,
-) -> builtins.float: ...
-def ou_eatamsd(
-    theta: builtins.float,
-    sigma: builtins.float,
-    start_position: builtins.float,
-    duration: builtins.float,
-    delta: builtins.float,
-    particles: builtins.int,
-    step_size: builtins.float,
-    quad_order: builtins.int,
-) -> builtins.float: ...
-def ou_fpt(
-    theta: builtins.float,
-    sigma: builtins.float,
-    start_position: builtins.float,
-    step_size: builtins.float,
-    domain: tuple[builtins.float, builtins.float],
-    max_duration: builtins.float,
-) -> typing.Optional[builtins.float]: ...
-def ou_fpt_central_moment(
-    theta: builtins.float,
-    sigma: builtins.float,
-    start_position: builtins.float,
-    domain: tuple[builtins.float, builtins.float],
-    order: builtins.int,
-    particles: builtins.int,
-    step_size: builtins.float,
-    max_duration: builtins.float,
-) -> typing.Optional[builtins.float]: ...
-def ou_fpt_raw_moment(
-    theta: builtins.float,
-    sigma: builtins.float,
-    start_position: builtins.float,
-    domain: tuple[builtins.float, builtins.float],
-    order: builtins.int,
-    particles: builtins.int,
-    step_size: builtins.float,
-    max_duration: builtins.float,
-) -> typing.Optional[builtins.float]: ...
-def ou_occupation_time(
-    theta: builtins.float,
-    sigma: builtins.float,
-    start_position: builtins.float,
-    domain: tuple[builtins.float, builtins.float],
-    step_size: builtins.float,
-    duration: builtins.float,
-) -> builtins.float: ...
-def ou_occupation_time_central_moment(
-    theta: builtins.float,
-    sigma: builtins.float,
-    start_position: builtins.float,
-    domain: tuple[builtins.float, builtins.float],
-    order: builtins.int,
-    particles: builtins.int,
-    step_size: builtins.float,
-    duration: builtins.float,
-) -> builtins.float: ...
-def ou_occupation_time_raw_moment(
-    theta: builtins.float,
-    sigma: builtins.float,
-    start_position: builtins.float,
-    domain: tuple[builtins.float, builtins.float],
-    order: builtins.int,
-    particles: builtins.int,
-    step_size: builtins.float,
-    duration: builtins.float,
-) -> builtins.float: ...
-def ou_raw_moment(
-    theta: builtins.float,
-    sigma: builtins.float,
-    start_position: builtins.float,
-    duration: builtins.float,
-    step_size: builtins.float,
-    order: builtins.int,
-    particles: builtins.int,
-) -> builtins.float: ...
-def ou_simulate(
-    theta: builtins.float,
-    sigma: builtins.float,
-    start_position: builtins.float,
-    duration: builtins.float,
-    step_size: builtins.float,
-) -> tuple[
-    numpy.typing.NDArray[numpy.float64], numpy.typing.NDArray[numpy.float64]
-]: ...
-def ou_tamsd(
-    theta: builtins.float,
-    sigma: builtins.float,
-    start_position: builtins.float,
-    duration: builtins.float,
-    delta: builtins.float,
-    step_size: builtins.float,
-    quad_order: builtins.int,
-) -> builtins.float: ...
-def poisson_central_moment(
-    lambda_: builtins.float,
-    duration: builtins.float,
-    order: builtins.int,
-    particles: builtins.int,
-) -> builtins.float: ...
-def poisson_fpt(
-    lambda_: builtins.float,
-    domain: tuple[builtins.float, builtins.float],
-    max_duration: builtins.float,
-) -> typing.Optional[builtins.float]: ...
-def poisson_fpt_central_moment(
-    lambda_: builtins.float,
-    domain: tuple[builtins.float, builtins.float],
-    max_duration: builtins.float,
-    order: builtins.int,
-    particles: builtins.int,
-) -> typing.Optional[builtins.float]: ...
-def poisson_fpt_raw_moment(
-    lambda_: builtins.float,
-    domain: tuple[builtins.float, builtins.float],
-    max_duration: builtins.float,
-    order: builtins.int,
-    particles: builtins.int,
-) -> typing.Optional[builtins.float]: ...
-def poisson_occupation_time(
-    lambda_: builtins.float,
-    domain: tuple[builtins.float, builtins.float],
-    duration: builtins.float,
-) -> builtins.float: ...
-def poisson_occupation_time_central_moment(
-    lambda_: builtins.float,
-    domain: tuple[builtins.float, builtins.float],
-    duration: builtins.float,
-    order: builtins.int,
-    particles: builtins.int,
-) -> builtins.float: ...
-def poisson_occupation_time_raw_moment(
-    lambda_: builtins.float,
-    domain: tuple[builtins.float, builtins.float],
-    duration: builtins.float,
-    order: builtins.int,
-    particles: builtins.int,
-) -> builtins.float: ...
+
+def exp_rands(n: builtins.int, /, scale: builtins.float = 1.0) -> numpy.typing.NDArray[numpy.float64]: ...
+
+def fbm_central_moment(start_position: builtins.float, hurst_exponent: builtins.float, duration: builtins.float, step_size: builtins.float, order: builtins.int, particles: builtins.int) -> builtins.float: ...
+
+def fbm_eatamsd(start_position: builtins.float, hurst_exponent: builtins.float, duration: builtins.float, delta: builtins.float, particles: builtins.int, step_size: builtins.float, quad_order: builtins.int) -> builtins.float: ...
+
+def fbm_fpt(start_position: builtins.float, hurst_exponent: builtins.float, step_size: builtins.float, domain: tuple[builtins.float, builtins.float], max_duration: builtins.float) -> typing.Optional[builtins.float]: ...
+
+def fbm_fpt_central_moment(start_position: builtins.float, hurst_exponent: builtins.float, domain: tuple[builtins.float, builtins.float], order: builtins.int, particles: builtins.int, step_size: builtins.float, max_duration: builtins.float) -> typing.Optional[builtins.float]: ...
+
+def fbm_fpt_raw_moment(start_position: builtins.float, hurst_exponent: builtins.float, domain: tuple[builtins.float, builtins.float], order: builtins.int, particles: builtins.int, step_size: builtins.float, max_duration: builtins.float) -> typing.Optional[builtins.float]: ...
+
+def fbm_occupation_time(start_position: builtins.float, hurst_exponent: builtins.float, step_size: builtins.float, domain: tuple[builtins.float, builtins.float], duration: builtins.float) -> builtins.float: ...
+
+def fbm_occupation_time_central_moment(start_position: builtins.float, hurst_exponent: builtins.float, domain: tuple[builtins.float, builtins.float], order: builtins.int, particles: builtins.int, step_size: builtins.float, duration: builtins.float) -> builtins.float: ...
+
+def fbm_occupation_time_raw_moment(start_position: builtins.float, hurst_exponent: builtins.float, domain: tuple[builtins.float, builtins.float], order: builtins.int, particles: builtins.int, step_size: builtins.float, duration: builtins.float) -> builtins.float: ...
+
+def fbm_raw_moment(start_position: builtins.float, hurst_exponent: builtins.float, duration: builtins.float, step_size: builtins.float, order: builtins.int, particles: builtins.int) -> builtins.float: ...
+
+def fbm_simulate(start_position: builtins.float, hurst_exponent: builtins.float, duration: builtins.float, step_size: builtins.float) -> tuple[numpy.typing.NDArray[numpy.float64], numpy.typing.NDArray[numpy.float64]]: ...
+
+def fbm_tamsd(start_position: builtins.float, hurst_exponent: builtins.float, duration: builtins.float, delta: builtins.float, step_size: builtins.float, quad_order: builtins.int) -> builtins.float: ...
+
+def fpt(process: typing.Any, domain: tuple[builtins.float, builtins.float], max_duration: builtins.float, time_step: builtins.float) -> typing.Optional[builtins.float]: ...
+
+def gamma_central_moment(shape: builtins.float, rate: builtins.float, duration: builtins.float, step_size: builtins.float, order: builtins.int, particles: builtins.int) -> builtins.float: ...
+
+def gamma_eatamsd(shape: builtins.float, rate: builtins.float, duration: builtins.float, delta: builtins.float, particles: builtins.int, step_size: builtins.float, quad_order: builtins.int) -> builtins.float: ...
+
+def gamma_fpt(shape: builtins.float, rate: builtins.float, step_size: builtins.float, domain: tuple[builtins.float, builtins.float], max_duration: builtins.float) -> typing.Optional[builtins.float]: ...
+
+def gamma_fpt_central_moment(shape: builtins.float, rate: builtins.float, domain: tuple[builtins.float, builtins.float], order: builtins.int, particles: builtins.int, step_size: builtins.float, max_duration: builtins.float) -> typing.Optional[builtins.float]: ...
+
+def gamma_fpt_raw_moment(shape: builtins.float, rate: builtins.float, domain: tuple[builtins.float, builtins.float], order: builtins.int, particles: builtins.int, step_size: builtins.float, max_duration: builtins.float) -> typing.Optional[builtins.float]: ...
+
+def gamma_occupation_time(shape: builtins.float, rate: builtins.float, domain: tuple[builtins.float, builtins.float], step_size: builtins.float, duration: builtins.float) -> builtins.float: ...
+
+def gamma_occupation_time_central_moment(shape: builtins.float, rate: builtins.float, domain: tuple[builtins.float, builtins.float], order: builtins.int, particles: builtins.int, step_size: builtins.float, duration: builtins.float) -> builtins.float: ...
+
+def gamma_occupation_time_raw_moment(shape: builtins.float, rate: builtins.float, domain: tuple[builtins.float, builtins.float], order: builtins.int, particles: builtins.int, step_size: builtins.float, duration: builtins.float) -> builtins.float: ...
+
+def gamma_raw_moment(shape: builtins.float, rate: builtins.float, duration: builtins.float, step_size: builtins.float, order: builtins.int, particles: builtins.int) -> builtins.float: ...
+
+def gamma_simulate(shape: builtins.float, rate: builtins.float, duration: builtins.float, step_size: builtins.float) -> tuple[numpy.typing.NDArray[numpy.float64], numpy.typing.NDArray[numpy.float64]]: ...
+
+def gamma_tamsd(shape: builtins.float, rate: builtins.float, duration: builtins.float, delta: builtins.float, step_size: builtins.float, quad_order: builtins.int) -> builtins.float: ...
+
+def gb_central_moment(start_position: builtins.float, mu: builtins.float, sigma: builtins.float, duration: builtins.float, step_size: builtins.float, order: builtins.int, particles: builtins.int) -> builtins.float: ...
+
+def gb_eatamsd(start_position: builtins.float, mu: builtins.float, sigma: builtins.float, duration: builtins.float, delta: builtins.float, particles: builtins.int, step_size: builtins.float, quad_order: builtins.int) -> builtins.float: ...
+
+def gb_fpt(start_position: builtins.float, mu: builtins.float, sigma: builtins.float, step_size: builtins.float, domain: tuple[builtins.float, builtins.float], max_duration: builtins.float) -> typing.Optional[builtins.float]: ...
+
+def gb_fpt_central_moment(start_position: builtins.float, mu: builtins.float, sigma: builtins.float, domain: tuple[builtins.float, builtins.float], order: builtins.int, particles: builtins.int, step_size: builtins.float, max_duration: builtins.float) -> typing.Optional[builtins.float]: ...
+
+def gb_fpt_raw_moment(start_position: builtins.float, mu: builtins.float, sigma: builtins.float, domain: tuple[builtins.float, builtins.float], order: builtins.int, particles: builtins.int, step_size: builtins.float, max_duration: builtins.float) -> typing.Optional[builtins.float]: ...
+
+def gb_occupation_time(start_position: builtins.float, mu: builtins.float, sigma: builtins.float, domain: tuple[builtins.float, builtins.float], step_size: builtins.float, duration: builtins.float) -> builtins.float: ...
+
+def gb_occupation_time_central_moment(start_position: builtins.float, mu: builtins.float, sigma: builtins.float, domain: tuple[builtins.float, builtins.float], order: builtins.int, particles: builtins.int, step_size: builtins.float, duration: builtins.float) -> builtins.float: ...
+
+def gb_occupation_time_raw_moment(start_position: builtins.float, mu: builtins.float, sigma: builtins.float, domain: tuple[builtins.float, builtins.float], order: builtins.int, particles: builtins.int, step_size: builtins.float, duration: builtins.float) -> builtins.float: ...
+
+def gb_raw_moment(start_position: builtins.float, mu: builtins.float, sigma: builtins.float, duration: builtins.float, step_size: builtins.float, order: builtins.int, particles: builtins.int) -> builtins.float: ...
+
+def gb_simulate(start_position: builtins.float, mu: builtins.float, sigma: builtins.float, duration: builtins.float, step_size: builtins.float) -> tuple[numpy.typing.NDArray[numpy.float64], numpy.typing.NDArray[numpy.float64]]: ...
+
+def gb_tamsd(start_position: builtins.float, mu: builtins.float, sigma: builtins.float, duration: builtins.float, delta: builtins.float, step_size: builtins.float, quad_order: builtins.int) -> builtins.float: ...
+
+def generalized_langevin_central_moment(drift_func: typing.Any, diffusion_func: typing.Any, start_position: builtins.float, alpha: builtins.float, duration: builtins.float, order: builtins.int, particles: builtins.int, time_step: builtins.float) -> builtins.float: ...
+
+def generalized_langevin_eatamsd(drift_func: typing.Any, diffusion_func: typing.Any, start_position: builtins.float, alpha: builtins.float, duration: builtins.float, delta: builtins.float, particles: builtins.int, step_size: builtins.float, quad_order: builtins.int) -> builtins.float: ...
+
+def generalized_langevin_fpt(drift_func: typing.Any, diffusion_func: typing.Any, start_position: builtins.float, alpha: builtins.float, domain: tuple[builtins.float, builtins.float], max_duration: builtins.float, step_size: builtins.float) -> typing.Optional[builtins.float]: ...
+
+def generalized_langevin_fpt_central_moment(drift_func: typing.Any, diffusion_func: typing.Any, start_position: builtins.float, alpha: builtins.float, domain: tuple[builtins.float, builtins.float], max_duration: builtins.float, order: builtins.int, particles: builtins.int, step_size: builtins.float) -> typing.Optional[builtins.float]: ...
+
+def generalized_langevin_fpt_raw_moment(drift_func: typing.Any, diffusion_func: typing.Any, start_position: builtins.float, alpha: builtins.float, domain: tuple[builtins.float, builtins.float], max_duration: builtins.float, order: builtins.int, particles: builtins.int, step_size: builtins.float) -> typing.Optional[builtins.float]: ...
+
+def generalized_langevin_occupation_time(drift_func: typing.Any, diffusion_func: typing.Any, start_position: builtins.float, alpha: builtins.float, domain: tuple[builtins.float, builtins.float], duration: builtins.float, step_size: builtins.float) -> builtins.float: ...
+
+def generalized_langevin_occupation_time_central_moment(drift_func: typing.Any, diffusion_func: typing.Any, start_position: builtins.float, alpha: builtins.float, domain: tuple[builtins.float, builtins.float], duration: builtins.float, order: builtins.int, particles: builtins.int, step_size: builtins.float) -> builtins.float: ...
+
+def generalized_langevin_occupation_time_raw_moment(drift_func: typing.Any, diffusion_func: typing.Any, start_position: builtins.float, alpha: builtins.float, domain: tuple[builtins.float, builtins.float], duration: builtins.float, order: builtins.int, particles: builtins.int, step_size: builtins.float) -> builtins.float: ...
+
+def generalized_langevin_raw_moment(drift_func: typing.Any, diffusion_func: typing.Any, start_position: builtins.float, alpha: builtins.float, duration: builtins.float, order: builtins.int, particles: builtins.int, time_step: builtins.float) -> builtins.float: ...
+
+def generalized_langevin_tamsd(drift_func: typing.Any, diffusion_func: typing.Any, start_position: builtins.float, alpha: builtins.float, duration: builtins.float, delta: builtins.float, step_size: builtins.float, quad_order: builtins.int) -> builtins.float: ...
+
+def inv_subordinator_central_moment(alpha: builtins.float, duration: builtins.float, step_size: builtins.float, order: builtins.int, particles: builtins.int) -> builtins.float: ...
+
+def inv_subordinator_fpt(alpha: builtins.float, domain: tuple[builtins.float, builtins.float], max_duration: builtins.float, step_size: builtins.float) -> typing.Optional[builtins.float]: ...
+
+def inv_subordinator_fpt_central_moment(alpha: builtins.float, domain: tuple[builtins.float, builtins.float], max_duration: builtins.float, step_size: builtins.float, order: builtins.int, particles: builtins.int) -> typing.Optional[builtins.float]: ...
+
+def inv_subordinator_fpt_raw_moment(alpha: builtins.float, domain: tuple[builtins.float, builtins.float], max_duration: builtins.float, step_size: builtins.float, order: builtins.int, particles: builtins.int) -> typing.Optional[builtins.float]: ...
+
+def inv_subordinator_occupation_time(alpha: builtins.float, domain: tuple[builtins.float, builtins.float], duration: builtins.float, step_size: builtins.float) -> builtins.float: ...
+
+def inv_subordinator_occupation_time_central_moment(alpha: builtins.float, domain: tuple[builtins.float, builtins.float], duration: builtins.float, step_size: builtins.float, order: builtins.int, particles: builtins.int) -> builtins.float: ...
+
+def inv_subordinator_occupation_time_raw_moment(alpha: builtins.float, domain: tuple[builtins.float, builtins.float], duration: builtins.float, step_size: builtins.float, order: builtins.int, particles: builtins.int) -> builtins.float: ...
+
+def inv_subordinator_raw_moment(alpha: builtins.float, duration: builtins.float, step_size: builtins.float, order: builtins.int, particles: builtins.int) -> builtins.float: ...
+
+def inv_subordinator_simulate(alpha: builtins.float, duration: builtins.float, step_size: builtins.float) -> tuple[numpy.typing.NDArray[numpy.float64], numpy.typing.NDArray[numpy.float64]]: ...
+
+def langevin_central_moment(drift_func: typing.Any, diffusion_func: typing.Any, start_position: builtins.float, duration: builtins.float, order: builtins.int, particles: builtins.int, time_step: builtins.float) -> builtins.float: ...
+
+def langevin_eatamsd(drift_func: typing.Any, diffusion_func: typing.Any, start_position: builtins.float, duration: builtins.float, delta: builtins.float, particles: builtins.int, step_size: builtins.float, quad_order: builtins.int) -> builtins.float: ...
+
+def langevin_fpt(drift_func: typing.Any, diffusion_func: typing.Any, start_position: builtins.float, domain: tuple[builtins.float, builtins.float], max_duration: builtins.float, step_size: builtins.float) -> typing.Optional[builtins.float]: ...
+
+def langevin_fpt_central_moment(drift_func: typing.Any, diffusion_func: typing.Any, start_position: builtins.float, domain: tuple[builtins.float, builtins.float], max_duration: builtins.float, order: builtins.int, particles: builtins.int, step_size: builtins.float) -> typing.Optional[builtins.float]: ...
+
+def langevin_fpt_raw_moment(drift_func: typing.Any, diffusion_func: typing.Any, start_position: builtins.float, domain: tuple[builtins.float, builtins.float], max_duration: builtins.float, order: builtins.int, particles: builtins.int, step_size: builtins.float) -> typing.Optional[builtins.float]: ...
+
+def langevin_occupation_time(drift_func: typing.Any, diffusion_func: typing.Any, start_position: builtins.float, domain: tuple[builtins.float, builtins.float], duration: builtins.float, step_size: builtins.float) -> builtins.float: ...
+
+def langevin_occupation_time_central_moment(drift_func: typing.Any, diffusion_func: typing.Any, start_position: builtins.float, domain: tuple[builtins.float, builtins.float], duration: builtins.float, order: builtins.int, particles: builtins.int, step_size: builtins.float) -> builtins.float: ...
+
+def langevin_occupation_time_raw_moment(drift_func: typing.Any, diffusion_func: typing.Any, start_position: builtins.float, domain: tuple[builtins.float, builtins.float], duration: builtins.float, order: builtins.int, particles: builtins.int, step_size: builtins.float) -> builtins.float: ...
+
+def langevin_raw_moment(drift_func: typing.Any, diffusion_func: typing.Any, start_position: builtins.float, duration: builtins.float, order: builtins.int, particles: builtins.int, time_step: builtins.float) -> builtins.float: ...
+
+def langevin_simulate(drift_func: typing.Any, diffusion_func: typing.Any, start_position: builtins.float, duration: builtins.float, time_step: builtins.float) -> tuple[numpy.typing.NDArray[numpy.float64], numpy.typing.NDArray[numpy.float64]]: ...
+
+def langevin_tamsd(drift_func: typing.Any, diffusion_func: typing.Any, start_position: builtins.float, duration: builtins.float, delta: builtins.float, step_size: builtins.float, quad_order: builtins.int) -> builtins.float: ...
+
+def levy_eatamsd(start_position: builtins.float, alpha: builtins.float, duration: builtins.float, delta: builtins.float, particles: builtins.int, step_size: builtins.float, quad_order: builtins.int) -> builtins.float: ...
+
+def levy_fpt(start_position: builtins.float, alpha: builtins.float, step_size: builtins.float, domain: tuple[builtins.float, builtins.float], max_duration: builtins.float) -> typing.Optional[builtins.float]: ...
+
+def levy_fpt_central_moment(start_position: builtins.float, alpha: builtins.float, domain: tuple[builtins.float, builtins.float], order: builtins.int, particles: builtins.int, max_duration: builtins.float, step_size: builtins.float) -> typing.Optional[builtins.float]: ...
+
+def levy_fpt_raw_moment(start_position: builtins.float, alpha: builtins.float, domain: tuple[builtins.float, builtins.float], order: builtins.int, particles: builtins.int, max_duration: builtins.float, step_size: builtins.float) -> typing.Optional[builtins.float]: ...
+
+def levy_occupation_time(start_position: builtins.float, alpha: builtins.float, step_size: builtins.float, domain: tuple[builtins.float, builtins.float], duration: builtins.float) -> builtins.float: ...
+
+def levy_occupation_time_central_moment(start_position: builtins.float, alpha: builtins.float, domain: tuple[builtins.float, builtins.float], duration: builtins.float, order: builtins.int, particles: builtins.int, step_size: builtins.float) -> builtins.float: ...
+
+def levy_occupation_time_raw_moment(start_position: builtins.float, alpha: builtins.float, domain: tuple[builtins.float, builtins.float], duration: builtins.float, order: builtins.int, particles: builtins.int, step_size: builtins.float) -> builtins.float: ...
+
+def levy_simulate(start_position: builtins.float, alpha: builtins.float, duration: builtins.float, step_size: builtins.float) -> tuple[numpy.typing.NDArray[numpy.float64], numpy.typing.NDArray[numpy.float64]]: ...
+
+def levy_tamsd(start_position: builtins.float, alpha: builtins.float, duration: builtins.float, delta: builtins.float, step_size: builtins.float, quad_order: builtins.int) -> builtins.float: ...
+
+def levy_walk_central_moment(alpha: builtins.float, velocity: builtins.float, start_position: builtins.float, duration: builtins.float, order: builtins.int, particles: builtins.int) -> builtins.float: ...
+
+def levy_walk_fpt(alpha: builtins.float, velocity: builtins.float, start_position: builtins.float, domain: tuple[builtins.float, builtins.float], max_duration: builtins.float) -> typing.Optional[builtins.float]: ...
+
+def levy_walk_raw_moment(alpha: builtins.float, velocity: builtins.float, start_position: builtins.float, duration: builtins.float, order: builtins.int, particles: builtins.int) -> builtins.float: ...
+
+def levy_walk_simulate(alpha: builtins.float, velocity: builtins.float, start_position: builtins.float, duration: builtins.float) -> tuple[numpy.typing.NDArray[numpy.float64], numpy.typing.NDArray[numpy.float64]]: ...
+
+def mean(process: typing.Any, duration: builtins.float, time_step: builtins.float, particles: builtins.int) -> builtins.float: ...
+
+def meander_central_moment(duration: builtins.float, step_size: builtins.float, order: builtins.int, particles: builtins.int) -> builtins.float: ...
+
+def meander_eatamsd(duration: builtins.float, delta: builtins.float, particles: builtins.int, step_size: builtins.float, quad_order: builtins.int) -> builtins.float: ...
+
+def meander_fpt(step_size: builtins.float, domain: tuple[builtins.float, builtins.float]) -> typing.Optional[builtins.float]: ...
+
+def meander_fpt_central_moment(domain: tuple[builtins.float, builtins.float], order: builtins.int, particles: builtins.int, step_size: builtins.float, max_duration: builtins.float) -> typing.Optional[builtins.float]: ...
+
+def meander_fpt_raw_moment(domain: tuple[builtins.float, builtins.float], order: builtins.int, particles: builtins.int, step_size: builtins.float, max_duration: builtins.float) -> typing.Optional[builtins.float]: ...
+
+def meander_occupation_time(domain: tuple[builtins.float, builtins.float], step_size: builtins.float, duration: builtins.float) -> builtins.float: ...
+
+def meander_occupation_time_central_moment(domain: tuple[builtins.float, builtins.float], order: builtins.int, particles: builtins.int, step_size: builtins.float, duration: builtins.float) -> builtins.float: ...
+
+def meander_occupation_time_raw_moment(domain: tuple[builtins.float, builtins.float], order: builtins.int, particles: builtins.int, step_size: builtins.float, duration: builtins.float) -> builtins.float: ...
+
+def meander_raw_moment(duration: builtins.float, step_size: builtins.float, order: builtins.int, particles: builtins.int) -> builtins.float: ...
+
+def meander_simulate(duration: builtins.float, step_size: builtins.float) -> tuple[numpy.typing.NDArray[numpy.float64], numpy.typing.NDArray[numpy.float64]]: ...
+
+def meander_tamsd(duration: builtins.float, delta: builtins.float, step_size: builtins.float, quad_order: builtins.int) -> builtins.float: ...
+
+def moment(process: typing.Any, central: builtins.bool, order: builtins.int, duration: builtins.float, time_step: builtins.float, particles: builtins.int) -> builtins.float: ...
+
+def msd(process: typing.Any, duration: builtins.float, time_step: builtins.float, particles: builtins.int) -> builtins.float: ...
+
+def normal_rand(mu: builtins.float = 0.0, sigma: builtins.float = 1.0) -> builtins.float: ...
+
+def normal_rands(n: builtins.int, /, mu: builtins.float = 0.0, sigma: builtins.float = 1.0) -> numpy.typing.NDArray[numpy.float64]: ...
+
+def occupation_time(process: typing.Any, domain: tuple[builtins.float, builtins.float], duration: builtins.float, time_step: builtins.float) -> builtins.float: ...
+
+def ou_central_moment(theta: builtins.float, sigma: builtins.float, start_position: builtins.float, duration: builtins.float, step_size: builtins.float, order: builtins.int, particles: builtins.int) -> builtins.float: ...
+
+def ou_eatamsd(theta: builtins.float, sigma: builtins.float, start_position: builtins.float, duration: builtins.float, delta: builtins.float, particles: builtins.int, step_size: builtins.float, quad_order: builtins.int) -> builtins.float: ...
+
+def ou_fpt(theta: builtins.float, sigma: builtins.float, start_position: builtins.float, step_size: builtins.float, domain: tuple[builtins.float, builtins.float], max_duration: builtins.float) -> typing.Optional[builtins.float]: ...
+
+def ou_fpt_central_moment(theta: builtins.float, sigma: builtins.float, start_position: builtins.float, domain: tuple[builtins.float, builtins.float], order: builtins.int, particles: builtins.int, step_size: builtins.float, max_duration: builtins.float) -> typing.Optional[builtins.float]: ...
+
+def ou_fpt_raw_moment(theta: builtins.float, sigma: builtins.float, start_position: builtins.float, domain: tuple[builtins.float, builtins.float], order: builtins.int, particles: builtins.int, step_size: builtins.float, max_duration: builtins.float) -> typing.Optional[builtins.float]: ...
+
+def ou_occupation_time(theta: builtins.float, sigma: builtins.float, start_position: builtins.float, domain: tuple[builtins.float, builtins.float], step_size: builtins.float, duration: builtins.float) -> builtins.float: ...
+
+def ou_occupation_time_central_moment(theta: builtins.float, sigma: builtins.float, start_position: builtins.float, domain: tuple[builtins.float, builtins.float], order: builtins.int, particles: builtins.int, step_size: builtins.float, duration: builtins.float) -> builtins.float: ...
+
+def ou_occupation_time_raw_moment(theta: builtins.float, sigma: builtins.float, start_position: builtins.float, domain: tuple[builtins.float, builtins.float], order: builtins.int, particles: builtins.int, step_size: builtins.float, duration: builtins.float) -> builtins.float: ...
+
+def ou_raw_moment(theta: builtins.float, sigma: builtins.float, start_position: builtins.float, duration: builtins.float, step_size: builtins.float, order: builtins.int, particles: builtins.int) -> builtins.float: ...
+
+def ou_simulate(theta: builtins.float, sigma: builtins.float, start_position: builtins.float, duration: builtins.float, step_size: builtins.float) -> tuple[numpy.typing.NDArray[numpy.float64], numpy.typing.NDArray[numpy.float64]]: ...
+
+def ou_tamsd(theta: builtins.float, sigma: builtins.float, start_position: builtins.float, duration: builtins.float, delta: builtins.float, step_size: builtins.float, quad_order: builtins.int) -> builtins.float: ...
+
+def poisson_central_moment(lambda_: builtins.float, duration: builtins.float, order: builtins.int, particles: builtins.int) -> builtins.float: ...
+
+def poisson_fpt(lambda_: builtins.float, domain: tuple[builtins.float, builtins.float], max_duration: builtins.float) -> typing.Optional[builtins.float]: ...
+
+def poisson_fpt_central_moment(lambda_: builtins.float, domain: tuple[builtins.float, builtins.float], max_duration: builtins.float, order: builtins.int, particles: builtins.int) -> typing.Optional[builtins.float]: ...
+
+def poisson_fpt_raw_moment(lambda_: builtins.float, domain: tuple[builtins.float, builtins.float], max_duration: builtins.float, order: builtins.int, particles: builtins.int) -> typing.Optional[builtins.float]: ...
+
+def poisson_occupation_time(lambda_: builtins.float, domain: tuple[builtins.float, builtins.float], duration: builtins.float) -> builtins.float: ...
+
+def poisson_occupation_time_central_moment(lambda_: builtins.float, domain: tuple[builtins.float, builtins.float], duration: builtins.float, order: builtins.int, particles: builtins.int) -> builtins.float: ...
+
+def poisson_occupation_time_raw_moment(lambda_: builtins.float, domain: tuple[builtins.float, builtins.float], duration: builtins.float, order: builtins.int, particles: builtins.int) -> builtins.float: ...
+
 def poisson_rand(lambda_: builtins.float = 1.0) -> builtins.int: ...
-def poisson_rands(
-    n: builtins.int, /, lambda_: builtins.float = 1.0
-) -> typing.Annotated[numpy.typing.NDArray[numpy.uintp], typing.Literal["N"]]: ...
-def poisson_raw_moment(
-    lambda_: builtins.float,
-    duration: builtins.float,
-    order: builtins.int,
-    particles: builtins.int,
-) -> builtins.float: ...
-def poisson_simulate_duration(
-    lambda_: builtins.float, duration: builtins.float
-) -> tuple[
-    numpy.typing.NDArray[numpy.float64], numpy.typing.NDArray[numpy.float64]
-]: ...
-def poisson_simulate_step(
-    lambda_: builtins.float, num_step: builtins.int
-) -> tuple[
-    numpy.typing.NDArray[numpy.float64], numpy.typing.NDArray[numpy.float64]
-]: ...
+
+def poisson_rands(n: builtins.int, /, lambda_: builtins.float = 1.0) -> typing.Annotated[numpy.typing.NDArray[numpy.uintp], typing.Literal["N"]]: ...
+
+def poisson_raw_moment(lambda_: builtins.float, duration: builtins.float, order: builtins.int, particles: builtins.int) -> builtins.float: ...
+
+def poisson_simulate_duration(lambda_: builtins.float, duration: builtins.float) -> tuple[numpy.typing.NDArray[numpy.float64], numpy.typing.NDArray[numpy.float64]]: ...
+
+def poisson_simulate_step(lambda_: builtins.float, num_step: builtins.int) -> tuple[numpy.typing.NDArray[numpy.float64], numpy.typing.NDArray[numpy.float64]]: ...
+
 def skew_stable_rand(alpha: builtins.float) -> builtins.float: ...
-def skew_stable_rands(
-    n: builtins.int, alpha: builtins.float
-) -> numpy.typing.NDArray[numpy.float64]: ...
-def stable_rand(
-    alpha: builtins.float,
-    beta: builtins.float,
-    /,
-    sigma: builtins.float = 1.0,
-    mu: builtins.float = 0.0,
-) -> builtins.float: ...
-def stable_rands(
-    n: builtins.int,
-    /,
-    alpha: builtins.float,
-    beta: builtins.float,
-    sigma: builtins.float = 1.0,
-    mu: builtins.float = 0.0,
-) -> numpy.typing.NDArray[numpy.float64]: ...
-def subordinated_langevin_central_moment(
-    drift_func: typing.Any,
-    diffusion_func: typing.Any,
-    start_position: builtins.float,
-    alpha: builtins.float,
-    duration: builtins.float,
-    order: builtins.int,
-    particles: builtins.int,
-    time_step: builtins.float,
-) -> builtins.float: ...
-def subordinated_langevin_eatamsd(
-    drift_func: typing.Any,
-    diffusion_func: typing.Any,
-    start_position: builtins.float,
-    alpha: builtins.float,
-    duration: builtins.float,
-    delta: builtins.float,
-    particles: builtins.int,
-    step_size: builtins.float,
-    quad_order: builtins.int,
-) -> builtins.float: ...
-def subordinated_langevin_fpt(
-    drift_func: typing.Any,
-    diffusion_func: typing.Any,
-    start_position: builtins.float,
-    alpha: builtins.float,
-    domain: tuple[builtins.float, builtins.float],
-    max_duration: builtins.float,
-    step_size: builtins.float,
-) -> typing.Optional[builtins.float]: ...
-def subordinated_langevin_fpt_central_moment(
-    drift_func: typing.Any,
-    diffusion_func: typing.Any,
-    start_position: builtins.float,
-    alpha: builtins.float,
-    domain: tuple[builtins.float, builtins.float],
-    max_duration: builtins.float,
-    order: builtins.int,
-    particles: builtins.int,
-    step_size: builtins.float,
-) -> typing.Optional[builtins.float]: ...
-def subordinated_langevin_fpt_raw_moment(
-    drift_func: typing.Any,
-    diffusion_func: typing.Any,
-    start_position: builtins.float,
-    alpha: builtins.float,
-    domain: tuple[builtins.float, builtins.float],
-    max_duration: builtins.float,
-    order: builtins.int,
-    particles: builtins.int,
-    step_size: builtins.float,
-) -> typing.Optional[builtins.float]: ...
-def subordinated_langevin_occupation_time(
-    drift_func: typing.Any,
-    diffusion_func: typing.Any,
-    start_position: builtins.float,
-    alpha: builtins.float,
-    domain: tuple[builtins.float, builtins.float],
-    duration: builtins.float,
-    step_size: builtins.float,
-) -> builtins.float: ...
-def subordinated_langevin_occupation_time_central_moment(
-    drift_func: typing.Any,
-    diffusion_func: typing.Any,
-    start_position: builtins.float,
-    alpha: builtins.float,
-    domain: tuple[builtins.float, builtins.float],
-    duration: builtins.float,
-    order: builtins.int,
-    particles: builtins.int,
-    step_size: builtins.float,
-) -> builtins.float: ...
-def subordinated_langevin_occupation_time_raw_moment(
-    drift_func: typing.Any,
-    diffusion_func: typing.Any,
-    start_position: builtins.float,
-    alpha: builtins.float,
-    domain: tuple[builtins.float, builtins.float],
-    duration: builtins.float,
-    order: builtins.int,
-    particles: builtins.int,
-    step_size: builtins.float,
-) -> builtins.float: ...
-def subordinated_langevin_raw_moment(
-    drift_func: typing.Any,
-    diffusion_func: typing.Any,
-    start_position: builtins.float,
-    alpha: builtins.float,
-    duration: builtins.float,
-    order: builtins.int,
-    particles: builtins.int,
-    time_step: builtins.float,
-) -> builtins.float: ...
-def subordinated_langevin_simulate(
-    drift_func: typing.Any,
-    diffusion_func: typing.Any,
-    start_position: builtins.float,
-    alpha: builtins.float,
-    duration: builtins.float,
-    time_step: builtins.float,
-) -> tuple[
-    numpy.typing.NDArray[numpy.float64], numpy.typing.NDArray[numpy.float64]
-]: ...
-def subordinated_langevin_tamsd(
-    drift_func: typing.Any,
-    diffusion_func: typing.Any,
-    start_position: builtins.float,
-    alpha: builtins.float,
-    duration: builtins.float,
-    delta: builtins.float,
-    step_size: builtins.float,
-    quad_order: builtins.int,
-) -> builtins.float: ...
-def subordinator_fpt(
-    alpha: builtins.float,
-    domain: tuple[builtins.float, builtins.float],
-    max_duration: builtins.float,
-    step_size: builtins.float,
-) -> typing.Optional[builtins.float]: ...
-def subordinator_fpt_central_moment(
-    alpha: builtins.float,
-    domain: tuple[builtins.float, builtins.float],
-    max_duration: builtins.float,
-    step_size: builtins.float,
-    order: builtins.int,
-    particles: builtins.int,
-) -> typing.Optional[builtins.float]: ...
-def subordinator_fpt_raw_moment(
-    alpha: builtins.float,
-    domain: tuple[builtins.float, builtins.float],
-    max_duration: builtins.float,
-    step_size: builtins.float,
-    order: builtins.int,
-    particles: builtins.int,
-) -> typing.Optional[builtins.float]: ...
-def subordinator_occupation_time(
-    alpha: builtins.float,
-    domain: tuple[builtins.float, builtins.float],
-    duration: builtins.float,
-    step_size: builtins.float,
-) -> builtins.float: ...
-def subordinator_occupation_time_central_moment(
-    alpha: builtins.float,
-    domain: tuple[builtins.float, builtins.float],
-    duration: builtins.float,
-    step_size: builtins.float,
-    order: builtins.int,
-    particles: builtins.int,
-) -> builtins.float: ...
-def subordinator_occupation_time_raw_moment(
-    alpha: builtins.float,
-    domain: tuple[builtins.float, builtins.float],
-    duration: builtins.float,
-    step_size: builtins.float,
-    order: builtins.int,
-    particles: builtins.int,
-) -> builtins.float: ...
-def subordinator_simulate(
-    alpha: builtins.float, duration: builtins.float, step_size: builtins.float
-) -> tuple[
-    numpy.typing.NDArray[numpy.float64], numpy.typing.NDArray[numpy.float64]
-]: ...
-def tamsd(
-    process: typing.Any,
-    duration: builtins.float,
-    delta: builtins.float,
-    time_step: builtins.float,
-    quad_order: builtins.int,
-) -> builtins.float: ...
-def uniform_rand_float(
-    low: builtins.float = 0.0, high: builtins.float = 1.0, /, end: builtins.bool = False
-) -> builtins.float: ...
-def uniform_rand_int(
-    low: builtins.int, high: builtins.int, /, end: builtins.bool = False
-) -> builtins.int: ...
-def uniform_rands_float(
-    n: builtins.int,
-    /,
-    low: builtins.float = 0.0,
-    high: builtins.float = 1.0,
-    end: builtins.bool = False,
-) -> numpy.typing.NDArray[numpy.float64]: ...
-def uniform_rands_int(
-    n: builtins.int,
-    low: builtins.int,
-    high: builtins.int,
-    /,
-    end: builtins.bool = False,
-) -> numpy.typing.NDArray[numpy.int64]: ...
+
+def skew_stable_rands(n: builtins.int, alpha: builtins.float) -> numpy.typing.NDArray[numpy.float64]: ...
+
+def stable_rand(alpha: builtins.float, beta: builtins.float, /, sigma: builtins.float = 1.0, mu: builtins.float = 0.0) -> builtins.float: ...
+
+def stable_rands(n: builtins.int, /, alpha: builtins.float, beta: builtins.float, sigma: builtins.float = 1.0, mu: builtins.float = 0.0) -> numpy.typing.NDArray[numpy.float64]: ...
+
+def subordinated_langevin_central_moment(drift_func: typing.Any, diffusion_func: typing.Any, start_position: builtins.float, alpha: builtins.float, duration: builtins.float, order: builtins.int, particles: builtins.int, time_step: builtins.float) -> builtins.float: ...
+
+def subordinated_langevin_eatamsd(drift_func: typing.Any, diffusion_func: typing.Any, start_position: builtins.float, alpha: builtins.float, duration: builtins.float, delta: builtins.float, particles: builtins.int, step_size: builtins.float, quad_order: builtins.int) -> builtins.float: ...
+
+def subordinated_langevin_fpt(drift_func: typing.Any, diffusion_func: typing.Any, start_position: builtins.float, alpha: builtins.float, domain: tuple[builtins.float, builtins.float], max_duration: builtins.float, step_size: builtins.float) -> typing.Optional[builtins.float]: ...
+
+def subordinated_langevin_fpt_central_moment(drift_func: typing.Any, diffusion_func: typing.Any, start_position: builtins.float, alpha: builtins.float, domain: tuple[builtins.float, builtins.float], max_duration: builtins.float, order: builtins.int, particles: builtins.int, step_size: builtins.float) -> typing.Optional[builtins.float]: ...
+
+def subordinated_langevin_fpt_raw_moment(drift_func: typing.Any, diffusion_func: typing.Any, start_position: builtins.float, alpha: builtins.float, domain: tuple[builtins.float, builtins.float], max_duration: builtins.float, order: builtins.int, particles: builtins.int, step_size: builtins.float) -> typing.Optional[builtins.float]: ...
+
+def subordinated_langevin_occupation_time(drift_func: typing.Any, diffusion_func: typing.Any, start_position: builtins.float, alpha: builtins.float, domain: tuple[builtins.float, builtins.float], duration: builtins.float, step_size: builtins.float) -> builtins.float: ...
+
+def subordinated_langevin_occupation_time_central_moment(drift_func: typing.Any, diffusion_func: typing.Any, start_position: builtins.float, alpha: builtins.float, domain: tuple[builtins.float, builtins.float], duration: builtins.float, order: builtins.int, particles: builtins.int, step_size: builtins.float) -> builtins.float: ...
+
+def subordinated_langevin_occupation_time_raw_moment(drift_func: typing.Any, diffusion_func: typing.Any, start_position: builtins.float, alpha: builtins.float, domain: tuple[builtins.float, builtins.float], duration: builtins.float, order: builtins.int, particles: builtins.int, step_size: builtins.float) -> builtins.float: ...
+
+def subordinated_langevin_raw_moment(drift_func: typing.Any, diffusion_func: typing.Any, start_position: builtins.float, alpha: builtins.float, duration: builtins.float, order: builtins.int, particles: builtins.int, time_step: builtins.float) -> builtins.float: ...
+
+def subordinated_langevin_simulate(drift_func: typing.Any, diffusion_func: typing.Any, start_position: builtins.float, alpha: builtins.float, duration: builtins.float, time_step: builtins.float) -> tuple[numpy.typing.NDArray[numpy.float64], numpy.typing.NDArray[numpy.float64]]: ...
+
+def subordinated_langevin_tamsd(drift_func: typing.Any, diffusion_func: typing.Any, start_position: builtins.float, alpha: builtins.float, duration: builtins.float, delta: builtins.float, step_size: builtins.float, quad_order: builtins.int) -> builtins.float: ...
+
+def subordinator_fpt(alpha: builtins.float, domain: tuple[builtins.float, builtins.float], max_duration: builtins.float, step_size: builtins.float) -> typing.Optional[builtins.float]: ...
+
+def subordinator_fpt_central_moment(alpha: builtins.float, domain: tuple[builtins.float, builtins.float], max_duration: builtins.float, step_size: builtins.float, order: builtins.int, particles: builtins.int) -> typing.Optional[builtins.float]: ...
+
+def subordinator_fpt_raw_moment(alpha: builtins.float, domain: tuple[builtins.float, builtins.float], max_duration: builtins.float, step_size: builtins.float, order: builtins.int, particles: builtins.int) -> typing.Optional[builtins.float]: ...
+
+def subordinator_occupation_time(alpha: builtins.float, domain: tuple[builtins.float, builtins.float], duration: builtins.float, step_size: builtins.float) -> builtins.float: ...
+
+def subordinator_occupation_time_central_moment(alpha: builtins.float, domain: tuple[builtins.float, builtins.float], duration: builtins.float, step_size: builtins.float, order: builtins.int, particles: builtins.int) -> builtins.float: ...
+
+def subordinator_occupation_time_raw_moment(alpha: builtins.float, domain: tuple[builtins.float, builtins.float], duration: builtins.float, step_size: builtins.float, order: builtins.int, particles: builtins.int) -> builtins.float: ...
+
+def subordinator_simulate(alpha: builtins.float, duration: builtins.float, step_size: builtins.float) -> tuple[numpy.typing.NDArray[numpy.float64], numpy.typing.NDArray[numpy.float64]]: ...
+
+def tamsd(process: typing.Any, duration: builtins.float, delta: builtins.float, time_step: builtins.float, quad_order: builtins.int) -> builtins.float: ...
+
+def uniform_rand_float(low: builtins.float = 0.0, high: builtins.float = 1.0, /, end: builtins.bool = False) -> builtins.float: ...
+
+def uniform_rand_int(low: builtins.int, high: builtins.int, /, end: builtins.bool = False) -> builtins.int: ...
+
+def uniform_rands_float(n: builtins.int, /, low: builtins.float = 0.0, high: builtins.float = 1.0, end: builtins.bool = False) -> numpy.typing.NDArray[numpy.float64]: ...
+
+def uniform_rands_int(n: builtins.int, low: builtins.int, high: builtins.int, /, end: builtins.bool = False) -> numpy.typing.NDArray[numpy.int64]: ...
+

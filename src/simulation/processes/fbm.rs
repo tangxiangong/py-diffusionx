@@ -4,9 +4,10 @@ use crate::{
 };
 use diffusionx::simulation::{continuous::FBm, prelude::*};
 use pyo3::prelude::*;
+#[cfg(feature = "stub_gen")]
 use pyo3_stub_gen::derive::gen_stub_pyfunction;
 
-#[gen_stub_pyfunction]
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn fbm_simulate(
     py: Python<'_>,
@@ -20,7 +21,7 @@ pub fn fbm_simulate(
     Ok(vec_to_pyarray(py, times, positions))
 }
 
-#[gen_stub_pyfunction]
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn fbm_raw_moment(
     start_position: f64,
@@ -35,7 +36,7 @@ pub fn fbm_raw_moment(
     Ok(result)
 }
 
-#[gen_stub_pyfunction]
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn fbm_central_moment(
     start_position: f64,
@@ -50,7 +51,7 @@ pub fn fbm_central_moment(
     Ok(result)
 }
 
-#[gen_stub_pyfunction]
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn fbm_fpt(
     start_position: f64,
@@ -64,7 +65,7 @@ pub fn fbm_fpt(
     Ok(result)
 }
 
-#[gen_stub_pyfunction]
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn fbm_fpt_raw_moment(
     start_position: f64,
@@ -81,7 +82,7 @@ pub fn fbm_fpt_raw_moment(
     Ok(result)
 }
 
-#[gen_stub_pyfunction]
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn fbm_fpt_central_moment(
     start_position: f64,
@@ -98,7 +99,7 @@ pub fn fbm_fpt_central_moment(
     Ok(result)
 }
 
-#[gen_stub_pyfunction]
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn fbm_occupation_time(
     start_position: f64,
@@ -112,7 +113,7 @@ pub fn fbm_occupation_time(
     Ok(result)
 }
 
-#[gen_stub_pyfunction]
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn fbm_occupation_time_raw_moment(
     start_position: f64,
@@ -129,7 +130,7 @@ pub fn fbm_occupation_time_raw_moment(
     Ok(result)
 }
 
-#[gen_stub_pyfunction]
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn fbm_occupation_time_central_moment(
     start_position: f64,
@@ -146,7 +147,7 @@ pub fn fbm_occupation_time_central_moment(
     Ok(result)
 }
 
-#[gen_stub_pyfunction]
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn fbm_tamsd(
     start_position: f64,
@@ -161,7 +162,7 @@ pub fn fbm_tamsd(
     Ok(result)
 }
 
-#[gen_stub_pyfunction]
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn fbm_eatamsd(
     start_position: f64,

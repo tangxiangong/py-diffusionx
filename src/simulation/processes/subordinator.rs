@@ -7,9 +7,10 @@ use diffusionx::simulation::{
     prelude::*,
 };
 use pyo3::prelude::*;
+#[cfg(feature = "stub_gen")]
 use pyo3_stub_gen::derive::gen_stub_pyfunction;
 
-#[gen_stub_pyfunction]
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn subordinator_simulate(
     py: Python<'_>,
@@ -22,7 +23,7 @@ pub fn subordinator_simulate(
     Ok(vec_to_pyarray(py, times, positions))
 }
 
-#[gen_stub_pyfunction]
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn subordinator_fpt(
     alpha: f64,
@@ -35,7 +36,7 @@ pub fn subordinator_fpt(
     Ok(result)
 }
 
-#[gen_stub_pyfunction]
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn subordinator_fpt_raw_moment(
     alpha: f64,
@@ -51,7 +52,7 @@ pub fn subordinator_fpt_raw_moment(
     Ok(result)
 }
 
-#[gen_stub_pyfunction]
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn subordinator_fpt_central_moment(
     alpha: f64,
@@ -67,7 +68,7 @@ pub fn subordinator_fpt_central_moment(
     Ok(result)
 }
 
-#[gen_stub_pyfunction]
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn subordinator_occupation_time(
     alpha: f64,
@@ -80,7 +81,7 @@ pub fn subordinator_occupation_time(
     Ok(result)
 }
 
-#[gen_stub_pyfunction]
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn subordinator_occupation_time_raw_moment(
     alpha: f64,
@@ -96,7 +97,7 @@ pub fn subordinator_occupation_time_raw_moment(
     Ok(result)
 }
 
-#[gen_stub_pyfunction]
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn subordinator_occupation_time_central_moment(
     alpha: f64,
@@ -112,7 +113,7 @@ pub fn subordinator_occupation_time_central_moment(
     Ok(result)
 }
 
-#[gen_stub_pyfunction]
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn inv_subordinator_simulate(
     py: Python<'_>,
@@ -125,7 +126,7 @@ pub fn inv_subordinator_simulate(
     Ok(vec_to_pyarray(py, times, positions))
 }
 
-#[gen_stub_pyfunction]
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn inv_subordinator_raw_moment(
     alpha: f64,
@@ -139,7 +140,7 @@ pub fn inv_subordinator_raw_moment(
     Ok(result)
 }
 
-#[gen_stub_pyfunction]
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn inv_subordinator_central_moment(
     alpha: f64,
@@ -153,7 +154,7 @@ pub fn inv_subordinator_central_moment(
     Ok(result)
 }
 
-#[gen_stub_pyfunction]
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn inv_subordinator_fpt(
     alpha: f64,
@@ -166,7 +167,7 @@ pub fn inv_subordinator_fpt(
     Ok(result)
 }
 
-#[gen_stub_pyfunction]
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn inv_subordinator_fpt_raw_moment(
     alpha: f64,
@@ -182,7 +183,7 @@ pub fn inv_subordinator_fpt_raw_moment(
     Ok(result)
 }
 
-#[gen_stub_pyfunction]
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn inv_subordinator_fpt_central_moment(
     alpha: f64,
@@ -198,7 +199,7 @@ pub fn inv_subordinator_fpt_central_moment(
     Ok(result)
 }
 
-#[gen_stub_pyfunction]
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn inv_subordinator_occupation_time(
     alpha: f64,
@@ -211,7 +212,7 @@ pub fn inv_subordinator_occupation_time(
     Ok(result)
 }
 
-#[gen_stub_pyfunction]
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn inv_subordinator_occupation_time_raw_moment(
     alpha: f64,
@@ -227,7 +228,7 @@ pub fn inv_subordinator_occupation_time_raw_moment(
     Ok(result)
 }
 
-#[gen_stub_pyfunction]
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn inv_subordinator_occupation_time_central_moment(
     alpha: f64,

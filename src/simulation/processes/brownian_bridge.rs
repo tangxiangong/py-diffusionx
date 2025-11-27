@@ -4,9 +4,11 @@ use crate::{
 };
 use diffusionx::simulation::{continuous::BrownianBridge, prelude::*};
 use pyo3::prelude::*;
+
+#[cfg(feature = "stub_gen")]
 use pyo3_stub_gen::derive::gen_stub_pyfunction;
 
-#[gen_stub_pyfunction]
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn bb_simulate(py: Python<'_>, duration: f64, step_size: f64) -> XPyResult<PyArrayPair<'_>> {
     let bb = BrownianBridge;
@@ -14,7 +16,7 @@ pub fn bb_simulate(py: Python<'_>, duration: f64, step_size: f64) -> XPyResult<P
     Ok(vec_to_pyarray(py, times, positions))
 }
 
-#[gen_stub_pyfunction]
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn bb_raw_moment(
     duration: f64,
@@ -27,7 +29,7 @@ pub fn bb_raw_moment(
     Ok(result)
 }
 
-#[gen_stub_pyfunction]
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn bb_central_moment(
     duration: f64,
@@ -40,7 +42,7 @@ pub fn bb_central_moment(
     Ok(result)
 }
 
-#[gen_stub_pyfunction]
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn bb_fpt(step_size: f64, domain: (f64, f64), max_duration: f64) -> XPyResult<Option<f64>> {
     let bb = BrownianBridge;
@@ -48,7 +50,7 @@ pub fn bb_fpt(step_size: f64, domain: (f64, f64), max_duration: f64) -> XPyResul
     Ok(result)
 }
 
-#[gen_stub_pyfunction]
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn bb_fpt_raw_moment(
     domain: (f64, f64),
@@ -63,7 +65,7 @@ pub fn bb_fpt_raw_moment(
     Ok(result)
 }
 
-#[gen_stub_pyfunction]
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn bb_fpt_central_moment(
     domain: (f64, f64),
@@ -78,7 +80,7 @@ pub fn bb_fpt_central_moment(
     Ok(result)
 }
 
-#[gen_stub_pyfunction]
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn bb_occupation_time(domain: (f64, f64), step_size: f64, duration: f64) -> XPyResult<f64> {
     let bb = BrownianBridge;
@@ -86,7 +88,7 @@ pub fn bb_occupation_time(domain: (f64, f64), step_size: f64, duration: f64) -> 
     Ok(result)
 }
 
-#[gen_stub_pyfunction]
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn bb_occupation_time_raw_moment(
     domain: (f64, f64),
@@ -101,7 +103,7 @@ pub fn bb_occupation_time_raw_moment(
     Ok(result)
 }
 
-#[gen_stub_pyfunction]
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn bb_occupation_time_central_moment(
     domain: (f64, f64),
@@ -116,7 +118,7 @@ pub fn bb_occupation_time_central_moment(
     Ok(result)
 }
 
-#[gen_stub_pyfunction]
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn bb_tamsd(duration: f64, delta: f64, step_size: f64, quad_order: usize) -> XPyResult<f64> {
     let bb = BrownianBridge;
@@ -124,7 +126,7 @@ pub fn bb_tamsd(duration: f64, delta: f64, step_size: f64, quad_order: usize) ->
     Ok(result)
 }
 
-#[gen_stub_pyfunction]
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn bb_eatamsd(
     duration: f64,

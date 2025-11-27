@@ -5,10 +5,12 @@ use diffusionx::{
 };
 use numpy::{IntoPyArray, Ix1, PyArray};
 use pyo3::prelude::*;
+
+#[cfg(feature = "stub_gen")]
 use pyo3_stub_gen::derive::gen_stub_pyfunction;
 use rand::distr::uniform::{SampleUniform, Uniform};
 
-#[gen_stub_pyfunction]
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 #[pyo3(signature = (scale = 1.0))]
 pub fn exp_rand(scale: f64) -> XPyResult<f64> {
@@ -20,7 +22,7 @@ pub fn exp_rand(scale: f64) -> XPyResult<f64> {
     Ok(result)
 }
 
-#[gen_stub_pyfunction]
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 #[pyo3(signature = (n, /, scale = 1.0))]
 pub fn exp_rands(py: Python<'_>, n: usize, scale: f64) -> XPyResult<Bound<'_, PyArray<f64, Ix1>>> {
@@ -33,7 +35,7 @@ pub fn exp_rands(py: Python<'_>, n: usize, scale: f64) -> XPyResult<Bound<'_, Py
     Ok(result)
 }
 
-#[gen_stub_pyfunction]
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 #[pyo3(signature = (low = 0.0, high = 1.0, /, end = false))]
 pub fn uniform_rand_float(low: f64, high: f64, end: bool) -> XPyResult<f64> {
@@ -45,7 +47,7 @@ pub fn uniform_rand_float(low: f64, high: f64, end: bool) -> XPyResult<f64> {
     Ok(result)
 }
 
-#[gen_stub_pyfunction]
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 #[pyo3(signature = (low, high, /, end = false))]
 pub fn uniform_rand_int(low: i64, high: i64, end: bool) -> XPyResult<i64> {
@@ -66,7 +68,7 @@ where
     }
 }
 
-#[gen_stub_pyfunction]
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 #[pyo3(signature = (n, /, low = 0.0, high = 1.0, end = false))]
 pub fn uniform_rands_float(
@@ -85,7 +87,7 @@ pub fn uniform_rands_float(
     Ok(result)
 }
 
-#[gen_stub_pyfunction]
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 #[pyo3(signature = (n, low, high, /, end = false))]
 pub fn uniform_rands_int(
@@ -113,7 +115,7 @@ where
     }
 }
 
-#[gen_stub_pyfunction]
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 #[pyo3(signature = (mu = 0.0, sigma = 1.0))]
 pub fn normal_rand(mu: f64, sigma: f64) -> XPyResult<f64> {
@@ -125,7 +127,7 @@ pub fn normal_rand(mu: f64, sigma: f64) -> XPyResult<f64> {
     Ok(result)
 }
 
-#[gen_stub_pyfunction]
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 #[pyo3(signature = (n, /, mu = 0.0, sigma = 1.0))]
 pub fn normal_rands(
@@ -143,7 +145,7 @@ pub fn normal_rands(
     Ok(result)
 }
 
-#[gen_stub_pyfunction]
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 #[pyo3(signature = (lambda_ = 1.0))]
 pub fn poisson_rand(lambda_: f64) -> XPyResult<usize> {
@@ -151,10 +153,10 @@ pub fn poisson_rand(lambda_: f64) -> XPyResult<usize> {
     Ok(result)
 }
 
-#[gen_stub_pyfunction]
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
+#[cfg_attr(feature = "stub_gen", gen_stub(override_return_type(type_repr = "typing.Annotated[numpy.typing.NDArray[numpy.uintp], typing.Literal[\"N\"]]", imports = ("numpy", "typing"))))]
 #[pyo3(signature = (n, /, lambda_ = 1.0))]
-#[gen_stub(override_return_type(type_repr = "typing.Annotated[numpy.typing.NDArray[numpy.uintp], typing.Literal[\"N\"]]", imports = ("numpy", "typing")))]
 pub fn poisson_rands(
     py: Python<'_>,
     n: usize,
@@ -165,7 +167,7 @@ pub fn poisson_rands(
     Ok(result)
 }
 
-#[gen_stub_pyfunction]
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 #[pyo3(signature = (alpha, beta, /, sigma = 1.0, mu = 0.0))]
 pub fn stable_rand(alpha: f64, beta: f64, sigma: f64, mu: f64) -> XPyResult<f64> {
@@ -177,7 +179,7 @@ pub fn stable_rand(alpha: f64, beta: f64, sigma: f64, mu: f64) -> XPyResult<f64>
     Ok(result)
 }
 
-#[gen_stub_pyfunction]
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 #[pyo3(signature = (n, /, alpha, beta, sigma = 1.0, mu = 0.0))]
 pub fn stable_rands(
@@ -193,7 +195,7 @@ pub fn stable_rands(
     Ok(result)
 }
 
-#[gen_stub_pyfunction]
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 #[pyo3(signature = (alpha))]
 pub fn skew_stable_rand(alpha: f64) -> XPyResult<f64> {
@@ -201,7 +203,7 @@ pub fn skew_stable_rand(alpha: f64) -> XPyResult<f64> {
     Ok(result)
 }
 
-#[gen_stub_pyfunction]
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 #[pyo3(signature = (n, alpha))]
 pub fn skew_stable_rands(
@@ -221,10 +223,10 @@ pub fn bool_rand(p: f64) -> XPyResult<bool> {
     Ok(result)
 }
 
-#[gen_stub_pyfunction]
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
+#[cfg_attr(feature = "stub_gen", gen_stub(override_return_type(type_repr = "typing.Annotated[numpy.typing.NDArray[numpy.bool], typing.Literal[\"N\"]]", imports = ("numpy", "typing"))))]
 #[pyo3(signature = (n, /, p = 0.5))]
-#[gen_stub(override_return_type(type_repr = "typing.Annotated[numpy.typing.NDArray[numpy.bool], typing.Literal[\"N\"]]", imports = ("numpy", "typing")))]
 pub fn bool_rands(py: Python<'_>, n: usize, p: f64) -> XPyResult<Bound<'_, PyArray<bool, Ix1>>> {
     let result = uniform::bool_rands(p, n)?;
     let result = result.into_pyarray(py);

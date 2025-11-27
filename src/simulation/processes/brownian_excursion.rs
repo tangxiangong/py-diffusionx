@@ -4,9 +4,10 @@ use crate::{
 };
 use diffusionx::simulation::{continuous::BrownianExcursion, prelude::*};
 use pyo3::prelude::*;
+#[cfg(feature = "stub_gen")]
 use pyo3_stub_gen::derive::gen_stub_pyfunction;
 
-#[gen_stub_pyfunction]
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn be_simulate(py: Python<'_>, duration: f64, step_size: f64) -> XPyResult<PyArrayPair<'_>> {
     let be = BrownianExcursion;
@@ -14,7 +15,7 @@ pub fn be_simulate(py: Python<'_>, duration: f64, step_size: f64) -> XPyResult<P
     Ok(vec_to_pyarray(py, times, positions))
 }
 
-#[gen_stub_pyfunction]
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn be_raw_moment(
     duration: f64,
@@ -27,7 +28,7 @@ pub fn be_raw_moment(
     Ok(result)
 }
 
-#[gen_stub_pyfunction]
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn be_central_moment(
     duration: f64,
@@ -40,7 +41,7 @@ pub fn be_central_moment(
     Ok(result)
 }
 
-#[gen_stub_pyfunction]
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn be_fpt(step_size: f64, domain: (f64, f64)) -> XPyResult<Option<f64>> {
     let be = BrownianExcursion;
@@ -48,7 +49,7 @@ pub fn be_fpt(step_size: f64, domain: (f64, f64)) -> XPyResult<Option<f64>> {
     Ok(result)
 }
 
-#[gen_stub_pyfunction]
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn be_fpt_raw_moment(
     domain: (f64, f64),
@@ -63,7 +64,7 @@ pub fn be_fpt_raw_moment(
     Ok(result)
 }
 
-#[gen_stub_pyfunction]
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn be_fpt_central_moment(
     domain: (f64, f64),
@@ -78,7 +79,7 @@ pub fn be_fpt_central_moment(
     Ok(result)
 }
 
-#[gen_stub_pyfunction]
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn be_occupation_time(domain: (f64, f64), step_size: f64, duration: f64) -> XPyResult<f64> {
     let be = BrownianExcursion;
@@ -86,7 +87,7 @@ pub fn be_occupation_time(domain: (f64, f64), step_size: f64, duration: f64) -> 
     Ok(result)
 }
 
-#[gen_stub_pyfunction]
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn be_occupation_time_raw_moment(
     domain: (f64, f64),
@@ -101,7 +102,7 @@ pub fn be_occupation_time_raw_moment(
     Ok(result)
 }
 
-#[gen_stub_pyfunction]
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn be_occupation_time_central_moment(
     domain: (f64, f64),
@@ -116,7 +117,7 @@ pub fn be_occupation_time_central_moment(
     Ok(result)
 }
 
-#[gen_stub_pyfunction]
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn be_tamsd(duration: f64, delta: f64, step_size: f64, quad_order: usize) -> XPyResult<f64> {
     let be = BrownianExcursion;
@@ -124,7 +125,7 @@ pub fn be_tamsd(duration: f64, delta: f64, step_size: f64, quad_order: usize) ->
     Ok(result)
 }
 
-#[gen_stub_pyfunction]
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn be_eatamsd(
     duration: f64,
