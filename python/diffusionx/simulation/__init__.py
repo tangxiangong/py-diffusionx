@@ -8,10 +8,6 @@ from .functional import (
     FPT,
     OccupationTime,
 )
-from .visualize import (
-    plot,
-    PlotConfig,
-)
 from .bb import BrownianBridge
 from .be import BrownianExcursion
 from .meander import BrownianMeander
@@ -44,6 +40,4 @@ __all__ = [
     "OrnsteinUhlenbeck",
     "FPT",
     "OccupationTime",
-    "plot",
-    "PlotConfig",
 ]
