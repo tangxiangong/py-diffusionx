@@ -1,6 +1,8 @@
 from typing import Callable
+
 from diffusionx import _core
-from .basic import real, Vector
+
+from .basic import Vector, real
 from .utils import (
     ensure_float,
     validate_bool,
@@ -45,15 +47,9 @@ class Langevin:
             raise TypeError(
                 f"diffusion_func must be a callable function, got {type(diffusion_func).__name__}"
             )
-
-        try:
-            start_position = ensure_float(start_position)
-        except TypeError as e:
-            raise TypeError(f"start_position must be a number. Error: {e}") from e
-
         self.drift_func = drift_func
         self.diffusion_func = diffusion_func
-        self.start_position = start_position
+        self.start_position = ensure_float(start_position)
 
     def simulate(self, duration: real, time_step: real) -> tuple[Vector, Vector]:
         """
@@ -66,36 +62,13 @@ class Langevin:
         time_step : real
             Time step size (must be positive).
 
-        Raises
-        ------
-        TypeError
-            If duration or time_step are not numbers.
-        ValueError
-            If duration or time_step are not positive.
-        NotImplementedError
-            If the corresponding _core function is not found.
-
         Returns
         -------
         tuple[numpy.ndarray, numpy.ndarray]
             (time points array, position array)
         """
-        if not hasattr(_core, "langevin_simulate"):
-            raise NotImplementedError(
-                "langevin_simulate not implemented in _core module"
-            )
-        try:
-            duration = ensure_float(duration)
-            time_step = ensure_float(time_step)
-        except TypeError as e:
-            raise TypeError(
-                f"duration and time_step must be numbers. Error: {e}"
-            ) from e
-
-        if duration <= 0:
-            raise ValueError("duration must be positive")
-        if time_step <= 0:
-            raise ValueError("time_step must be positive")
+        duration = validate_positive_float(duration, "duration")
+        time_step = validate_positive_float(time_step, "time_step")
 
         return _core.langevin_simulate(
             self.drift_func,
@@ -127,25 +100,11 @@ class Langevin:
         time_step : real
             Time step size (must be positive).
 
-        Raises
-        ------
-        TypeError
-            If duration, order, particles, or time_step have incorrect types.
-        ValueError
-            If parameters have invalid values.
-        NotImplementedError
-            If the corresponding _core function is not found.
-
         Returns
         -------
         float
             Raw moment.
         """
-        if not hasattr(_core, "langevin_raw_moment"):
-            raise NotImplementedError(
-                "langevin_raw_moment not implemented in _core module"
-            )
-
         validate_bool(central, "central")
         order = validate_order(order)
         particles = validate_particles(particles)
@@ -190,12 +149,12 @@ class Langevin:
         max_duration = validate_positive_float(max_duration, "max_duration")
 
         return _core.langevin_fpt(
-            self.start_position,
             self.drift_func,
             self.diffusion_func,
-            time_step,
+            self.start_position,
             (a, b),
             max_duration,
+            time_step,
         )
 
     def fpt_moment(
@@ -216,25 +175,25 @@ class Langevin:
 
         result = (
             _core.langevin_fpt_raw_moment(
-                self.start_position,
                 self.drift_func,
                 self.diffusion_func,
+                self.start_position,
                 (a, b),
+                max_duration,
                 order,
                 particles,
                 time_step,
-                max_duration,
             )
             if not central
             else _core.langevin_fpt_central_moment(
-                self.start_position,
                 self.drift_func,
                 self.diffusion_func,
+                self.start_position,
                 (a, b),
+                max_duration,
                 order,
                 particles,
                 time_step,
-                max_duration,
             )
         )
         return result
@@ -250,12 +209,12 @@ class Langevin:
         time_step = validate_positive_float(time_step, "time_step")
 
         return _core.langevin_occupation_time(
-            self.start_position,
             self.drift_func,
             self.diffusion_func,
-            time_step,
+            self.start_position,
             (a, b),
             duration,
+            time_step,
         )
 
     def occupation_time_moment(
@@ -279,25 +238,25 @@ class Langevin:
 
         result = (
             _core.langevin_occupation_time_raw_moment(
-                self.start_position,
                 self.drift_func,
                 self.diffusion_func,
+                self.start_position,
                 (a, b),
+                duration,
                 order,
                 particles,
                 time_step,
-                duration,
             )
             if not central
             else _core.langevin_occupation_time_central_moment(
-                self.start_position,
                 self.drift_func,
                 self.diffusion_func,
+                self.start_position,
                 (a, b),
+                duration,
                 order,
                 particles,
                 time_step,
-                duration,
             )
         )
         return result
@@ -317,6 +276,7 @@ class Langevin:
         return _core.langevin_tamsd(
             self.drift_func,
             self.diffusion_func,
+            self.start_position,
             duration,
             delta,
             time_step,
@@ -340,6 +300,7 @@ class Langevin:
         return _core.langevin_eatamsd(
             self.drift_func,
             self.diffusion_func,
+            self.start_position,
             duration,
             delta,
             particles,
@@ -358,22 +319,22 @@ class GeneralizedLangevin:
 
     Parameters
     ----------
+    alpha : real
+        Stability index of the stable noise (0, 2].
     drift_func : Callable[[float, float], float]
         Drift function f(x, t).
     diffusion_func : Callable[[float, float], float]
         Diffusion function g(x, t).
     start_position : real, optional
         Initial position x0. Defaults to 0.0.
-    alpha : real, optional
-        Stability index of the stable noise (0, 2]. Defaults to 1.5.
     """
 
     def __init__(
         self,
+        alpha: real,
         drift_func: Callable[[float, float], float],
         diffusion_func: Callable[[float, float], float],
         start_position: real = 0.0,
-        alpha: real = 1.5,
     ) -> None:
         if not callable(drift_func):
             raise TypeError(
@@ -384,15 +345,10 @@ class GeneralizedLangevin:
                 f"diffusion_func must be a callable function, got {type(diffusion_func).__name__}"
             )
 
-        try:
-            start_position = ensure_float(start_position)
-            alpha = ensure_float(alpha)
-        except TypeError as e:
-            raise TypeError(
-                f"start_position and alpha must be numbers. Error: {e}"
-            ) from e
+        start_position = ensure_float(start_position)
+        alpha = validate_positive_float(alpha, "alpha")
 
-        if not (0 < alpha <= 2):
+        if not (alpha <= 2):
             raise ValueError(
                 f"alpha (stability index) must be in the range (0, 2], got {alpha}"
             )
@@ -415,36 +371,13 @@ class GeneralizedLangevin:
         time_step : real
             Time step size (must be positive).
 
-        Raises
-        ------
-        TypeError
-            If duration or time_step are not numbers.
-        ValueError
-            If duration or time_step are not positive.
-        NotImplementedError
-            If the corresponding _core function is not found.
-
         Returns
         -------
         tuple[numpy.ndarray, numpy.ndarray]
             (time points array, position array)
         """
-        if not hasattr(_core, "generalized_langevin_simulate"):
-            raise NotImplementedError(
-                "generalized_langevin_simulate not implemented in _core module"
-            )
-        try:
-            duration = ensure_float(duration)
-            time_step = ensure_float(time_step)
-        except TypeError as e:
-            raise TypeError(
-                f"duration and time_step must be numbers. Error: {e}"
-            ) from e
-
-        if duration <= 0:
-            raise ValueError("duration must be positive")
-        if time_step <= 0:
-            raise ValueError("time_step must be positive")
+        duration = validate_positive_float(duration, "duration")
+        time_step = validate_positive_float(time_step, "time_step")
 
         return _core.generalized_langevin_simulate(
             self.drift_func,
@@ -477,24 +410,11 @@ class GeneralizedLangevin:
         time_step : real
             Time step size (must be positive).
 
-        Raises
-        ------
-        TypeError
-            If parameters have incorrect types.
-        ValueError
-            If parameters have invalid values.
-        NotImplementedError
-            If the corresponding _core function is not found.
-
         Returns
         -------
         float
             Raw moment.
         """
-        if not hasattr(_core, "generalized_langevin_raw_moment"):
-            raise NotImplementedError(
-                "generalized_langevin_raw_moment not implemented in _core module"
-            )
         validate_bool(central, "central")
         order = validate_order(order)
         particles = validate_particles(particles)
@@ -540,13 +460,13 @@ class GeneralizedLangevin:
         max_duration = validate_positive_float(max_duration, "max_duration")
 
         return _core.generalized_langevin_fpt(
-            self.start_position,
             self.drift_func,
             self.diffusion_func,
+            self.start_position,
             self.alpha,
-            time_step,
             (a, b),
             max_duration,
+            time_step,
         )
 
     def fpt_moment(
@@ -569,27 +489,27 @@ class GeneralizedLangevin:
 
         result = (
             _core.generalized_langevin_fpt_raw_moment(
-                self.start_position,
                 self.drift_func,
                 self.diffusion_func,
+                self.start_position,
                 self.alpha,
                 (a, b),
+                max_duration,
                 order,
                 particles,
                 time_step,
-                max_duration,
             )
             if not central
             else _core.generalized_langevin_fpt_central_moment(
-                self.start_position,
                 self.drift_func,
                 self.diffusion_func,
+                self.start_position,
                 self.alpha,
                 (a, b),
+                max_duration,
                 order,
                 particles,
                 time_step,
-                max_duration,
             )
         )
         return result
@@ -607,13 +527,13 @@ class GeneralizedLangevin:
         time_step = validate_positive_float(time_step, "time_step")
 
         return _core.generalized_langevin_occupation_time(
-            self.start_position,
             self.drift_func,
             self.diffusion_func,
+            self.start_position,
             self.alpha,
-            time_step,
             (a, b),
             duration,
+            time_step,
         )
 
     def occupation_time_moment(
@@ -639,27 +559,27 @@ class GeneralizedLangevin:
 
         result = (
             _core.generalized_langevin_occupation_time_raw_moment(
-                self.start_position,
                 self.drift_func,
                 self.diffusion_func,
+                self.start_position,
                 self.alpha,
                 (a, b),
+                duration,
                 order,
                 particles,
                 time_step,
-                duration,
             )
             if not central
             else _core.generalized_langevin_occupation_time_central_moment(
-                self.start_position,
                 self.drift_func,
                 self.diffusion_func,
+                self.start_position,
                 self.alpha,
                 (a, b),
+                duration,
                 order,
                 particles,
                 time_step,
-                duration,
             )
         )
         return result
@@ -679,6 +599,7 @@ class GeneralizedLangevin:
         return _core.generalized_langevin_tamsd(
             self.drift_func,
             self.diffusion_func,
+            self.start_position,
             self.alpha,
             duration,
             delta,
@@ -703,6 +624,7 @@ class GeneralizedLangevin:
         return _core.generalized_langevin_eatamsd(
             self.drift_func,
             self.diffusion_func,
+            self.start_position,
             self.alpha,
             duration,
             delta,
@@ -718,21 +640,21 @@ class SubordinatedLangevin:
 
     Parameters
     ----------
+    alpha : real
+        Alpha parameter for the subordinator (0, 1).
     drift_func : Callable[[float, float], float]
         Drift function f(x, u) where u is operational time.
     diffusion_func : Callable[[float, float], float]
         Diffusion function g(x, u) where u is operational time.
-    subordinator_alpha : real, optional
-        Alpha parameter for the subordinator (0, 1). Defaults to 0.7.
     start_position : real, optional
         Initial position x0. Defaults to 0.0.
     """
 
     def __init__(
         self,
+        alpha: real,
         drift_func: Callable[[float, float], float],
         diffusion_func: Callable[[float, float], float],
-        subordinator_alpha: real = 0.7,
         start_position: real = 0.0,
     ) -> None:
         if not callable(drift_func):
@@ -743,23 +665,16 @@ class SubordinatedLangevin:
             raise TypeError(
                 f"diffusion_func must be a callable function, got {type(diffusion_func).__name__}"
             )
-
-        try:
-            start_position = ensure_float(start_position)
-            subordinator_alpha = ensure_float(subordinator_alpha)
-        except TypeError as e:
-            raise TypeError(
-                f"start_position and subordinator_alpha must be numbers. Error: {e}"
-            ) from e
-
-        if not (0 < subordinator_alpha < 1):
+        start_position = ensure_float(start_position)
+        alpha = validate_positive_float(alpha, "alpha")
+        if not (alpha < 1):
             raise ValueError(
-                f"subordinator_alpha must be in the range (0, 1), got {subordinator_alpha}"
+                f"subordinator_alpha must be in the range (0, 1), got {alpha}"
             )
 
+        self.alpha = alpha
         self.drift_func = drift_func
         self.diffusion_func = diffusion_func
-        self.subordinator_alpha = subordinator_alpha
         self.start_position = start_position
 
     def simulate(
@@ -769,28 +684,14 @@ class SubordinatedLangevin:
         Simulate the Subordinated Langevin process.
         (Parameters, Raises, Returns are similar to Langevin.simulate)
         """
-        if not hasattr(_core, "subordinated_langevin_simulate"):
-            raise NotImplementedError(
-                "subordinated_langevin_simulate not implemented in _core module"
-            )
-        try:
-            duration = ensure_float(duration)
-            time_step = ensure_float(time_step)
-        except TypeError as e:
-            raise TypeError(
-                f"duration and time_step must be numbers. Error: {e}"
-            ) from e
-
-        if duration <= 0:
-            raise ValueError("duration must be positive")
-        if time_step <= 0:
-            raise ValueError("time_step must be positive")
+        duration = validate_positive_float(duration, "duration")
+        time_step = validate_positive_float(time_step, "time_step")
 
         return _core.subordinated_langevin_simulate(
             self.drift_func,
             self.diffusion_func,
-            self.subordinator_alpha,
             self.start_position,
+            self.alpha,
             duration,
             time_step,
         )
@@ -807,10 +708,6 @@ class SubordinatedLangevin:
         Calculate the raw moment of the Subordinated Langevin process.
         (Parameters, Raises, Returns are similar to Langevin.raw_moment)
         """
-        if not hasattr(_core, "subordinated_langevin_raw_moment"):
-            raise NotImplementedError(
-                "subordinated_langevin_raw_moment not implemented in _core module"
-            )
         validate_bool(central, "central")
         order = validate_order(order)
         particles = validate_particles(particles)
@@ -824,8 +721,8 @@ class SubordinatedLangevin:
             _core.subordinated_langevin_raw_moment(
                 self.drift_func,
                 self.diffusion_func,
-                self.subordinator_alpha,
                 self.start_position,
+                self.alpha,
                 duration,
                 order,
                 particles,
@@ -835,26 +732,34 @@ class SubordinatedLangevin:
             else _core.subordinated_langevin_central_moment(
                 self.drift_func,
                 self.diffusion_func,
-                self.subordinator_alpha,
                 self.start_position,
+                self.alpha,
                 duration,
+                order,
+                particles,
+                time_step,
             )
         )
         return result
 
     def fpt(
-        self, domain: tuple[real, real], max_duration: real = 1000
+        self,
+        domain: tuple[real, real],
+        max_duration: real = 1000,
+        time_step: real = 0.01,
     ) -> float | None:  # No time_step here as per _core
         a, b = validate_domain(domain, process_name="SubordinatedLangevin FPT")
         max_duration = validate_positive_float(max_duration, "max_duration")
+        time_step = validate_positive_float(time_step, "time_step")
 
         return _core.subordinated_langevin_fpt(
-            self.start_position,
             self.drift_func,
             self.diffusion_func,
-            self.subordinator_alpha,
+            self.start_position,
+            self.alpha,
             (a, b),
             max_duration,
+            time_step,
         )
 
     def fpt_moment(
@@ -877,27 +782,27 @@ class SubordinatedLangevin:
 
         result = (
             _core.subordinated_langevin_fpt_raw_moment(
-                self.start_position,
                 self.drift_func,
                 self.diffusion_func,
-                self.subordinator_alpha,
+                self.start_position,
+                self.alpha,
                 (a, b),
+                max_duration,
                 order,
                 particles,
                 time_step,
-                max_duration,
             )
             if not central
             else _core.subordinated_langevin_fpt_central_moment(
-                self.start_position,
                 self.drift_func,
                 self.diffusion_func,
-                self.subordinator_alpha,
+                self.start_position,
+                self.alpha,
                 (a, b),
+                max_duration,
                 order,
                 particles,
                 time_step,
-                max_duration,
             )
         )
         return result
@@ -915,13 +820,13 @@ class SubordinatedLangevin:
         time_step = validate_positive_float(time_step, "time_step")
 
         return _core.subordinated_langevin_occupation_time(
-            self.start_position,
             self.drift_func,
             self.diffusion_func,
-            self.subordinator_alpha,
-            time_step,
+            self.start_position,
+            self.alpha,
             (a, b),
             duration,
+            time_step,
         )
 
     def occupation_time_moment(
@@ -947,27 +852,27 @@ class SubordinatedLangevin:
 
         result = (
             _core.subordinated_langevin_occupation_time_raw_moment(
-                self.start_position,
                 self.drift_func,
                 self.diffusion_func,
-                self.subordinator_alpha,
+                self.start_position,
+                self.alpha,
                 (a, b),
+                duration,
                 order,
                 particles,
                 time_step,
-                duration,
             )
             if not central
             else _core.subordinated_langevin_occupation_time_central_moment(
-                self.start_position,
                 self.drift_func,
                 self.diffusion_func,
-                self.subordinator_alpha,
+                self.start_position,
+                self.alpha,
                 (a, b),
+                duration,
                 order,
                 particles,
                 time_step,
-                duration,
             )
         )
         return result
@@ -979,18 +884,19 @@ class SubordinatedLangevin:
         time_step: float = 0.01,
         quad_order: int = 10,
     ) -> float:
-        _duration = validate_positive_float(duration, "duration")
-        _delta = validate_positive_float(delta, "delta")
-        _time_step = validate_positive_float(time_step, "time_step")
+        duration = validate_positive_float(duration, "duration")
+        delta = validate_positive_float(delta, "delta")
+        time_step = validate_positive_float(time_step, "time_step")
+        quad_order = validate_positive_integer(quad_order, "quad_order")
 
         return _core.subordinated_langevin_tamsd(
             self.drift_func,
             self.diffusion_func,
             self.start_position,
-            self.subordinator_alpha,
-            _duration,
-            _delta,
-            _time_step,
+            self.alpha,
+            duration,
+            delta,
+            time_step,
             quad_order,
         )
 
@@ -1002,19 +908,20 @@ class SubordinatedLangevin:
         time_step: float = 0.01,
         quad_order: int = 10,
     ) -> float:
-        _duration = validate_positive_float(duration, "duration")
-        _delta = validate_positive_float(delta, "delta")
-        _particles = validate_particles(particles)
-        _time_step = validate_positive_float(time_step, "time_step")
+        duration = validate_positive_float(duration, "duration")
+        delta = validate_positive_float(delta, "delta")
+        particles = validate_particles(particles)
+        time_step = validate_positive_float(time_step, "time_step")
+        quad_order = validate_positive_integer(quad_order, "quad_order")
 
         return _core.subordinated_langevin_eatamsd(
             self.drift_func,
             self.diffusion_func,
             self.start_position,
-            self.subordinator_alpha,
-            _duration,
-            _delta,
-            _particles,
-            _time_step,
+            self.alpha,
+            duration,
+            delta,
+            particles,
+            time_step,
             quad_order,
         )

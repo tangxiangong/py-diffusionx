@@ -1,16 +1,17 @@
 from abc import ABC, abstractmethod
-from typing import Union, Annotated, Literal
+from typing import Annotated, Literal, Union
+
 import numpy as np
 import numpy.typing as npt
+
+from diffusionx import _core
 from python.diffusionx.simulation.utils import (
+    validate_bool,
+    validate_domain,
     validate_particles,
     validate_positive_float,
     validate_positive_integer,
-    validate_domain,
-    validate_bool,
 )
-from diffusionx import _core
-
 
 real = Union[int, float]
 Vector = Annotated[npt.NDArray[np.float64], Literal["N"]]
@@ -68,13 +69,19 @@ class ContinuousProcess(ABC):
         return _core.msd(self, duration, time_step, particles)
 
     def eatamsd(
-        self, duration: real, delta: float, time_step: float = 0.01, quad_order: int = 5
+        self,
+        duration: real,
+        delta: float,
+        time_step: float = 0.01,
+        quad_order: int = 5,
+        particles: int = 10_000,
     ) -> float:
         duration = validate_positive_float(duration, "duration")
         delta = validate_positive_float(delta, "delta")
         time_step = validate_positive_float(time_step, "time_step")
         quad_order = validate_positive_integer(quad_order, "quad_order")
-        return _core.eatamsd(self, duration, delta, time_step, quad_order)
+        particles = validate_particles(particles)
+        return _core.eatamsd(self, duration, delta, particles, time_step, quad_order)
 
     def tamsd(
         self, duration: real, delta: float, time_step: float = 0.01, quad_order: int = 5
@@ -90,7 +97,7 @@ class ContinuousProcess(ABC):
         domain: tuple[real, real],
         time_step: float = 0.01,
         max_duration: real = 100,
-    ) -> float:
+    ) -> float | None:
         domain = validate_domain(domain, "poisson_fpt", self.__class__.__name__)
         time_step = validate_positive_float(time_step, "time_step")
         max_duration = validate_positive_float(max_duration, "max_duration")

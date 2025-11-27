@@ -1,5 +1,6 @@
 from diffusionx import _core
-from .basic import real, Vector
+
+from .basic import Vector, real
 from .utils import (
     ensure_float,
     validate_bool,
@@ -14,9 +15,9 @@ from .utils import (
 class OrnsteinUhlenbeck:
     def __init__(
         self,
-        theta: real,  # Mean reversion rate
-        mu: real,  # Long-term mean
-        sigma: real,  # Volatility
+        theta: real,
+        mu: real,
+        sigma: real,
         start_position: real = 0.0,
     ):
         """
@@ -25,28 +26,13 @@ class OrnsteinUhlenbeck:
 
         Args:
             theta (real): Mean reversion rate (theta > 0).
-            mu (real): Long-term mean (equilibrium level).
             sigma (real): Volatility (sigma > 0).
             start_position (real, optional): Starting position of the process. Defaults to mu.
 
         """
-        try:
-            theta = ensure_float(theta)
-            mu = ensure_float(mu)
-            sigma = ensure_float(sigma)
-            start_position = ensure_float(start_position)
-        except TypeError as e:
-            raise TypeError(f"Input parameters must be numbers. Error: {e}") from e
-
-        if theta <= 0:
-            raise ValueError("theta (mean reversion rate) must be positive")
-        if sigma <= 0:
-            raise ValueError("sigma (volatility) must be positive")
-
-        self.theta = theta
-        self.mu = mu
-        self.sigma = sigma
-        self.start_position = start_position
+        self.theta = validate_positive_float(theta, "theta")
+        self.sigma = validate_positive_float(sigma, "sigma")
+        self.start_position = ensure_float(start_position)
 
     def simulate(
         self, duration: real, time_step: float = 0.01
@@ -55,10 +41,9 @@ class OrnsteinUhlenbeck:
         time_step = validate_positive_float(time_step, "time_step")
 
         return _core.ou_simulate(
-            self.start_position,
             self.theta,
-            self.mu,
             self.sigma,
+            self.start_position,
             duration,
             time_step,
         )
@@ -82,10 +67,9 @@ class OrnsteinUhlenbeck:
 
         result = (
             _core.ou_raw_moment(
-                self.start_position,
                 self.theta,
-                self.mu,
                 self.sigma,
+                self.start_position,
                 duration,
                 time_step,
                 order,
@@ -93,10 +77,9 @@ class OrnsteinUhlenbeck:
             )
             if not center
             else _core.ou_central_moment(
-                self.start_position,
                 self.theta,
-                self.mu,
                 self.sigma,
+                self.start_position,
                 duration,
                 time_step,
                 order,
@@ -117,10 +100,9 @@ class OrnsteinUhlenbeck:
         max_duration = validate_positive_float(max_duration, "max_duration")
 
         return _core.ou_fpt(
-            self.start_position,
             self.theta,
-            self.mu,
             self.sigma,
+            self.start_position,
             time_step,
             (a, b),
             max_duration,
@@ -144,10 +126,9 @@ class OrnsteinUhlenbeck:
 
         result = (
             _core.ou_fpt_raw_moment(
-                self.start_position,
                 self.theta,
-                self.mu,
                 self.sigma,
+                self.start_position,
                 (a, b),
                 order,
                 particles,
@@ -156,10 +137,9 @@ class OrnsteinUhlenbeck:
             )
             if not center
             else _core.ou_fpt_central_moment(
-                self.start_position,
                 self.theta,
-                self.mu,
                 self.sigma,
+                self.start_position,
                 (a, b),
                 order,
                 particles,
@@ -181,12 +161,11 @@ class OrnsteinUhlenbeck:
         time_step = validate_positive_float(time_step, "time_step")
 
         return _core.ou_occupation_time(
-            self.start_position,
             self.theta,
-            self.mu,
             self.sigma,
-            time_step,
+            self.start_position,
             (a, b),
+            time_step,
             duration,
         )
 
@@ -211,10 +190,9 @@ class OrnsteinUhlenbeck:
 
         result = (
             _core.ou_occupation_time_raw_moment(
-                self.start_position,
                 self.theta,
-                self.mu,
                 self.sigma,
+                self.start_position,
                 (a, b),
                 order,
                 particles,
@@ -223,10 +201,9 @@ class OrnsteinUhlenbeck:
             )
             if not center
             else _core.ou_occupation_time_central_moment(
-                self.start_position,
                 self.theta,
-                self.mu,
                 self.sigma,
+                self.start_position,
                 (a, b),
                 order,
                 particles,
@@ -250,10 +227,9 @@ class OrnsteinUhlenbeck:
         quad_order = validate_positive_integer(quad_order, "quad_order")
 
         return _core.ou_tamsd(
-            self.start_position,
             self.theta,
-            self.mu,
             self.sigma,
+            self.start_position,
             duration,
             delta,
             time_step,
@@ -275,10 +251,9 @@ class OrnsteinUhlenbeck:
         quad_order = validate_positive_integer(quad_order, "quad_order")
 
         return _core.ou_eatamsd(
-            self.start_position,
             self.theta,
-            self.mu,
             self.sigma,
+            self.start_position,
             duration,
             delta,
             particles,

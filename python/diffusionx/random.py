@@ -1,7 +1,9 @@
+from typing import Callable, Union
+
+import numpy as np
+
 from . import _core
 from .types import DType
-from typing import Union, Callable
-import numpy as np
 
 real = Union[float, int]
 

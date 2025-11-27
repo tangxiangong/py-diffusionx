@@ -1,6 +1,8 @@
 from diffusionx import _core
-from .basic import real, Vector
+
+from .basic import Vector, real
 from .utils import (
+    ensure_float,
     validate_bool,
     validate_domain,
     validate_order,
@@ -25,9 +27,9 @@ class CTRW:
             beta (real, optional): Jump length exponent (0, 2]. Defaults to 2.0.
             start_position (real, optional): Starting position. Defaults to 0.0.
         """
-        self.alpha: float = validate_positive_float(alpha)
-        self.beta: float = validate_positive_float(beta)
-        self.start_position: float = validate_positive_float(start_position)
+        self.alpha: float = validate_positive_float(alpha, "alpha")
+        self.beta: float = validate_positive_float(beta, "beta")
+        self.start_position: float = ensure_float(start_position)
 
         if not (self.alpha <= 1):
             raise ValueError(f"alpha must be in the range (0, 1], got {self.alpha}")

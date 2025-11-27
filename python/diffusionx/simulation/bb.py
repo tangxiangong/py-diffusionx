@@ -1,11 +1,12 @@
 from diffusionx import _core
-from .basic import real, Vector
+
+from .basic import Vector, real
 from .utils import (
+    validate_bool,
     validate_domain,
     validate_order,
     validate_particles,
     validate_positive_float,
-    validate_bool,
     validate_positive_integer,
 )
 

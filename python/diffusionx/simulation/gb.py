@@ -1,5 +1,6 @@
 from diffusionx import _core
-from .basic import real, Vector
+
+from .basic import Vector, real
 from .utils import (
     ensure_float,
     validate_bool,
@@ -14,9 +15,9 @@ from .utils import (
 class GeometricBM:
     def __init__(
         self,
-        start_value: real = 1.0,  # Typically > 0 for GBM
-        mu: real = 0.0,  # Drift parameter
-        sigma: real = 0.1,  # Volatility parameter
+        start_value: real = 1.0,
+        mu: real = 0.0,
+        sigma: real = 0.1,
     ):
         """
         Initialize a Geometric Brownian Motion (Gb) object.
@@ -27,23 +28,9 @@ class GeometricBM:
             mu (real, optional): Drift coefficient. Defaults to 0.0.
             sigma (real, optional): Volatility coefficient (sigma > 0). Defaults to 0.1.
         """
-        try:
-            start_value = ensure_float(start_value)
-            mu = ensure_float(mu)
-            sigma = ensure_float(sigma)
-        except TypeError as e:
-            raise TypeError(f"Input parameters must be numbers. Error: {e}") from e
-
-        if start_value <= 0:
-            raise ValueError(
-                "start_value must be positive for Geometric Brownian Motion"
-            )
-        if sigma <= 0:
-            raise ValueError("sigma (volatility) must be positive")
-
-        self.start_value = start_value
-        self.mu = mu
-        self.sigma = sigma
+        self.start_value = validate_positive_float(start_value, "start_value")
+        self.mu = ensure_float(mu)
+        self.sigma = validate_positive_float(sigma, "sigma")
 
     def simulate(
         self, duration: real, time_step: float = 0.01
@@ -71,7 +58,6 @@ class GeometricBM:
         particles = validate_particles(particles)
         duration = validate_positive_float(duration, "duration")
         time_step = validate_positive_float(time_step, "time_step")
-
         validate_bool(central, "central")
 
         if order == 0:
@@ -110,11 +96,6 @@ class GeometricBM:
         a, b = validate_domain(domain, process_name="Gb FPT")
         time_step = validate_positive_float(time_step, "time_step")
         max_duration = validate_positive_float(max_duration, "max_duration")
-        # Ensure domain values are positive for GBM context if necessary, though validate_domain is generic.
-        if not (a > 0 and b > 0):
-            print(
-                f"Warning: FPT domain [{a}, {b}] for GBM might be unusual if not positive."
-            )
 
         return _core.gb_fpt(
             self.start_value,
@@ -140,10 +121,6 @@ class GeometricBM:
         particles = validate_particles(particles)
         time_step = validate_positive_float(time_step, "time_step")
         max_duration = validate_positive_float(max_duration, "max_duration")
-        if not (a > 0 and b > 0):
-            print(
-                f"Warning: FPT domain [{a}, {b}] for GBM might be unusual if not positive."
-            )
 
         result = (
             _core.gb_fpt_raw_moment(
@@ -180,17 +157,12 @@ class GeometricBM:
         a, b = validate_domain(domain, process_name="Gb Occupation Time")
         duration = validate_positive_float(duration, "duration")
         time_step = validate_positive_float(time_step, "time_step")
-        if not (a > 0 and b > 0):
-            print(
-                f"Warning: Occupation domain [{a}, {b}] for GBM might be unusual if not positive."
-            )
-
         return _core.gb_occupation_time(
             self.start_value,
             self.mu,
             self.sigma,
-            time_step,
             (a, b),
+            time_step,
             duration,
         )
 
@@ -209,10 +181,6 @@ class GeometricBM:
         particles = validate_particles(particles)
         duration = validate_positive_float(duration, "duration")
         time_step = validate_positive_float(time_step, "time_step")
-        if not (a > 0 and b > 0):
-            print(
-                f"Warning: Occupation domain [{a}, {b}] for GBM might be unusual if not positive."
-            )
 
         if order == 0:
             return 1.0

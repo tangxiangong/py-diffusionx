@@ -1,13 +1,14 @@
 from diffusionx import _core
-from .basic import real, Vector
+
+from .basic import Vector, real
 from .utils import (
     ensure_float,
+    validate_bool,
     validate_domain,
     validate_order,
     validate_particles,
     validate_positive_float,
     validate_positive_integer,
-    validate_bool,
 )
 
 
@@ -274,7 +275,7 @@ class Cauchy:
         duration = validate_positive_float(duration, "duration")
         delta = validate_positive_float(delta, "delta")
         time_step = validate_positive_float(time_step, "time_step")
-        quad_order = validate_positive_integer(quad_order)
+        quad_order = validate_positive_integer(quad_order, "quad_order")
 
         return _core.cauchy_tamsd(
             self.start_position,
@@ -309,7 +310,7 @@ class Cauchy:
         delta = validate_positive_float(delta, "delta")
         particles = validate_particles(particles)
         time_step = validate_positive_float(time_step, "time_step")
-        quad_order = validate_positive_integer(quad_order)
+        quad_order = validate_positive_integer(quad_order, "quad_order")
 
         return _core.cauchy_eatamsd(
             self.start_position,
@@ -603,7 +604,7 @@ class AsymmetricCauchy:
         duration = validate_positive_float(duration, "duration")
         delta = validate_positive_float(delta, "delta")
         time_step = validate_positive_float(time_step, "time_step")
-        quad_order = validate_positive_integer(quad_order)
+        quad_order = validate_positive_integer(quad_order, "quad_order")
 
         return _core.asymmetric_cauchy_tamsd(
             self.start_position,
@@ -639,7 +640,7 @@ class AsymmetricCauchy:
         delta = validate_positive_float(delta, "delta")
         particles = validate_particles(particles)
         time_step = validate_positive_float(time_step, "time_step")
-        quad_order = validate_positive_integer(quad_order)
+        quad_order = validate_positive_integer(quad_order, "quad_order")
 
         return _core.asymmetric_cauchy_eatamsd(
             self.start_position,

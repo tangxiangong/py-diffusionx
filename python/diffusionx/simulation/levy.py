@@ -1,5 +1,6 @@
 from diffusionx import _core
-from .basic import real, Vector
+
+from .basic import Vector, real
 from .utils import (
     ensure_float,
     validate_bool,
@@ -24,18 +25,11 @@ class Levy:
             alpha (real): Stability index of the Lévy process. Must be in the range (0, 2].
             start_position (real, optional): Starting position of the Lévy process. Defaults to 0.0.
         """
-        try:
-            start_position = ensure_float(start_position)
-            alpha = ensure_float(alpha)
-        except TypeError as e:
-            raise TypeError(
-                f"Input parameters alpha and start_position must be numbers. Error: {e}"
-            ) from e
-
-        if not (0 < alpha <= 2):
+        alpha = validate_positive_float(alpha, "alpha")
+        if not (alpha <= 2):
             raise ValueError(f"alpha must be in the range (0, 2], got {alpha}")
 
-        self.start_position = start_position
+        self.start_position = ensure_float(start_position)
         self.alpha = alpha
 
     def simulate(
@@ -51,18 +45,8 @@ class Levy:
         Returns:
             tuple[Vector, Vector]: Simulation times and positions.
         """
-        try:
-            duration = ensure_float(duration)
-            time_step = ensure_float(time_step)
-        except TypeError as e:
-            raise TypeError(
-                f"duration and time_step must be numbers. Error: {e}"
-            ) from e
-
-        if duration <= 0:
-            raise ValueError("duration must be positive")
-        if time_step <= 0:
-            raise ValueError("time_step must be positive")
+        duration = validate_positive_float(duration, "duration")
+        time_step = validate_positive_float(time_step, "time_step")
 
         return _core.levy_simulate(
             self.start_position,
@@ -152,8 +136,8 @@ class Levy:
                 (a, b),
                 order,
                 particles,
-                time_step,
                 max_duration,
+                time_step,
             )
             if not center
             else _core.levy_fpt_central_moment(
@@ -162,8 +146,8 @@ class Levy:
                 (a, b),
                 order,
                 particles,
-                time_step,
                 max_duration,
+                time_step,
             )
         )
 
@@ -193,20 +177,20 @@ class Levy:
                 self.start_position,
                 self.alpha,
                 (a, b),
+                duration,
                 order,
                 particles,
                 time_step,
-                duration,
             )
             if not center
             else _core.levy_occupation_time_central_moment(
                 self.start_position,
                 self.alpha,
                 (a, b),
+                duration,
                 order,
                 particles,
                 time_step,
-                duration,
             )
         )
 
@@ -227,11 +211,11 @@ class Subordinator:
         Returns:
             Subordinator: A subordinator object.
         """
-        alpha_transformed = ensure_float(alpha)
-        if alpha_transformed <= 0 or alpha_transformed >= 1:
+        alpha = validate_positive_float(alpha, "alpha")
+        if alpha >= 1:
             raise ValueError("alpha must be in the range (0, 1) for Subordinator")
 
-        self.alpha = alpha_transformed
+        self.alpha = alpha
 
     def simulate(
         self, duration: real, time_step: float = 0.01
@@ -270,7 +254,7 @@ class Subordinator:
         a, b = validate_domain(domain, process_name="Subordinator Occupation Time")
         duration = validate_positive_float(duration, "duration")
         time_step = validate_positive_float(time_step, "time_step")
-        # Original code: a >= b -> "domain must be a valid interval"
+
         return _core.subordinator_occupation_time(
             self.alpha,
             (a, b),
@@ -298,19 +282,19 @@ class Subordinator:
             _core.subordinator_fpt_raw_moment(
                 self.alpha,
                 (a, b),
+                max_duration,
+                time_step,
                 order,
                 particles,
-                time_step,
-                max_duration,
             )
             if not center
             else _core.subordinator_fpt_central_moment(
                 self.alpha,
                 (a, b),
+                max_duration,
+                time_step,
                 order,
                 particles,
-                time_step,
-                max_duration,
             )
         )
 
@@ -341,19 +325,19 @@ class Subordinator:
             _core.subordinator_occupation_time_raw_moment(
                 self.alpha,
                 (a, b),
+                duration,
+                time_step,
                 order,
                 particles,
-                time_step,
-                duration,
             )
             if not center
             else _core.subordinator_occupation_time_central_moment(
                 self.alpha,
                 (a, b),
+                duration,
+                time_step,
                 order,
                 particles,
-                time_step,
-                duration,
             )
         )
 
@@ -371,10 +355,10 @@ class InvSubordinator:
         Args:
             alpha (real): The alpha parameter of the inverse subordinator, value must be in (0, 1).
         """
-        alpha_transformed = ensure_float(alpha)
-        if alpha_transformed <= 0 or alpha_transformed >= 1:
+        alpha = validate_positive_float(alpha, "alpha")
+        if alpha >= 1:
             raise ValueError("alpha must be in the range (0, 1) for InvSubordinator")
-        self.alpha = alpha_transformed
+        self.alpha = alpha
 
     def simulate(
         self, duration: real, time_step: float = 0.01
@@ -441,19 +425,19 @@ class InvSubordinator:
             _core.inv_subordinator_fpt_raw_moment(
                 self.alpha,
                 (a, b),
+                max_duration,
+                time_step,
                 order,
                 particles,
-                time_step,
-                max_duration,
             )
             if not center
             else _core.inv_subordinator_fpt_central_moment(
                 self.alpha,
                 (a, b),
+                max_duration,
+                time_step,
                 order,
                 particles,
-                time_step,
-                max_duration,
             )
         )
 
@@ -484,19 +468,19 @@ class InvSubordinator:
             _core.inv_subordinator_occupation_time_raw_moment(
                 self.alpha,
                 (a, b),
+                duration,
+                time_step,
                 order,
                 particles,
-                time_step,
-                duration,
             )
             if not center
             else _core.inv_subordinator_occupation_time_central_moment(
                 self.alpha,
                 (a, b),
+                duration,
+                time_step,
                 order,
                 particles,
-                time_step,
-                duration,
             )
         )
 
@@ -519,10 +503,10 @@ class AsymmetricLevy:
             start_position (real, optional): Starting position. Defaults to 0.0.
         """
         alpha = validate_positive_float(alpha, "alpha")
-        beta = ensure_float(beta, "beta")
+        beta = ensure_float(beta)
         start_position = ensure_float(start_position)
 
-        if not (0 < alpha <= 2):
+        if not (alpha <= 2):
             raise ValueError(f"alpha must be in the range (0, 2], got {alpha}")
         if not (-1 <= beta <= 1):
             raise ValueError(f"beta must be in the range [-1, 1], got {beta}")
@@ -588,8 +572,8 @@ class AsymmetricLevy:
                 (a, b),
                 order,
                 particles,
-                time_step,
                 max_duration,
+                time_step,
             )
             if not center
             else _core.asymmetric_levy_fpt_central_moment(
@@ -599,8 +583,8 @@ class AsymmetricLevy:
                 (a, b),
                 order,
                 particles,
-                time_step,
                 max_duration,
+                time_step,
             )
         )
 
@@ -652,10 +636,10 @@ class AsymmetricLevy:
                 self.alpha,
                 self.beta,
                 (a, b),
+                duration,
                 order,
                 particles,
                 time_step,
-                duration,
             )
             if not center
             else _core.asymmetric_levy_occupation_time_central_moment(

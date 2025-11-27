@@ -1,5 +1,6 @@
 from diffusionx import _core
-from .basic import real, Vector
+
+from .basic import Vector, real
 from .utils import (
     ensure_float,
     validate_bool,
@@ -24,19 +25,15 @@ class FBM:
             start_position (real, optional): The starting position. Defaults to 0.0.
             hurst_exponent (real, optional): The Hurst exponent. Must be in (0, 1). Defaults to 0.5.
         """
-        try:
-            _start_position = ensure_float(start_position)
-            _hurst_exponent = ensure_float(hurst_exponent)
-        except TypeError as e:
-            raise TypeError(f"Input parameters must be numbers. Error: {e}") from e
-
-        if not (0 < _hurst_exponent < 1):
+        start_position = ensure_float(start_position)
+        hurst_exponent = ensure_float(hurst_exponent)
+        if not (0 < hurst_exponent < 1):
             raise ValueError(
-                f"hurst_exponent must be in the range (0, 1), got {_hurst_exponent}"
+                f"hurst_exponent must be in the range (0, 1), got {hurst_exponent}"
             )
 
-        self.start_position = _start_position
-        self.hurst_exponent = _hurst_exponent
+        self.start_position: float = start_position
+        self.hurst_exponent: float = hurst_exponent
 
     def simulate(
         self, duration: real, time_step: float = 0.01
@@ -51,18 +48,8 @@ class FBM:
         Returns:
             tuple[np.ndarray, np.ndarray]: Times and positions of the FBM.
         """
-        try:
-            duration = ensure_float(duration)
-            time_step = ensure_float(time_step)
-        except TypeError as e:
-            raise TypeError(
-                f"duration and time_step must be numbers. Error: {e}"
-            ) from e
-
-        if duration <= 0:
-            raise ValueError("duration must be positive")
-        if time_step <= 0:
-            raise ValueError("time_step must be positive")
+        duration = validate_positive_float(duration, "duration")
+        time_step = validate_positive_float(time_step, "time_step")
 
         return _core.fbm_simulate(
             self.start_position,

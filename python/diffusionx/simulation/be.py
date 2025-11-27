@@ -1,11 +1,12 @@
 from diffusionx import _core
-from .basic import real, Vector
+
+from .basic import Vector, real
 from .utils import (
+    validate_bool,
     validate_domain,
     validate_order,
     validate_particles,
     validate_positive_float,
-    validate_bool,
     validate_positive_integer,
 )
 
@@ -249,7 +250,7 @@ class BrownianExcursion:
         duration = validate_positive_float(duration, "duration (excursion duration)")
         delta = validate_positive_float(delta, "delta")
         time_step = validate_positive_float(time_step, "time_step")
-        quad_order = validate_positive_integer(quad_order)
+        quad_order = validate_positive_integer(quad_order, "quad_order")
 
         return _core.be_tamsd(
             duration,
@@ -283,7 +284,7 @@ class BrownianExcursion:
         delta = validate_positive_float(delta, "delta")
         particles = validate_particles(particles)
         time_step = validate_positive_float(time_step, "time_step")
-        quad_order = validate_positive_integer(quad_order)
+        quad_order = validate_positive_integer(quad_order, "quad_order")
 
         return _core.be_eatamsd(
             duration,

@@ -1,7 +1,7 @@
 from diffusionx import _core
-from .basic import real, Vector
+
+from .basic import Vector, real
 from .utils import (
-    ensure_float,
     validate_bool,
     validate_domain,
     validate_order,
@@ -23,38 +23,19 @@ class Poisson:
             lambda_ (real, optional): Rate parameter (lambda > 0) of the Poisson process. Defaults to 1.0.
 
         """
-        try:
-            lambda_ = ensure_float(lambda_)
-        except TypeError as e:
-            raise TypeError(f"lambda_ must be a number. Error: {e}") from e
-
-        if lambda_ <= 0:
-            raise ValueError(f"lambda_ must be positive, got {lambda_}")
+        lambda_ = validate_positive_float(lambda_, "lambda_")
         self.lambda_ = lambda_
 
-    def simulate(
-        self, duration: real, time_step: float = 0.01
-    ) -> tuple[Vector, Vector]:
+    def simulate(self, duration: real) -> tuple[Vector, Vector]:
         """
         Simulate the Poisson process based on total duration.
-        Note: `time_step` is not used by this simulation method (_core.poisson_simulate_duration
-              likely uses event-based simulation up to `duration`) but is kept for
-              consistency with the StochasticProcess interface.
-
         Args:
             duration (real): Total duration of the simulation (must be positive).
-            time_step (real, optional): Ignored. Defaults to 0.01.
 
         Returns:
             tuple[Vector, Vector]: Times and event counts of the Poisson process.
         """
-        try:
-            duration = ensure_float(duration)
-        except TypeError as e:
-            raise TypeError(f"duration must be a number. Error: {e}") from e
-
-        if duration <= 0:
-            raise ValueError(f"duration must be positive, got {duration}")
+        duration = validate_positive_float(duration, "duration")
         return _core.poisson_simulate_duration(
             self.lambda_,
             duration,
@@ -123,12 +104,9 @@ class Poisson:
     ) -> float | None:
         """
         Calculate the first passage time for the Poisson process to reach a certain count/level.
-        The 'domain' here usually refers to a target count. Assuming domain[0] is start, domain[1] is target count.
 
         Args:
-            domain (tuple[real, real]): Domain (start_count, target_count). target_count must be > start_count.
-                                         Typically start_count is 0 for FPT to N events.
-            max_duration (real, optional): Maximum physical time to wait. Defaults to 1000.
+            domain (tuple[real, real]): Domain (start_count, target_count).     max_duration (real, optional): Maximum physical time to wait. Defaults to 1000.
 
         Returns:
             float | None: The first passage time (physical time), or None if max_duration is reached.
@@ -191,18 +169,18 @@ class Poisson:
         return (
             _core.poisson_fpt_raw_moment(
                 self.lambda_,
-                (a, b),  # _core expects float tuple
+                (a, b),
+                max_duration,
                 order,
                 particles,
-                max_duration,
             )
             if not center
             else _core.poisson_fpt_central_moment(
                 self.lambda_,
                 (a, b),
+                max_duration,
                 order,
                 particles,
-                max_duration,
             )
         )
 
@@ -214,32 +192,31 @@ class Poisson:
         center: bool = False,
         particles: int = 10_000,
     ) -> float:
-        _a, _b = validate_domain(
+        a, b = validate_domain(
             domain,
-            domain_type="poisson_occupation",
             process_name="Poisson Occupation raw moment",
         )
-        _order = validate_order(order)
-        _particles = validate_particles(particles)
-        _duration = validate_positive_float(duration, "duration")
+        order = validate_order(order)
+        particles = validate_particles(particles)
+        duration = validate_positive_float(duration, "duration")
 
-        if _order == 0:
+        if order == 0:
             return 1.0
 
         return (
             _core.poisson_occupation_time_raw_moment(
                 self.lambda_,
-                (_a, _b),
-                _order,
-                _particles,
-                _duration,
+                (a, b),
+                duration,
+                order,
+                particles,
             )
             if not center
             else _core.poisson_occupation_time_central_moment(
                 self.lambda_,
-                (_a, _b),
-                _order,
-                _particles,
-                _duration,
+                (a, b),
+                duration,
+                order,
+                particles,
             )
         )
