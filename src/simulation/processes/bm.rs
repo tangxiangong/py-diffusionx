@@ -7,6 +7,7 @@ use pyo3::prelude::*;
 #[cfg(feature = "stub_gen")]
 use pyo3_stub_gen::derive::gen_stub_pyfunction;
 
+/// Simulate Brownian motion.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn bm_simulate(
@@ -21,6 +22,7 @@ pub fn bm_simulate(
     Ok(vec_to_pyarray(py, times, positions))
 }
 
+/// Get the raw moment of Brownian motion.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn bm_raw_moment(
@@ -36,6 +38,7 @@ pub fn bm_raw_moment(
     Ok(result)
 }
 
+/// Get the central moment of Brownian motion.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn bm_central_moment(
@@ -51,6 +54,7 @@ pub fn bm_central_moment(
     Ok(result)
 }
 
+/// Get the first passage time of Brownian motion.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn bm_fpt(
@@ -65,6 +69,7 @@ pub fn bm_fpt(
     Ok(result)
 }
 
+/// Get the raw moment of the first passage time of Brownian motion.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn bm_fpt_raw_moment(
@@ -82,6 +87,7 @@ pub fn bm_fpt_raw_moment(
     Ok(result)
 }
 
+/// Get the central moment of the first passage time of Brownian motion.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn bm_fpt_central_moment(
@@ -99,6 +105,7 @@ pub fn bm_fpt_central_moment(
     Ok(result)
 }
 
+/// Get the occupation time of Brownian motion.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn bm_occupation_time(
@@ -113,6 +120,7 @@ pub fn bm_occupation_time(
     Ok(result)
 }
 
+/// Get the raw moment of the occupation time of Brownian motion.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn bm_occupation_time_raw_moment(
@@ -130,6 +138,7 @@ pub fn bm_occupation_time_raw_moment(
     Ok(result)
 }
 
+/// Get the central moment of the occupation time of Brownian motion.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn bm_occupation_time_central_moment(
@@ -147,6 +156,7 @@ pub fn bm_occupation_time_central_moment(
     Ok(result)
 }
 
+/// Get the time-averaged mean square displacement of Brownian motion.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn bm_tamsd(
@@ -162,6 +172,7 @@ pub fn bm_tamsd(
     Ok(result)
 }
 
+/// Get the ensemble average of the time-averaged mean square displacement of Brownian motion.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn bm_eatamsd(

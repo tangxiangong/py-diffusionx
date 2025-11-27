@@ -7,6 +7,7 @@ use pyo3::prelude::*;
 #[cfg(feature = "stub_gen")]
 use pyo3_stub_gen::derive::gen_stub_pyfunction;
 
+/// Simulate Ornstein-Uhlenbeck process.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn ou_simulate(
@@ -22,6 +23,7 @@ pub fn ou_simulate(
     Ok(vec_to_pyarray(py, times, positions))
 }
 
+/// Get the raw moment of Ornstein-Uhlenbeck process.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn ou_raw_moment(
@@ -38,6 +40,7 @@ pub fn ou_raw_moment(
     Ok(result)
 }
 
+/// Get the central moment of Ornstein-Uhlenbeck process.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn ou_central_moment(
@@ -54,6 +57,7 @@ pub fn ou_central_moment(
     Ok(result)
 }
 
+/// Get the first passage time of Ornstein-Uhlenbeck process.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn ou_fpt(
@@ -69,6 +73,7 @@ pub fn ou_fpt(
     Ok(result)
 }
 
+/// Get the raw moment of the first passage time of Ornstein-Uhlenbeck process.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn ou_fpt_raw_moment(
@@ -87,6 +92,7 @@ pub fn ou_fpt_raw_moment(
     Ok(result)
 }
 
+/// Get the central moment of the first passage time of Ornstein-Uhlenbeck process.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn ou_fpt_central_moment(
@@ -105,6 +111,7 @@ pub fn ou_fpt_central_moment(
     Ok(result)
 }
 
+/// Get the occupation time of Ornstein-Uhlenbeck process.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn ou_occupation_time(
@@ -120,6 +127,7 @@ pub fn ou_occupation_time(
     Ok(result)
 }
 
+/// Get the raw moment of the occupation time of Ornstein-Uhlenbeck process.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn ou_occupation_time_raw_moment(
@@ -138,6 +146,7 @@ pub fn ou_occupation_time_raw_moment(
     Ok(result)
 }
 
+/// Get the central moment of the occupation time of Ornstein-Uhlenbeck process.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn ou_occupation_time_central_moment(
@@ -156,6 +165,7 @@ pub fn ou_occupation_time_central_moment(
     Ok(result)
 }
 
+/// Get the time-averaged mean squared displacement of Ornstein-Uhlenbeck process.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn ou_tamsd(
@@ -172,6 +182,7 @@ pub fn ou_tamsd(
     Ok(result)
 }
 
+/// Get the effective time-averaged mean squared displacement of Ornstein-Uhlenbeck process.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn ou_eatamsd(

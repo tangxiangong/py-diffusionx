@@ -10,6 +10,7 @@ use pyo3::prelude::*;
 #[cfg(feature = "stub_gen")]
 use pyo3_stub_gen::derive::gen_stub_pyfunction;
 
+/// Simulate Levy process.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn levy_simulate(
@@ -24,6 +25,7 @@ pub fn levy_simulate(
     Ok(vec_to_pyarray(py, times, positions))
 }
 
+/// Get the first passage time of Levy process.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn levy_fpt(
@@ -38,6 +40,7 @@ pub fn levy_fpt(
     Ok(result)
 }
 
+/// Get the raw moment of the first passage time of Levy process.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn levy_fpt_raw_moment(
@@ -55,6 +58,7 @@ pub fn levy_fpt_raw_moment(
     Ok(result)
 }
 
+/// Get the central moment of the first passage time of Levy process.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn levy_fpt_central_moment(
@@ -72,6 +76,7 @@ pub fn levy_fpt_central_moment(
     Ok(result)
 }
 
+/// Get the occupation time of Levy process.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn levy_occupation_time(
@@ -86,6 +91,7 @@ pub fn levy_occupation_time(
     Ok(result)
 }
 
+/// Get the raw moment of the occupation time of Levy process.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn levy_occupation_time_raw_moment(
@@ -103,6 +109,7 @@ pub fn levy_occupation_time_raw_moment(
     Ok(result)
 }
 
+/// Get the central moment of the occupation time of Levy process.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn levy_occupation_time_central_moment(
@@ -120,6 +127,7 @@ pub fn levy_occupation_time_central_moment(
     Ok(result)
 }
 
+/// Get the time-averaged mean squared displacement of Levy process.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn levy_tamsd(
@@ -135,6 +143,7 @@ pub fn levy_tamsd(
     Ok(result)
 }
 
+/// Get the effective time-averaged mean squared displacement of Levy process.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn levy_eatamsd(
@@ -151,6 +160,7 @@ pub fn levy_eatamsd(
     Ok(result)
 }
 
+/// Simulate AsymmetricLevy process.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn asymmetric_levy_simulate(
@@ -166,6 +176,7 @@ pub fn asymmetric_levy_simulate(
     Ok(vec_to_pyarray(py, times, positions))
 }
 
+/// Get the first passage time of AsymmetricLevy process.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn asymmetric_levy_fpt(
@@ -181,6 +192,7 @@ pub fn asymmetric_levy_fpt(
     Ok(result)
 }
 
+/// Get the raw moment of the first passage time of AsymmetricLevy process.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn asymmetric_levy_fpt_raw_moment(
@@ -199,6 +211,7 @@ pub fn asymmetric_levy_fpt_raw_moment(
     Ok(result)
 }
 
+/// Get the central moment of the first passage time of AsymmetricLevy process.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn asymmetric_levy_fpt_central_moment(
@@ -217,6 +230,7 @@ pub fn asymmetric_levy_fpt_central_moment(
     Ok(result)
 }
 
+/// Get the occupation time of AsymmetricLevy process.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn asymmetric_levy_occupation_time(
@@ -232,6 +246,7 @@ pub fn asymmetric_levy_occupation_time(
     Ok(result)
 }
 
+/// Get the raw moment of the occupation time of AsymmetricLevy process.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn asymmetric_levy_occupation_time_raw_moment(
@@ -250,6 +265,7 @@ pub fn asymmetric_levy_occupation_time_raw_moment(
     Ok(result)
 }
 
+/// Get the central moment of the occupation time of AsymmetricLevy process.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn asymmetric_levy_occupation_time_central_moment(
@@ -268,6 +284,7 @@ pub fn asymmetric_levy_occupation_time_central_moment(
     Ok(result)
 }
 
+/// Get the time-averaged mean squared displacement of AsymmetricLevy process.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn asymmetric_levy_tamsd(
@@ -284,6 +301,7 @@ pub fn asymmetric_levy_tamsd(
     Ok(result)
 }
 
+/// Get the effective time-averaged mean squared displacement of AsymmetricLevy process.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn asymmetric_levy_eatamsd(

@@ -7,6 +7,7 @@ use pyo3::prelude::*;
 #[cfg(feature = "stub_gen")]
 use pyo3_stub_gen::derive::gen_stub_pyfunction;
 
+/// Simulate Brownian excursion.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn be_simulate(py: Python<'_>, duration: f64, time_step: f64) -> XPyResult<PyArrayPair<'_>> {
@@ -15,6 +16,7 @@ pub fn be_simulate(py: Python<'_>, duration: f64, time_step: f64) -> XPyResult<P
     Ok(vec_to_pyarray(py, times, positions))
 }
 
+/// Get the raw moment of Brownian excursion.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn be_raw_moment(
@@ -28,6 +30,7 @@ pub fn be_raw_moment(
     Ok(result)
 }
 
+/// Get the central moment of Brownian excursion.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn be_central_moment(
@@ -41,6 +44,7 @@ pub fn be_central_moment(
     Ok(result)
 }
 
+/// Get the first passage time of Brownian excursion.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn be_fpt(time_step: f64, domain: (f64, f64)) -> XPyResult<Option<f64>> {
@@ -49,6 +53,7 @@ pub fn be_fpt(time_step: f64, domain: (f64, f64)) -> XPyResult<Option<f64>> {
     Ok(result)
 }
 
+/// Get the raw moment of the first passage time of Brownian excursion.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn be_fpt_raw_moment(
@@ -63,6 +68,7 @@ pub fn be_fpt_raw_moment(
     Ok(result)
 }
 
+/// Get the central moment of the first passage time of Brownian excursion.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn be_fpt_central_moment(
@@ -77,6 +83,7 @@ pub fn be_fpt_central_moment(
     Ok(result)
 }
 
+/// Get the occupation time of Brownian excursion.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn be_occupation_time(domain: (f64, f64), time_step: f64, duration: f64) -> XPyResult<f64> {
@@ -85,6 +92,7 @@ pub fn be_occupation_time(domain: (f64, f64), time_step: f64, duration: f64) -> 
     Ok(result)
 }
 
+/// Get the raw moment of the occupation time of Brownian excursion.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn be_occupation_time_raw_moment(
@@ -100,6 +108,7 @@ pub fn be_occupation_time_raw_moment(
     Ok(result)
 }
 
+/// Get the central moment of the occupation time of Brownian excursion.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn be_occupation_time_central_moment(
@@ -115,6 +124,7 @@ pub fn be_occupation_time_central_moment(
     Ok(result)
 }
 
+/// Get the time-averaged mean square displacement of Brownian excursion.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn be_tamsd(duration: f64, delta: f64, time_step: f64, quad_order: usize) -> XPyResult<f64> {
@@ -123,6 +133,7 @@ pub fn be_tamsd(duration: f64, delta: f64, time_step: f64, quad_order: usize) ->
     Ok(result)
 }
 
+/// Get the ensemble average of the time-averaged mean square displacement of Brownian excursion.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn be_eatamsd(

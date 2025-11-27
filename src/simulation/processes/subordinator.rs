@@ -10,6 +10,7 @@ use pyo3::prelude::*;
 #[cfg(feature = "stub_gen")]
 use pyo3_stub_gen::derive::gen_stub_pyfunction;
 
+/// Simulate subordinator process.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn subordinator_simulate(
@@ -23,6 +24,7 @@ pub fn subordinator_simulate(
     Ok(vec_to_pyarray(py, times, positions))
 }
 
+/// Get the first passage time of subordinator process.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn subordinator_fpt(
@@ -36,6 +38,7 @@ pub fn subordinator_fpt(
     Ok(result)
 }
 
+/// Get the raw moment of the first passage time of subordinator process.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn subordinator_fpt_raw_moment(
@@ -52,6 +55,7 @@ pub fn subordinator_fpt_raw_moment(
     Ok(result)
 }
 
+/// Get the central moment of the first passage time of subordinator process.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn subordinator_fpt_central_moment(
@@ -68,6 +72,7 @@ pub fn subordinator_fpt_central_moment(
     Ok(result)
 }
 
+/// Get the occupation time of subordinator process.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn subordinator_occupation_time(
@@ -81,6 +86,7 @@ pub fn subordinator_occupation_time(
     Ok(result)
 }
 
+/// Get the raw moment of the occupation time of subordinator process.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn subordinator_occupation_time_raw_moment(
@@ -97,6 +103,7 @@ pub fn subordinator_occupation_time_raw_moment(
     Ok(result)
 }
 
+/// Get the central moment of the occupation time of subordinator process.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn subordinator_occupation_time_central_moment(
@@ -113,6 +120,7 @@ pub fn subordinator_occupation_time_central_moment(
     Ok(result)
 }
 
+/// Simulate inverse subordinator process.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn inv_subordinator_simulate(
@@ -126,6 +134,7 @@ pub fn inv_subordinator_simulate(
     Ok(vec_to_pyarray(py, times, positions))
 }
 
+/// Get the raw moment of inverse subordinator process.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn inv_subordinator_raw_moment(
@@ -140,6 +149,7 @@ pub fn inv_subordinator_raw_moment(
     Ok(result)
 }
 
+/// Get the central moment of inverse subordinator process.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn inv_subordinator_central_moment(
@@ -154,6 +164,7 @@ pub fn inv_subordinator_central_moment(
     Ok(result)
 }
 
+/// Get the first passage time of inverse subordinator process.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn inv_subordinator_fpt(
@@ -167,6 +178,7 @@ pub fn inv_subordinator_fpt(
     Ok(result)
 }
 
+/// Get the raw moment of the first passage time of inverse subordinator process.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn inv_subordinator_fpt_raw_moment(
@@ -183,6 +195,7 @@ pub fn inv_subordinator_fpt_raw_moment(
     Ok(result)
 }
 
+/// Get the central moment of the first passage time of inverse subordinator process.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn inv_subordinator_fpt_central_moment(
@@ -199,6 +212,7 @@ pub fn inv_subordinator_fpt_central_moment(
     Ok(result)
 }
 
+/// Get the occupation time of inverse subordinator process.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn inv_subordinator_occupation_time(
@@ -212,6 +226,7 @@ pub fn inv_subordinator_occupation_time(
     Ok(result)
 }
 
+/// Get the raw moment of the occupation time of inverse subordinator process.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn inv_subordinator_occupation_time_raw_moment(
@@ -228,6 +243,7 @@ pub fn inv_subordinator_occupation_time_raw_moment(
     Ok(result)
 }
 
+/// Get the central moment of the occupation time of inverse subordinator process.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn inv_subordinator_occupation_time_central_moment(

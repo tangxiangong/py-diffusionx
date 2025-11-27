@@ -7,6 +7,7 @@ use pyo3::prelude::*;
 #[cfg(feature = "stub_gen")]
 use pyo3_stub_gen::derive::gen_stub_pyfunction;
 
+/// Simulate Brownian meander.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn meander_simulate(
@@ -19,6 +20,7 @@ pub fn meander_simulate(
     Ok(vec_to_pyarray(py, times, positions))
 }
 
+/// Get the raw moment of Brownian meander.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn meander_raw_moment(
@@ -32,6 +34,7 @@ pub fn meander_raw_moment(
     Ok(result)
 }
 
+/// Get the central moment of Brownian meander.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn meander_central_moment(
@@ -45,6 +48,7 @@ pub fn meander_central_moment(
     Ok(result)
 }
 
+/// Get the first passage time of Brownian meander.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn meander_fpt(time_step: f64, domain: (f64, f64)) -> XPyResult<Option<f64>> {
@@ -53,6 +57,7 @@ pub fn meander_fpt(time_step: f64, domain: (f64, f64)) -> XPyResult<Option<f64>>
     Ok(result)
 }
 
+/// Get the raw moment of the first passage time of Brownian meander.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn meander_fpt_raw_moment(
@@ -67,6 +72,7 @@ pub fn meander_fpt_raw_moment(
     Ok(result)
 }
 
+/// Get the central moment of the first passage time of Brownian meander.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn meander_fpt_central_moment(
@@ -81,6 +87,7 @@ pub fn meander_fpt_central_moment(
     Ok(result)
 }
 
+/// Get the occupation time of Brownian meander.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn meander_occupation_time(
@@ -93,6 +100,7 @@ pub fn meander_occupation_time(
     Ok(result)
 }
 
+/// Get the raw moment of the occupation time of Brownian meander.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn meander_occupation_time_raw_moment(
@@ -108,6 +116,7 @@ pub fn meander_occupation_time_raw_moment(
     Ok(result)
 }
 
+/// Get the central moment of the occupation time of Brownian meander.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn meander_occupation_time_central_moment(
@@ -123,6 +132,7 @@ pub fn meander_occupation_time_central_moment(
     Ok(result)
 }
 
+/// Get the time-averaged mean square displacement of Brownian meander.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn meander_tamsd(
@@ -136,6 +146,7 @@ pub fn meander_tamsd(
     Ok(result)
 }
 
+/// Get the ensemble average of the time-averaged mean square displacement of Brownian meander.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn meander_eatamsd(

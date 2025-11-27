@@ -7,6 +7,7 @@ use pyo3::prelude::*;
 #[cfg(feature = "stub_gen")]
 use pyo3_stub_gen::derive::gen_stub_pyfunction;
 
+/// Simulate CTRW.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn ctrw_simulate_duration(
@@ -21,6 +22,7 @@ pub fn ctrw_simulate_duration(
     Ok(vec_to_pyarray(py, times, positions))
 }
 
+/// Simulate CTRW.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn ctrw_simulate_step(
@@ -35,6 +37,7 @@ pub fn ctrw_simulate_step(
     Ok(vec_to_pyarray(py, times, positions))
 }
 
+/// Get the raw moment of CTRW.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn ctrw_raw_moment(
@@ -50,6 +53,7 @@ pub fn ctrw_raw_moment(
     Ok(result)
 }
 
+/// Get the central moment of CTRW.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn ctrw_central_moment(
@@ -65,6 +69,7 @@ pub fn ctrw_central_moment(
     Ok(result)
 }
 
+/// Get the first passage time of CTRW.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn ctrw_fpt(
@@ -79,6 +84,7 @@ pub fn ctrw_fpt(
     Ok(result)
 }
 
+/// Get the raw moment of the first passage time of CTRW.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn ctrw_fpt_raw_moment(
@@ -96,6 +102,7 @@ pub fn ctrw_fpt_raw_moment(
     Ok(result)
 }
 
+/// Get the central moment of the first passage time of CTRW.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn ctrw_fpt_central_moment(
@@ -113,6 +120,7 @@ pub fn ctrw_fpt_central_moment(
     Ok(result)
 }
 
+/// Get the occupation time of CTRW.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn ctrw_occupation_time(
@@ -127,6 +135,7 @@ pub fn ctrw_occupation_time(
     Ok(result)
 }
 
+/// Get the raw moment of the occupation time of CTRW.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn ctrw_occupation_time_raw_moment(
@@ -144,6 +153,7 @@ pub fn ctrw_occupation_time_raw_moment(
     Ok(result)
 }
 
+/// Get the central moment of the occupation time of CTRW.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn ctrw_occupation_time_central_moment(

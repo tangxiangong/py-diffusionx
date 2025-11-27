@@ -7,6 +7,7 @@ use pyo3::prelude::*;
 #[cfg(feature = "stub_gen")]
 use pyo3_stub_gen::derive::gen_stub_pyfunction;
 
+/// Simulate Poisson process.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn poisson_simulate_duration(
@@ -19,6 +20,7 @@ pub fn poisson_simulate_duration(
     Ok(vec_to_pyarray(py, times, positions))
 }
 
+/// Simulate Poisson process.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn poisson_simulate_step(
@@ -31,6 +33,7 @@ pub fn poisson_simulate_step(
     Ok(vec_to_pyarray(py, times, positions))
 }
 
+/// Get the raw moment of Poisson process.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn poisson_raw_moment(
@@ -44,6 +47,7 @@ pub fn poisson_raw_moment(
     Ok(result)
 }
 
+/// Get the central moment of Poisson process.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn poisson_central_moment(
@@ -57,6 +61,7 @@ pub fn poisson_central_moment(
     Ok(result)
 }
 
+/// Get the first passage time of Poisson process.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn poisson_fpt(lambda_: f64, domain: (f64, f64), max_duration: f64) -> XPyResult<Option<f64>> {
@@ -65,6 +70,7 @@ pub fn poisson_fpt(lambda_: f64, domain: (f64, f64), max_duration: f64) -> XPyRe
     Ok(result)
 }
 
+/// Get the raw moment of the first passage time of Poisson process.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn poisson_fpt_raw_moment(
@@ -80,6 +86,7 @@ pub fn poisson_fpt_raw_moment(
     Ok(result)
 }
 
+/// Get the central moment of the first passage time of Poisson process.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn poisson_fpt_central_moment(
@@ -95,6 +102,7 @@ pub fn poisson_fpt_central_moment(
     Ok(result)
 }
 
+/// Get the occupation time of Poisson process.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn poisson_occupation_time(lambda_: f64, domain: (f64, f64), duration: f64) -> XPyResult<f64> {
@@ -103,6 +111,7 @@ pub fn poisson_occupation_time(lambda_: f64, domain: (f64, f64), duration: f64) 
     Ok(result)
 }
 
+/// Get the raw moment of the occupation time of Poisson process.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn poisson_occupation_time_raw_moment(
@@ -118,6 +127,7 @@ pub fn poisson_occupation_time_raw_moment(
     Ok(result)
 }
 
+/// Get the central moment of the occupation time of Poisson process.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn poisson_occupation_time_central_moment(

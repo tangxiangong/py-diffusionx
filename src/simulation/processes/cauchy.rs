@@ -10,6 +10,7 @@ use pyo3::prelude::*;
 #[cfg(feature = "stub_gen")]
 use pyo3_stub_gen::derive::gen_stub_pyfunction;
 
+/// Simulate Cauchy process.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn cauchy_simulate(
@@ -23,6 +24,7 @@ pub fn cauchy_simulate(
     Ok(vec_to_pyarray(py, times, positions))
 }
 
+/// Get the raw moment of Cauchy process.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn cauchy_raw_moment(
@@ -37,6 +39,7 @@ pub fn cauchy_raw_moment(
     Ok(result)
 }
 
+/// Get the central moment of Cauchy process.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn cauchy_central_moment(
@@ -51,6 +54,7 @@ pub fn cauchy_central_moment(
     Ok(result)
 }
 
+/// Get the first passage time of Cauchy process.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn cauchy_fpt(
@@ -64,6 +68,7 @@ pub fn cauchy_fpt(
     Ok(result)
 }
 
+/// Get the raw moment of the first passage time of Cauchy process.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn cauchy_fpt_raw_moment(
@@ -80,6 +85,7 @@ pub fn cauchy_fpt_raw_moment(
     Ok(result)
 }
 
+/// Get the central moment of the first passage time of Cauchy process.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn cauchy_fpt_central_moment(
@@ -96,6 +102,7 @@ pub fn cauchy_fpt_central_moment(
     Ok(result)
 }
 
+/// Get the occupation time of Cauchy process.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn cauchy_occupation_time(
@@ -109,6 +116,7 @@ pub fn cauchy_occupation_time(
     Ok(result)
 }
 
+/// Get the raw moment of the occupation time of Cauchy process.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn cauchy_occupation_time_raw_moment(
@@ -125,6 +133,7 @@ pub fn cauchy_occupation_time_raw_moment(
     Ok(result)
 }
 
+/// Get the central moment of the occupation time of Cauchy process.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn cauchy_occupation_time_central_moment(
@@ -141,6 +150,7 @@ pub fn cauchy_occupation_time_central_moment(
     Ok(result)
 }
 
+/// Get the time-averaged mean square displacement of Cauchy process.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn cauchy_tamsd(
@@ -155,6 +165,7 @@ pub fn cauchy_tamsd(
     Ok(result)
 }
 
+/// Get the ensemble average of the time-averaged mean square displacement of Cauchy process.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn cauchy_eatamsd(
@@ -170,6 +181,7 @@ pub fn cauchy_eatamsd(
     Ok(result)
 }
 
+/// Simulate asymmetric Cauchy process.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn asymmetric_cauchy_simulate(
@@ -184,6 +196,7 @@ pub fn asymmetric_cauchy_simulate(
     Ok(vec_to_pyarray(py, times, positions))
 }
 
+/// Get the raw moment of asymmetric Cauchy process.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn asymmetric_cauchy_raw_moment(
@@ -199,6 +212,7 @@ pub fn asymmetric_cauchy_raw_moment(
     Ok(result)
 }
 
+/// Get the central moment of asymmetric Cauchy process.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn asymmetric_cauchy_central_moment(
@@ -214,6 +228,7 @@ pub fn asymmetric_cauchy_central_moment(
     Ok(result)
 }
 
+/// Get the first passage time of asymmetric Cauchy process.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn asymmetric_cauchy_fpt(
@@ -228,6 +243,7 @@ pub fn asymmetric_cauchy_fpt(
     Ok(result)
 }
 
+/// Get the raw moment of the first passage time of asymmetric Cauchy process.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn asymmetric_cauchy_fpt_raw_moment(
@@ -245,6 +261,7 @@ pub fn asymmetric_cauchy_fpt_raw_moment(
     Ok(result)
 }
 
+/// Get the central moment of the first passage time of asymmetric Cauchy process.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn asymmetric_cauchy_fpt_central_moment(
@@ -262,6 +279,7 @@ pub fn asymmetric_cauchy_fpt_central_moment(
     Ok(result)
 }
 
+/// Get the occupation time of asymmetric Cauchy process.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn asymmetric_cauchy_occupation_time(
@@ -276,6 +294,7 @@ pub fn asymmetric_cauchy_occupation_time(
     Ok(result)
 }
 
+/// Get the raw moment of the occupation time of asymmetric Cauchy process.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn asymmetric_cauchy_occupation_time_raw_moment(
@@ -293,6 +312,7 @@ pub fn asymmetric_cauchy_occupation_time_raw_moment(
     Ok(result)
 }
 
+/// Get the central moment of the occupation time of asymmetric Cauchy process.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn asymmetric_cauchy_occupation_time_central_moment(
@@ -310,6 +330,7 @@ pub fn asymmetric_cauchy_occupation_time_central_moment(
     Ok(result)
 }
 
+/// Get the time-averaged mean square displacement of asymmetric Cauchy process.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn asymmetric_cauchy_tamsd(
@@ -325,6 +346,7 @@ pub fn asymmetric_cauchy_tamsd(
     Ok(result)
 }
 
+/// Get the ensemble average of the time-averaged mean square displacement of asymmetric Cauchy process.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn asymmetric_cauchy_eatamsd(

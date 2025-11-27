@@ -7,6 +7,7 @@ use pyo3::prelude::*;
 #[cfg(feature = "stub_gen")]
 use pyo3_stub_gen::derive::gen_stub_pyfunction;
 
+/// Simulate Levy walk.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn levy_walk_simulate(
@@ -21,6 +22,7 @@ pub fn levy_walk_simulate(
     Ok(vec_to_pyarray(py, times, positions))
 }
 
+/// Get the raw moment of Levy walk.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn levy_walk_raw_moment(
@@ -36,6 +38,7 @@ pub fn levy_walk_raw_moment(
     Ok(result)
 }
 
+/// Get the central moment of Levy walk.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn levy_walk_central_moment(
@@ -51,6 +54,7 @@ pub fn levy_walk_central_moment(
     Ok(result)
 }
 
+/// Get the first passage time of Levy walk.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn levy_walk_fpt(

@@ -10,6 +10,7 @@ use pyo3::prelude::*;
 #[cfg(feature = "stub_gen")]
 use pyo3_stub_gen::derive::gen_stub_pyfunction;
 
+/// Simulate Langevin process.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn langevin_simulate(
@@ -33,6 +34,7 @@ pub fn langevin_simulate(
     Ok(vec_to_pyarray(py, times, positions))
 }
 
+/// Get the raw moment of Langevin process.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn langevin_raw_moment(
@@ -56,6 +58,7 @@ pub fn langevin_raw_moment(
     Ok(result)
 }
 
+/// Get the central moment of Langevin process.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn langevin_central_moment(
@@ -79,6 +82,7 @@ pub fn langevin_central_moment(
     Ok(result)
 }
 
+/// Get the first passage time of Langevin process.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn langevin_fpt(
@@ -101,6 +105,7 @@ pub fn langevin_fpt(
     Ok(result)
 }
 
+/// Get the raw moment of the first passage time of Langevin process.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn langevin_fpt_raw_moment(
@@ -125,6 +130,7 @@ pub fn langevin_fpt_raw_moment(
     Ok(result)
 }
 
+/// Get the central moment of the first passage time of Langevin process.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn langevin_fpt_central_moment(
@@ -149,6 +155,7 @@ pub fn langevin_fpt_central_moment(
     Ok(result)
 }
 
+/// Get the occupation time of Langevin process.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn langevin_occupation_time(
@@ -170,6 +177,7 @@ pub fn langevin_occupation_time(
     Ok(result)
 }
 
+/// Get the raw moment of the occupation time of Langevin process.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn langevin_occupation_time_raw_moment(
@@ -194,6 +202,7 @@ pub fn langevin_occupation_time_raw_moment(
     Ok(result)
 }
 
+/// Get the central moment of the occupation time of Langevin process.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn langevin_occupation_time_central_moment(
@@ -218,6 +227,7 @@ pub fn langevin_occupation_time_central_moment(
     Ok(result)
 }
 
+/// Get the time-averaged mean squared displacement of Langevin process.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn langevin_tamsd(
@@ -240,6 +250,7 @@ pub fn langevin_tamsd(
     Ok(result)
 }
 
+/// Get the effective time-averaged mean squared displacement of Langevin process.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn langevin_eatamsd(
@@ -287,6 +298,7 @@ pub fn generalized_langevin_simulate(
     Ok(vec_to_pyarray(py, times, positions))
 }
 
+/// Get the raw moment of GeneralizedLangevin process.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn generalized_langevin_raw_moment(
@@ -311,6 +323,7 @@ pub fn generalized_langevin_raw_moment(
     Ok(result)
 }
 
+/// Get the central moment of GeneralizedLangevin process.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn generalized_langevin_central_moment(
@@ -335,6 +348,7 @@ pub fn generalized_langevin_central_moment(
     Ok(result)
 }
 
+/// Get the first passage time of GeneralizedLangevin process.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn generalized_langevin_fpt(
@@ -358,6 +372,7 @@ pub fn generalized_langevin_fpt(
     Ok(result)
 }
 
+/// Get the raw moment of the first passage time of GeneralizedLangevin process.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn generalized_langevin_fpt_raw_moment(
@@ -383,6 +398,7 @@ pub fn generalized_langevin_fpt_raw_moment(
     Ok(result)
 }
 
+/// Get the central moment of the first passage time of GeneralizedLangevin process.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn generalized_langevin_fpt_central_moment(
@@ -408,6 +424,7 @@ pub fn generalized_langevin_fpt_central_moment(
     Ok(result)
 }
 
+/// Get the occupation time of GeneralizedLangevin process.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn generalized_langevin_occupation_time(
@@ -430,6 +447,7 @@ pub fn generalized_langevin_occupation_time(
     Ok(result)
 }
 
+/// Get the raw moment of the occupation time of GeneralizedLangevin process.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn generalized_langevin_occupation_time_raw_moment(
@@ -455,6 +473,7 @@ pub fn generalized_langevin_occupation_time_raw_moment(
     Ok(result)
 }
 
+/// Get the central moment of the occupation time of GeneralizedLangevin process.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn generalized_langevin_occupation_time_central_moment(
@@ -480,6 +499,7 @@ pub fn generalized_langevin_occupation_time_central_moment(
     Ok(result)
 }
 
+/// Get the time-averaged mean squared displacement of GeneralizedLangevin process.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn generalized_langevin_tamsd(
@@ -503,6 +523,7 @@ pub fn generalized_langevin_tamsd(
     Ok(result)
 }
 
+/// Get the effective time-averaged mean squared displacement of GeneralizedLangevin process.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn generalized_langevin_eatamsd(
@@ -527,6 +548,7 @@ pub fn generalized_langevin_eatamsd(
     Ok(result)
 }
 
+/// Simulate SubordinatedLangevin process.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn subordinated_langevin_simulate(
@@ -551,6 +573,7 @@ pub fn subordinated_langevin_simulate(
     Ok(vec_to_pyarray(py, times, positions))
 }
 
+/// Get the raw moment of SubordinatedLangevin process.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn subordinated_langevin_raw_moment(
@@ -575,6 +598,7 @@ pub fn subordinated_langevin_raw_moment(
     Ok(result)
 }
 
+/// Get the central moment of SubordinatedLangevin process.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn subordinated_langevin_central_moment(
@@ -599,6 +623,7 @@ pub fn subordinated_langevin_central_moment(
     Ok(result)
 }
 
+/// Get the first passage time of SubordinatedLangevin process.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn subordinated_langevin_fpt(
@@ -622,6 +647,7 @@ pub fn subordinated_langevin_fpt(
     Ok(result)
 }
 
+/// Get the raw moment of the first passage time of SubordinatedLangevin process.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn subordinated_langevin_fpt_raw_moment(
@@ -647,6 +673,7 @@ pub fn subordinated_langevin_fpt_raw_moment(
     Ok(result)
 }
 
+/// Get the central moment of the first passage time of SubordinatedLangevin process.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn subordinated_langevin_fpt_central_moment(
@@ -672,6 +699,7 @@ pub fn subordinated_langevin_fpt_central_moment(
     Ok(result)
 }
 
+/// Get the occupation time of SubordinatedLangevin process.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn subordinated_langevin_occupation_time(
@@ -694,6 +722,7 @@ pub fn subordinated_langevin_occupation_time(
     Ok(result)
 }
 
+/// Get the raw moment of the occupation time of SubordinatedLangevin process.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn subordinated_langevin_occupation_time_raw_moment(
@@ -719,7 +748,8 @@ pub fn subordinated_langevin_occupation_time_raw_moment(
     Ok(result)
 }
 
-#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
+/// Get the central moment of the occupation time of SubordinatedLangevin process.
+    #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn subordinated_langevin_occupation_time_central_moment(
     drift_func: Py<PyAny>,
@@ -744,6 +774,7 @@ pub fn subordinated_langevin_occupation_time_central_moment(
     Ok(result)
 }
 
+/// Get the time-averaged mean squared displacement of SubordinatedLangevin process.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn subordinated_langevin_tamsd(
@@ -767,6 +798,7 @@ pub fn subordinated_langevin_tamsd(
     Ok(result)
 }
 
+/// Get the effective time-averaged mean squared displacement of SubordinatedLangevin process.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn subordinated_langevin_eatamsd(

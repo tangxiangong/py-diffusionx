@@ -7,6 +7,7 @@ use pyo3::prelude::*;
 #[cfg(feature = "stub_gen")]
 use pyo3_stub_gen::derive::gen_stub_pyfunction;
 
+/// Simulate Geometric Brownian Motion.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn gb_simulate(
@@ -22,6 +23,7 @@ pub fn gb_simulate(
     Ok(vec_to_pyarray(py, times, positions))
 }
 
+/// Get the raw moment of Geometric Brownian Motion.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn gb_raw_moment(
@@ -38,6 +40,7 @@ pub fn gb_raw_moment(
     Ok(result)
 }
 
+/// Get the central moment of Geometric Brownian Motion.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn gb_central_moment(
@@ -54,6 +57,7 @@ pub fn gb_central_moment(
     Ok(result)
 }
 
+/// Get the first passage time of Geometric Brownian Motion.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn gb_fpt(
@@ -69,6 +73,7 @@ pub fn gb_fpt(
     Ok(result)
 }
 
+/// Get the raw moment of the first passage time of Geometric Brownian Motion.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn gb_fpt_raw_moment(
@@ -87,6 +92,7 @@ pub fn gb_fpt_raw_moment(
     Ok(result)
 }
 
+/// Get the central moment of the first passage time of Geometric Brownian Motion.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn gb_fpt_central_moment(
@@ -105,6 +111,7 @@ pub fn gb_fpt_central_moment(
     Ok(result)
 }
 
+/// Get the occupation time of Geometric Brownian Motion.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn gb_occupation_time(
@@ -120,6 +127,7 @@ pub fn gb_occupation_time(
     Ok(result)
 }
 
+/// Get the raw moment of the occupation time of Geometric Brownian Motion.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn gb_occupation_time_raw_moment(
@@ -138,6 +146,7 @@ pub fn gb_occupation_time_raw_moment(
     Ok(result)
 }
 
+/// Get the central moment of the occupation time of Geometric Brownian Motion.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn gb_occupation_time_central_moment(
@@ -156,6 +165,7 @@ pub fn gb_occupation_time_central_moment(
     Ok(result)
 }
 
+/// Get the time-averaged mean squared displacement of Geometric Brownian Motion.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn gb_tamsd(
@@ -172,6 +182,7 @@ pub fn gb_tamsd(
     Ok(result)
 }
 
+/// Get the effective time-averaged mean squared displacement of Geometric Brownian Motion.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn gb_eatamsd(
