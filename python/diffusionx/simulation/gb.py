@@ -1,19 +1,17 @@
 from diffusionx import _core
-from typing import Union, Optional
-from .basic import ContinuousProcess
+from .basic import real, Vector
 from .utils import (
     ensure_float,
+    validate_bool,
     validate_domain,
     validate_order,
     validate_particles,
-    validate_positive_float_param,
+    validate_positive_float,
+    validate_positive_integer,
 )
-import numpy as np
-
-real = Union[float, int]
 
 
-class GeometricBM(ContinuousProcess):
+class GeometricBM:
     def __init__(
         self,
         start_value: real = 1.0,  # Typically > 0 for GBM
@@ -28,41 +26,37 @@ class GeometricBM(ContinuousProcess):
             start_value (real, optional): Initial value of the process (S0 > 0). Defaults to 1.0.
             mu (real, optional): Drift coefficient. Defaults to 0.0.
             sigma (real, optional): Volatility coefficient (sigma > 0). Defaults to 0.1.
-
-        Raises:
-            TypeError: If start_value, mu, or sigma are not numbers.
-            ValueError: If start_value or sigma are not positive.
         """
         try:
-            _start_value = ensure_float(start_value)
-            _mu = ensure_float(mu)
-            _sigma = ensure_float(sigma)
+            start_value = ensure_float(start_value)
+            mu = ensure_float(mu)
+            sigma = ensure_float(sigma)
         except TypeError as e:
             raise TypeError(f"Input parameters must be numbers. Error: {e}") from e
 
-        if _start_value <= 0:
+        if start_value <= 0:
             raise ValueError(
                 "start_value must be positive for Geometric Brownian Motion"
             )
-        if _sigma <= 0:
+        if sigma <= 0:
             raise ValueError("sigma (volatility) must be positive")
 
-        self.start_value = _start_value
-        self.mu = _mu
-        self.sigma = _sigma
+        self.start_value = start_value
+        self.mu = mu
+        self.sigma = sigma
 
     def simulate(
-        self, duration: real, step_size: float = 0.01
-    ) -> tuple[np.ndarray, np.ndarray]:
-        _duration = validate_positive_float_param(duration, "duration")
-        _step_size = validate_positive_float_param(step_size, "step_size")
+        self, duration: real, time_step: float = 0.01
+    ) -> tuple[Vector, Vector]:
+        duration = validate_positive_float(duration, "duration")
+        time_step = validate_positive_float(time_step, "time_step")
 
         return _core.gb_simulate(
             self.start_value,
             self.mu,
             self.sigma,
-            _duration,
-            _step_size,
+            duration,
+            time_step,
         )
 
     def moment(
@@ -71,17 +65,16 @@ class GeometricBM(ContinuousProcess):
         order: int,
         central: bool = False,
         particles: int = 10_000,
-        step_size: float = 0.01,
+        time_step: float = 0.01,
     ) -> float:
-        _order = validate_order(order)
-        _particles = validate_particles(particles)
-        _duration = validate_positive_float_param(duration, "duration")
-        _step_size = validate_positive_float_param(step_size, "step_size")
+        order = validate_order(order)
+        particles = validate_particles(particles)
+        duration = validate_positive_float(duration, "duration")
+        time_step = validate_positive_float(time_step, "time_step")
 
-        if not isinstance(central, bool):
-            raise TypeError("central must be a boolean")
+        validate_bool(central, "central")
 
-        if _order == 0:
+        if order == 0:
             return 1.0
 
         result = (
@@ -89,20 +82,20 @@ class GeometricBM(ContinuousProcess):
                 self.start_value,
                 self.mu,
                 self.sigma,
-                _duration,
-                _step_size,
-                _order,
-                _particles,
+                duration,
+                time_step,
+                order,
+                particles,
             )
             if not central
             else _core.gb_central_moment(
                 self.start_value,
                 self.mu,
                 self.sigma,
-                _duration,
-                _step_size,
-                _order,
-                _particles,
+                duration,
+                time_step,
+                order,
+                particles,
             )
         )
 
@@ -111,25 +104,25 @@ class GeometricBM(ContinuousProcess):
     def fpt(
         self,
         domain: tuple[real, real],
-        step_size: float = 0.01,
+        time_step: float = 0.01,
         max_duration: real = 1000,
-    ) -> Optional[float]:
-        _a, _b = validate_domain(domain, process_name="Gb FPT")
-        _step_size = validate_positive_float_param(step_size, "step_size")
-        _max_duration = validate_positive_float_param(max_duration, "max_duration")
+    ) -> float | None:
+        a, b = validate_domain(domain, process_name="Gb FPT")
+        time_step = validate_positive_float(time_step, "time_step")
+        max_duration = validate_positive_float(max_duration, "max_duration")
         # Ensure domain values are positive for GBM context if necessary, though validate_domain is generic.
-        if not (_a > 0 and _b > 0):
+        if not (a > 0 and b > 0):
             print(
-                f"Warning: FPT domain [{_a}, {_b}] for GBM might be unusual if not positive."
+                f"Warning: FPT domain [{a}, {b}] for GBM might be unusual if not positive."
             )
 
         return _core.gb_fpt(
             self.start_value,
             self.mu,
             self.sigma,
-            _step_size,
-            (_a, _b),
-            _max_duration,
+            time_step,
+            (a, b),
+            max_duration,
         )
 
     def fpt_moment(
@@ -138,43 +131,41 @@ class GeometricBM(ContinuousProcess):
         order: int,
         central: bool = False,
         particles: int = 10_000,
-        step_size: float = 0.01,
+        time_step: float = 0.01,
         max_duration: real = 1000,
-    ) -> Optional[float]:
-        _a, _b = validate_domain(domain, process_name="Gb FPT raw moment")
-        _order = validate_order(order)
-        _particles = validate_particles(particles)
-        _step_size = validate_positive_float_param(step_size, "step_size")
-        _max_duration = validate_positive_float_param(max_duration, "max_duration")
-        if not (_a > 0 and _b > 0):
+    ) -> float | None:
+        validate_bool(central, "central")
+        a, b = validate_domain(domain, process_name="Gb FPT raw moment")
+        order = validate_order(order)
+        particles = validate_particles(particles)
+        time_step = validate_positive_float(time_step, "time_step")
+        max_duration = validate_positive_float(max_duration, "max_duration")
+        if not (a > 0 and b > 0):
             print(
-                f"Warning: FPT domain [{_a}, {_b}] for GBM might be unusual if not positive."
+                f"Warning: FPT domain [{a}, {b}] for GBM might be unusual if not positive."
             )
-
-        if not isinstance(central, bool):
-            raise TypeError("central must be a boolean")
 
         result = (
             _core.gb_fpt_raw_moment(
                 self.start_value,
                 self.mu,
                 self.sigma,
-                (_a, _b),
-                _order,
-                _particles,
-                _step_size,
-                _max_duration,
+                (a, b),
+                order,
+                particles,
+                time_step,
+                max_duration,
             )
             if not central
             else _core.gb_fpt_central_moment(
                 self.start_value,
                 self.mu,
                 self.sigma,
-                (_a, _b),
-                _order,
-                _particles,
-                _step_size,
-                _max_duration,
+                (a, b),
+                order,
+                particles,
+                time_step,
+                max_duration,
             )
         )
 
@@ -184,23 +175,23 @@ class GeometricBM(ContinuousProcess):
         self,
         domain: tuple[real, real],
         duration: real,
-        step_size: float = 0.01,
+        time_step: float = 0.01,
     ) -> float:
-        _a, _b = validate_domain(domain, process_name="Gb Occupation Time")
-        _duration = validate_positive_float_param(duration, "duration")
-        _step_size = validate_positive_float_param(step_size, "step_size")
-        if not (_a > 0 and _b > 0):
+        a, b = validate_domain(domain, process_name="Gb Occupation Time")
+        duration = validate_positive_float(duration, "duration")
+        time_step = validate_positive_float(time_step, "time_step")
+        if not (a > 0 and b > 0):
             print(
-                f"Warning: Occupation domain [{_a}, {_b}] for GBM might be unusual if not positive."
+                f"Warning: Occupation domain [{a}, {b}] for GBM might be unusual if not positive."
             )
 
         return _core.gb_occupation_time(
             self.start_value,
             self.mu,
             self.sigma,
-            _step_size,
-            (_a, _b),
-            _duration,
+            time_step,
+            (a, b),
+            duration,
         )
 
     def occupation_time_moment(
@@ -210,19 +201,20 @@ class GeometricBM(ContinuousProcess):
         order: int,
         central: bool = False,
         particles: int = 10_000,
-        step_size: float = 0.01,
+        time_step: float = 0.01,
     ) -> float:
-        _a, _b = validate_domain(domain, process_name="Gb Occupation raw moment")
-        _order = validate_order(order)
-        _particles = validate_particles(particles)
-        _duration = validate_positive_float_param(duration, "duration")
-        _step_size = validate_positive_float_param(step_size, "step_size")
-        if not (_a > 0 and _b > 0):
+        validate_bool(central, "central")
+        a, b = validate_domain(domain, process_name="Gb Occupation raw moment")
+        order = validate_order(order)
+        particles = validate_particles(particles)
+        duration = validate_positive_float(duration, "duration")
+        time_step = validate_positive_float(time_step, "time_step")
+        if not (a > 0 and b > 0):
             print(
-                f"Warning: Occupation domain [{_a}, {_b}] for GBM might be unusual if not positive."
+                f"Warning: Occupation domain [{a}, {b}] for GBM might be unusual if not positive."
             )
 
-        if _order == 0:
+        if order == 0:
             return 1.0
 
         result = (
@@ -230,22 +222,22 @@ class GeometricBM(ContinuousProcess):
                 self.start_value,
                 self.mu,
                 self.sigma,
-                (_a, _b),
-                _order,
-                _particles,
-                _step_size,
-                _duration,
+                (a, b),
+                order,
+                particles,
+                time_step,
+                duration,
             )
             if not central
             else _core.gb_occupation_time_central_moment(
                 self.start_value,
                 self.mu,
                 self.sigma,
-                (_a, _b),
-                _order,
-                _particles,
-                _step_size,
-                _duration,
+                (a, b),
+                order,
+                particles,
+                time_step,
+                duration,
             )
         )
 
@@ -255,22 +247,21 @@ class GeometricBM(ContinuousProcess):
         self,
         duration: real,
         delta: real,
-        step_size: float = 0.01,
+        time_step: float = 0.01,
         quad_order: int = 10,
     ) -> float:
-        _duration = validate_positive_float_param(duration, "duration")
-        _delta = validate_positive_float_param(delta, "delta")
-        _step_size = validate_positive_float_param(step_size, "step_size")
-        if not isinstance(quad_order, int) or quad_order <= 0:
-            raise ValueError("quad_order must be a positive integer.")
+        duration = validate_positive_float(duration, "duration")
+        delta = validate_positive_float(delta, "delta")
+        time_step = validate_positive_float(time_step, "time_step")
+        quad_order = validate_positive_integer(quad_order, "quad_order")
 
         return _core.gb_tamsd(
             self.start_value,
             self.mu,
             self.sigma,
-            _duration,
-            _delta,
-            _step_size,
+            duration,
+            delta,
+            time_step,
             quad_order,
         )
 
@@ -279,23 +270,22 @@ class GeometricBM(ContinuousProcess):
         duration: real,
         delta: real,
         particles: int = 10_000,
-        step_size: float = 0.01,
+        time_step: float = 0.01,
         quad_order: int = 32,
     ) -> float:
-        _duration = validate_positive_float_param(duration, "duration")
-        _delta = validate_positive_float_param(delta, "delta")
-        _particles = validate_particles(particles)
-        _step_size = validate_positive_float_param(step_size, "step_size")
-        if not isinstance(quad_order, int) or quad_order <= 0:
-            raise ValueError("quad_order must be a positive integer.")
+        duration = validate_positive_float(duration, "duration")
+        delta = validate_positive_float(delta, "delta")
+        particles = validate_particles(particles)
+        time_step = validate_positive_float(time_step, "time_step")
+        quad_order = validate_positive_integer(quad_order, "quad_order")
 
         return _core.gb_eatamsd(
             self.start_value,
             self.mu,
             self.sigma,
-            _duration,
-            _delta,
-            _particles,
-            _step_size,
+            duration,
+            delta,
+            particles,
+            time_step,
             quad_order,
         )

@@ -9,9 +9,9 @@ use pyo3_stub_gen::derive::gen_stub_pyfunction;
 
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
-pub fn be_simulate(py: Python<'_>, duration: f64, step_size: f64) -> XPyResult<PyArrayPair<'_>> {
+pub fn be_simulate(py: Python<'_>, duration: f64, time_step: f64) -> XPyResult<PyArrayPair<'_>> {
     let be = BrownianExcursion;
-    let (times, positions) = be.simulate(duration, step_size)?;
+    let (times, positions) = be.simulate(duration, time_step)?;
     Ok(vec_to_pyarray(py, times, positions))
 }
 
@@ -19,12 +19,12 @@ pub fn be_simulate(py: Python<'_>, duration: f64, step_size: f64) -> XPyResult<P
 #[pyfunction]
 pub fn be_raw_moment(
     duration: f64,
-    step_size: f64,
+    time_step: f64,
     order: i32,
     particles: usize,
 ) -> XPyResult<f64> {
     let be = BrownianExcursion;
-    let result = be.raw_moment(duration, order, particles, step_size)?;
+    let result = be.raw_moment(duration, order, particles, time_step)?;
     Ok(result)
 }
 
@@ -32,20 +32,20 @@ pub fn be_raw_moment(
 #[pyfunction]
 pub fn be_central_moment(
     duration: f64,
-    step_size: f64,
+    time_step: f64,
     order: i32,
     particles: usize,
 ) -> XPyResult<f64> {
     let be = BrownianExcursion;
-    let result = be.central_moment(duration, order, particles, step_size)?;
+    let result = be.central_moment(duration, order, particles, time_step)?;
     Ok(result)
 }
 
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
-pub fn be_fpt(step_size: f64, domain: (f64, f64)) -> XPyResult<Option<f64>> {
+pub fn be_fpt(time_step: f64, domain: (f64, f64)) -> XPyResult<Option<f64>> {
     let be = BrownianExcursion;
-    let result = be.fpt(domain, step_size)?;
+    let result = be.fpt(domain, time_step)?;
     Ok(result)
 }
 
@@ -55,12 +55,11 @@ pub fn be_fpt_raw_moment(
     domain: (f64, f64),
     order: i32,
     particles: usize,
-    step_size: f64,
-    max_duration: f64,
+    time_step: f64,
 ) -> XPyResult<Option<f64>> {
     let be = BrownianExcursion;
     let fpt = FirstPassageTime::new(&be, domain)?;
-    let result = fpt.raw_moment(order, particles, max_duration, step_size)?;
+    let result = fpt.raw_moment(order, particles, 1.0, time_step)?;
     Ok(result)
 }
 
@@ -70,20 +69,19 @@ pub fn be_fpt_central_moment(
     domain: (f64, f64),
     order: i32,
     particles: usize,
-    step_size: f64,
-    max_duration: f64,
+    time_step: f64,
 ) -> XPyResult<Option<f64>> {
     let be = BrownianExcursion;
     let fpt = FirstPassageTime::new(&be, domain)?;
-    let result = fpt.central_moment(order, particles, max_duration, step_size)?;
+    let result = fpt.central_moment(order, particles, 1.0, time_step)?;
     Ok(result)
 }
 
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
-pub fn be_occupation_time(domain: (f64, f64), step_size: f64, duration: f64) -> XPyResult<f64> {
+pub fn be_occupation_time(domain: (f64, f64), time_step: f64, duration: f64) -> XPyResult<f64> {
     let be = BrownianExcursion;
-    let result = be.occupation_time(domain, duration, step_size)?;
+    let result = be.occupation_time(domain, duration, time_step)?;
     Ok(result)
 }
 
@@ -93,12 +91,12 @@ pub fn be_occupation_time_raw_moment(
     domain: (f64, f64),
     order: i32,
     particles: usize,
-    step_size: f64,
+    time_step: f64,
     duration: f64,
 ) -> XPyResult<f64> {
     let be = BrownianExcursion;
     let oc = OccupationTime::new(&be, domain, duration)?;
-    let result = oc.raw_moment(order, particles, step_size)?;
+    let result = oc.raw_moment(order, particles, time_step)?;
     Ok(result)
 }
 
@@ -108,20 +106,20 @@ pub fn be_occupation_time_central_moment(
     domain: (f64, f64),
     order: i32,
     particles: usize,
-    step_size: f64,
+    time_step: f64,
     duration: f64,
 ) -> XPyResult<f64> {
     let be = BrownianExcursion;
     let oc = OccupationTime::new(&be, domain, duration)?;
-    let result = oc.central_moment(order, particles, step_size)?;
+    let result = oc.central_moment(order, particles, time_step)?;
     Ok(result)
 }
 
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
-pub fn be_tamsd(duration: f64, delta: f64, step_size: f64, quad_order: usize) -> XPyResult<f64> {
+pub fn be_tamsd(duration: f64, delta: f64, time_step: f64, quad_order: usize) -> XPyResult<f64> {
     let be = BrownianExcursion;
-    let result = be.tamsd(duration, delta, step_size, quad_order)?;
+    let result = be.tamsd(duration, delta, time_step, quad_order)?;
     Ok(result)
 }
 
@@ -131,10 +129,10 @@ pub fn be_eatamsd(
     duration: f64,
     delta: f64,
     particles: usize,
-    step_size: f64,
+    time_step: f64,
     quad_order: usize,
 ) -> XPyResult<f64> {
     let be = BrownianExcursion;
-    let result = be.eatamsd(duration, delta, particles, step_size, quad_order)?;
+    let result = be.eatamsd(duration, delta, particles, time_step, quad_order)?;
     Ok(result)
 }

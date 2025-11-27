@@ -1,63 +1,108 @@
 from abc import ABC, abstractmethod
-from typing import Optional, Union
+from typing import Union, Annotated, Literal
 import numpy as np
+import numpy.typing as npt
+from python.diffusionx.simulation.utils import (
+    validate_particles,
+    validate_positive_float,
+    validate_positive_integer,
+    validate_domain,
+    validate_bool,
+)
+from diffusionx import _core
 
 
 real = Union[int, float]
+Vector = Annotated[npt.NDArray[np.float64], Literal["N"]]
 
 
-class StochasticProcess(ABC):
-    pass
+class ContinuousProcess(ABC):
+    @abstractmethod
+    def start(self) -> real:
+        """Return the starting value of the process."""
+        pass
 
-
-class ContinuousProcess(StochasticProcess):
     @abstractmethod
     def simulate(
-        self, duration: real, step_size: float = 0.01
-    ) -> tuple[np.ndarray, np.ndarray]:
+        self, duration: real, time_step: float = 0.01
+    ) -> tuple[Vector, Vector]:
         """Simulate the continuous stochastic process.
 
         Args:
             duration (real): The total duration of the simulation.
-            step_size (float): The time step for the simulation.
+            time_step (float): The time step for the simulation.
 
         Returns:
-            tuple[np.ndarray, np.ndarray]: A tuple containing arrays for time points and process values.
+            tuple[Vector, Vector]: A tuple containing arrays for time points and process values.
         """
         pass
 
-    @abstractmethod
     def moment(
         self,
         duration: real,
         order: int,
-        step_size: float = 0.01,
+        time_step: float = 0.01,
         central: bool = True,
         particles: int = 10_000,
     ) -> float:
-        pass
+        validate_bool(central, "central")
+        duration = validate_positive_float(duration, "duration")
+        time_step = validate_positive_float(time_step, "time_step")
+        particles = validate_particles(particles)
+        return _core.moment(self, central, order, duration, time_step, particles)
 
-
-class PointProcess(StochasticProcess):
-    @abstractmethod
-    def simulate(
-        self,
-        duration: Optional[real] = None,
-        num_step: Optional[int] = None,
-    ) -> tuple[np.ndarray, np.ndarray]:
-        """Simulate the point process.
-
-        Args:
-            duration (real): The total duration of the simulation.
-            step_size (float): The time step for the simulation.
-
-        Returns:
-            tuple[np.ndarray, np.ndarray]: A tuple containing arrays for time points and process values.
-        """
-        pass
-
-    @abstractmethod
-    def moment(
-        self, duration: real, order: int, central: bool = True, particles: int = 10_000
+    def mean(
+        self, duration: real, time_step: float = 0.01, particles: int = 10_000
     ) -> float:
-        pass
+        duration = validate_positive_float(duration, "duration")
+        time_step = validate_positive_float(time_step, "time_step")
+        particles = validate_particles(particles)
+        return _core.mean(self, duration, time_step, particles)
+
+    def msd(
+        self, duration: real, time_step: float = 0.01, particles: int = 10_000
+    ) -> float:
+        duration = validate_positive_float(duration, "duration")
+        time_step = validate_positive_float(time_step, "time_step")
+        particles = validate_particles(particles)
+        return _core.msd(self, duration, time_step, particles)
+
+    def eatamsd(
+        self, duration: real, delta: float, time_step: float = 0.01, quad_order: int = 5
+    ) -> float:
+        duration = validate_positive_float(duration, "duration")
+        delta = validate_positive_float(delta, "delta")
+        time_step = validate_positive_float(time_step, "time_step")
+        quad_order = validate_positive_integer(quad_order, "quad_order")
+        return _core.eatamsd(self, duration, delta, time_step, quad_order)
+
+    def tamsd(
+        self, duration: real, delta: float, time_step: float = 0.01, quad_order: int = 5
+    ) -> float:
+        duration = validate_positive_float(duration, "duration")
+        delta = validate_positive_float(delta, "delta")
+        time_step = validate_positive_float(time_step, "time_step")
+        quad_order = validate_positive_integer(quad_order, "quad_order")
+        return _core.tamsd(self, duration, delta, time_step, quad_order)
+
+    def fpt(
+        self,
+        domain: tuple[real, real],
+        time_step: float = 0.01,
+        max_duration: real = 100,
+    ) -> float:
+        domain = validate_domain(domain, "poisson_fpt", self.__class__.__name__)
+        time_step = validate_positive_float(time_step, "time_step")
+        max_duration = validate_positive_float(max_duration, "max_duration")
+        return _core.fpt(self, domain, max_duration, time_step)
+
+    def occupation_time(
+        self,
+        domain: tuple[real, real],
+        duration: real,
+        time_step: float = 0.01,
+    ) -> float:
+        domain = validate_domain(domain, "poisson_fpt", self.__class__.__name__)
+        time_step = validate_positive_float(time_step, "time_step")
+        duration = validate_positive_float(duration, "duration")
+        return _core.occupation_time(self, domain, duration, time_step)

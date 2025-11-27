@@ -13,7 +13,7 @@ from diffusionx.simulation import Bm
 # 布朗运动模拟
 bm = Bm() 
 traj = bm(10)
-times, positions = traj.simulate(step_size=0.01)  # 模拟布朗运动轨迹，返回 ndarray 数组
+times, positions = traj.simulate(time_step=0.01)  # 模拟布朗运动轨迹，返回 ndarray 数组
 
 # 蒙特卡罗模拟布朗运动的统计量
 raw_moment = traj.raw_moment(order=1, particles=1000)  # 一阶原点矩

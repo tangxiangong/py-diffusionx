@@ -14,10 +14,10 @@ pub fn gamma_simulate(
     shape: f64,
     rate: f64,
     duration: f64,
-    step_size: f64,
+    time_step: f64,
 ) -> XPyResult<PyArrayPair<'_>> {
     let gamma = Gamma::new(shape, rate)?;
-    let (times, positions) = gamma.simulate(duration, step_size)?;
+    let (times, positions) = gamma.simulate(duration, time_step)?;
     Ok(vec_to_pyarray(py, times, positions))
 }
 
@@ -27,12 +27,12 @@ pub fn gamma_raw_moment(
     shape: f64,
     rate: f64,
     duration: f64,
-    step_size: f64,
+    time_step: f64,
     order: i32,
     particles: usize,
 ) -> XPyResult<f64> {
     let gamma = Gamma::new(shape, rate)?;
-    let result = gamma.raw_moment(duration, order, particles, step_size)?;
+    let result = gamma.raw_moment(duration, order, particles, time_step)?;
     Ok(result)
 }
 
@@ -42,12 +42,12 @@ pub fn gamma_central_moment(
     shape: f64,
     rate: f64,
     duration: f64,
-    step_size: f64,
+    time_step: f64,
     order: i32,
     particles: usize,
 ) -> XPyResult<f64> {
     let gamma = Gamma::new(shape, rate)?;
-    let result = gamma.central_moment(duration, order, particles, step_size)?;
+    let result = gamma.central_moment(duration, order, particles, time_step)?;
     Ok(result)
 }
 
@@ -56,12 +56,12 @@ pub fn gamma_central_moment(
 pub fn gamma_fpt(
     shape: f64,
     rate: f64,
-    step_size: f64,
+    time_step: f64,
     domain: (f64, f64),
     max_duration: f64,
 ) -> XPyResult<Option<f64>> {
     let gamma = Gamma::new(shape, rate)?;
-    let result = gamma.fpt(domain, max_duration, step_size)?;
+    let result = gamma.fpt(domain, max_duration, time_step)?;
     Ok(result)
 }
 
@@ -73,12 +73,12 @@ pub fn gamma_fpt_raw_moment(
     domain: (f64, f64),
     order: i32,
     particles: usize,
-    step_size: f64,
+    time_step: f64,
     max_duration: f64,
 ) -> XPyResult<Option<f64>> {
     let gamma = Gamma::new(shape, rate)?;
     let fpt = FirstPassageTime::new(&gamma, domain)?;
-    let result = fpt.raw_moment(order, particles, max_duration, step_size)?;
+    let result = fpt.raw_moment(order, particles, max_duration, time_step)?;
     Ok(result)
 }
 
@@ -90,12 +90,12 @@ pub fn gamma_fpt_central_moment(
     domain: (f64, f64),
     order: i32,
     particles: usize,
-    step_size: f64,
+    time_step: f64,
     max_duration: f64,
 ) -> XPyResult<Option<f64>> {
     let gamma = Gamma::new(shape, rate)?;
     let fpt = FirstPassageTime::new(&gamma, domain)?;
-    let result = fpt.central_moment(order, particles, max_duration, step_size)?;
+    let result = fpt.central_moment(order, particles, max_duration, time_step)?;
     Ok(result)
 }
 
@@ -105,11 +105,11 @@ pub fn gamma_occupation_time(
     shape: f64,
     rate: f64,
     domain: (f64, f64),
-    step_size: f64,
+    time_step: f64,
     duration: f64,
 ) -> XPyResult<f64> {
     let gamma = Gamma::new(shape, rate)?;
-    let result = gamma.occupation_time(domain, duration, step_size)?;
+    let result = gamma.occupation_time(domain, duration, time_step)?;
     Ok(result)
 }
 
@@ -121,12 +121,12 @@ pub fn gamma_occupation_time_raw_moment(
     domain: (f64, f64),
     order: i32,
     particles: usize,
-    step_size: f64,
+    time_step: f64,
     duration: f64,
 ) -> XPyResult<f64> {
     let gamma = Gamma::new(shape, rate)?;
     let oc = OccupationTime::new(&gamma, domain, duration)?;
-    let result = oc.raw_moment(order, particles, step_size)?;
+    let result = oc.raw_moment(order, particles, time_step)?;
     Ok(result)
 }
 
@@ -138,12 +138,12 @@ pub fn gamma_occupation_time_central_moment(
     domain: (f64, f64),
     order: i32,
     particles: usize,
-    step_size: f64,
+    time_step: f64,
     duration: f64,
 ) -> XPyResult<f64> {
     let gamma = Gamma::new(shape, rate)?;
     let oc = OccupationTime::new(&gamma, domain, duration)?;
-    let result = oc.central_moment(order, particles, step_size)?;
+    let result = oc.central_moment(order, particles, time_step)?;
     Ok(result)
 }
 
@@ -154,11 +154,11 @@ pub fn gamma_tamsd(
     rate: f64,
     duration: f64,
     delta: f64,
-    step_size: f64,
+    time_step: f64,
     quad_order: usize,
 ) -> XPyResult<f64> {
     let gamma = Gamma::new(shape, rate)?;
-    let result = gamma.tamsd(duration, delta, step_size, quad_order)?;
+    let result = gamma.tamsd(duration, delta, time_step, quad_order)?;
     Ok(result)
 }
 
@@ -170,10 +170,10 @@ pub fn gamma_eatamsd(
     duration: f64,
     delta: f64,
     particles: usize,
-    step_size: f64,
+    time_step: f64,
     quad_order: usize,
 ) -> XPyResult<f64> {
     let gamma = Gamma::new(shape, rate)?;
-    let result = gamma.eatamsd(duration, delta, particles, step_size, quad_order)?;
+    let result = gamma.eatamsd(duration, delta, particles, time_step, quad_order)?;
     Ok(result)
 }

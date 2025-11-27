@@ -1,20 +1,17 @@
 from diffusionx import _core
-from typing import Union, Optional
-from .basic import ContinuousProcess
+from .basic import real, Vector
 from .utils import (
     ensure_float,
+    validate_bool,
     validate_domain,
     validate_order,
     validate_particles,
-    validate_positive_float_param,
+    validate_positive_float,
+    validate_positive_integer,
 )
-import numpy as np
 
 
-real = Union[float, int]
-
-
-class FBM(ContinuousProcess):
+class FBM:
     def __init__(
         self,
         start_position: real = 0.0,
@@ -26,10 +23,6 @@ class FBM(ContinuousProcess):
         Args:
             start_position (real, optional): The starting position. Defaults to 0.0.
             hurst_exponent (real, optional): The Hurst exponent. Must be in (0, 1). Defaults to 0.5.
-
-        Raises:
-            TypeError: If start_position or hurst_exponent are not numbers.
-            ValueError: If hurst_exponent is not in the range (0, 1).
         """
         try:
             _start_position = ensure_float(start_position)
@@ -46,73 +39,65 @@ class FBM(ContinuousProcess):
         self.hurst_exponent = _hurst_exponent
 
     def simulate(
-        self, duration: real, step_size: float = 0.01
-    ) -> tuple[np.ndarray, np.ndarray]:
+        self, duration: real, time_step: float = 0.01
+    ) -> tuple[Vector, Vector]:
         """
         Simulate the fractional Brownian motion.
 
         Args:
             duration (real): Total duration of the simulation.
-            step_size (real, optional): Step size for the simulation. Defaults to 0.01.
-
-        Raises:
-            TypeError: If duration or step_size are not numbers.
-            ValueError: If duration or step_size are not positive.
+            time_step (real, optional): Step size for the simulation. Defaults to 0.01.
 
         Returns:
             tuple[np.ndarray, np.ndarray]: Times and positions of the FBM.
         """
         try:
-            _duration = ensure_float(duration)
-            _step_size = ensure_float(step_size)
+            duration = ensure_float(duration)
+            time_step = ensure_float(time_step)
         except TypeError as e:
             raise TypeError(
-                f"duration and step_size must be numbers. Error: {e}"
+                f"duration and time_step must be numbers. Error: {e}"
             ) from e
 
-        if _duration <= 0:
+        if duration <= 0:
             raise ValueError("duration must be positive")
-        if _step_size <= 0:
-            raise ValueError("step_size must be positive")
+        if time_step <= 0:
+            raise ValueError("time_step must be positive")
 
         return _core.fbm_simulate(
             self.start_position,
             self.hurst_exponent,
-            _duration,
-            _step_size,
+            duration,
+            time_step,
         )
 
     def fpt(
         self,
         domain: tuple[real, real],
-        step_size: float = 0.01,
+        time_step: float = 0.01,
         max_duration: real = 1000,
-    ) -> Optional[float]:
+    ) -> float | None:
         """
         Calculate the first passage time of the FBM.
 
         Args:
             domain (tuple[real, real]): Domain (a, b) for FPT. a must be less than b.
-            step_size (real, optional): Step size. Defaults to 0.01.
+            time_step (real, optional): Step size. Defaults to 0.01.
             max_duration (real, optional): Maximum simulation duration for FPT. Defaults to 1000.
-
-        Raises:
-            TypeError: If domain elements, step_size, or max_duration are not numbers.
-            ValueError: If domain is invalid (a >= b), or step_size/max_duration not positive.
 
         Returns:
             Optional[float]: The FPT, or None if max_duration reached first.
         """
-        _a, _b = validate_domain(domain, process_name="Fbm FPT")
-        _step_size = validate_positive_float_param(step_size, "step_size")
-        _max_duration = validate_positive_float_param(max_duration, "max_duration")
+        a, b = validate_domain(domain, process_name="Fbm FPT")
+        time_step = validate_positive_float(time_step, "time_step")
+        max_duration = validate_positive_float(max_duration, "max_duration")
 
         return _core.fbm_fpt(
             self.start_position,
             self.hurst_exponent,
-            _step_size,
-            (_a, _b),
-            _max_duration,
+            time_step,
+            (a, b),
+            max_duration,
         )
 
     def fpt_moment(
@@ -121,37 +106,35 @@ class FBM(ContinuousProcess):
         order: int,
         central: bool = False,
         particles: int = 10_000,
-        step_size: float = 0.01,
+        time_step: float = 0.01,
         max_duration: real = 1000,
-    ) -> Optional[float]:
-        _a, _b = validate_domain(domain, process_name="Fbm FPT raw moment")
-        _order = validate_order(order)
-        _particles = validate_particles(particles)
-        _step_size = validate_positive_float_param(step_size, "step_size")
-        _max_duration = validate_positive_float_param(max_duration, "max_duration")
-
-        if not isinstance(central, bool):
-            raise TypeError("central must be a boolean")
+    ) -> float | None:
+        validate_bool(central, "central")
+        a, b = validate_domain(domain, process_name="Fbm FPT raw moment")
+        order = validate_order(order)
+        particles = validate_particles(particles)
+        time_step = validate_positive_float(time_step, "time_step")
+        max_duration = validate_positive_float(max_duration, "max_duration")
 
         result = (
             _core.fbm_fpt_raw_moment(
                 self.start_position,
                 self.hurst_exponent,
-                (_a, _b),
-                _order,
-                _particles,
-                _step_size,
-                _max_duration,
+                (a, b),
+                order,
+                particles,
+                time_step,
+                max_duration,
             )
             if not central
             else _core.fbm_fpt_central_moment(
                 self.start_position,
                 self.hurst_exponent,
-                (_a, _b),
-                _order,
-                _particles,
-                _step_size,
-                _max_duration,
+                (a, b),
+                order,
+                particles,
+                time_step,
+                max_duration,
             )
         )
 
@@ -163,7 +146,7 @@ class FBM(ContinuousProcess):
         order: int,
         central: bool = False,
         particles: int = 10_000,
-        step_size: float = 0.01,
+        time_step: float = 0.01,
     ) -> float:
         """
         Calculate the raw moment of the FBM.
@@ -172,40 +155,34 @@ class FBM(ContinuousProcess):
             duration (real): Simulation duration.
             order (int): Moment order (non-negative integer).
             particles (int): Number of particles (positive integer).
-            step_size (real, optional): Step size. Defaults to 0.01.
-
-        Raises:
-            TypeError: If any parameter has an incorrect type.
-            ValueError: For invalid parameter values (e.g., negative order, non-positive particles/duration/step_size).
+            time_step (real, optional): Step size. Defaults to 0.01.
 
         Returns:
             float: The raw moment.
         """
-        _order = validate_order(order)
-        _particles = validate_particles(particles)
-        _duration = validate_positive_float_param(duration, "duration")
-        _step_size = validate_positive_float_param(step_size, "step_size")
-
-        if not isinstance(central, bool):
-            raise TypeError("central must be a boolean")
+        validate_bool(central, "central")
+        order = validate_order(order)
+        particles = validate_particles(particles)
+        duration = validate_positive_float(duration, "duration")
+        time_step = validate_positive_float(time_step, "time_step")
 
         result = (
             _core.fbm_raw_moment(
                 self.start_position,
                 self.hurst_exponent,
-                _duration,
-                _step_size,
-                _order,
-                _particles,
+                duration,
+                time_step,
+                order,
+                particles,
             )
             if not central
             else _core.fbm_central_moment(
                 self.start_position,
                 self.hurst_exponent,
-                _duration,
-                _step_size,
-                _order,
-                _particles,
+                duration,
+                time_step,
+                order,
+                particles,
             )
         )
 
@@ -215,7 +192,7 @@ class FBM(ContinuousProcess):
         self,
         domain: tuple[real, real],
         duration: real,
-        step_size: float = 0.01,
+        time_step: float = 0.01,
     ) -> float:
         """
         Calculate the occupation time of the FBM in a domain.
@@ -223,25 +200,21 @@ class FBM(ContinuousProcess):
         Args:
             domain (tuple[real, real]): Domain (a, b). a must be less than b.
             duration (real): Total simulation duration.
-            step_size (real, optional): Step size. Defaults to 0.01.
-
-        Raises:
-            TypeError: If domain elements, duration, or step_size are not numbers.
-            ValueError: For invalid domain or non-positive duration/step_size.
+            time_step (real, optional): Step size. Defaults to 0.01.
 
         Returns:
             float: Occupation time.
         """
-        _a, _b = validate_domain(domain, process_name="Fbm Occupation Time")
-        _duration = validate_positive_float_param(duration, "duration")
-        _step_size = validate_positive_float_param(step_size, "step_size")
+        a, b = validate_domain(domain, process_name="Fbm Occupation Time")
+        duration = validate_positive_float(duration, "duration")
+        time_step = validate_positive_float(time_step, "time_step")
 
         return _core.fbm_occupation_time(
             self.start_position,
             self.hurst_exponent,
-            _step_size,
-            (_a, _b),
-            _duration,
+            time_step,
+            (a, b),
+            duration,
         )
 
     def occupation_time_moment(
@@ -251,36 +224,34 @@ class FBM(ContinuousProcess):
         order: int,
         central: bool = False,
         particles: int = 10_000,
-        step_size: float = 0.01,
+        time_step: float = 0.01,
     ) -> float:
-        _a, _b = validate_domain(domain, process_name="Fbm Occupation raw moment")
-        _order = validate_order(order)
-        _particles = validate_particles(particles)
-        _duration = validate_positive_float_param(duration, "duration")
-        _step_size = validate_positive_float_param(step_size, "step_size")
-
-        if not isinstance(central, bool):
-            raise TypeError("central must be a boolean")
+        validate_bool(central, "central")
+        a, b = validate_domain(domain, process_name="Fbm Occupation raw moment")
+        order = validate_order(order)
+        particles = validate_particles(particles)
+        duration = validate_positive_float(duration, "duration")
+        time_step = validate_positive_float(time_step, "time_step")
 
         result = (
             _core.fbm_occupation_time_raw_moment(
                 self.start_position,
                 self.hurst_exponent,
-                (_a, _b),
-                _order,
-                _particles,
-                _step_size,
-                _duration,
+                (a, b),
+                order,
+                particles,
+                time_step,
+                duration,
             )
             if not central
             else _core.fbm_occupation_time_central_moment(
                 self.start_position,
                 self.hurst_exponent,
-                (_a, _b),
-                _order,
-                _particles,
-                _step_size,
-                _duration,
+                (a, b),
+                order,
+                particles,
+                time_step,
+                duration,
             )
         )
 
@@ -290,21 +261,20 @@ class FBM(ContinuousProcess):
         self,
         duration: real,
         delta: real,
-        step_size: float = 0.01,
+        time_step: float = 0.01,
         quad_order: int = 10,
     ) -> float:
-        _duration = validate_positive_float_param(duration, "duration")
-        _delta = validate_positive_float_param(delta, "delta")
-        _step_size = validate_positive_float_param(step_size, "step_size")
-        if not isinstance(quad_order, int) or quad_order <= 0:
-            raise ValueError("quad_order must be a positive integer.")
+        duration = validate_positive_float(duration, "duration")
+        delta = validate_positive_float(delta, "delta")
+        time_step = validate_positive_float(time_step, "time_step")
+        quad_order = validate_positive_integer(quad_order, "quad_order")
 
         return _core.fbm_tamsd(
             self.start_position,
             self.hurst_exponent,
-            _duration,
-            _delta,
-            _step_size,
+            duration,
+            delta,
+            time_step,
             quad_order,
         )
 
@@ -313,22 +283,21 @@ class FBM(ContinuousProcess):
         duration: real,
         delta: real,
         particles: int = 10_000,
-        step_size: float = 0.01,
+        time_step: float = 0.01,
         quad_order: int = 10,
     ) -> float:
-        _duration = validate_positive_float_param(duration, "duration")
-        _delta = validate_positive_float_param(delta, "delta")
-        _particles = validate_particles(particles)
-        _step_size = validate_positive_float_param(step_size, "step_size")
-        if not isinstance(quad_order, int) or quad_order <= 0:
-            raise ValueError("quad_order must be a positive integer.")
+        duration = validate_positive_float(duration, "duration")
+        delta = validate_positive_float(delta, "delta")
+        particles = validate_particles(particles)
+        time_step = validate_positive_float(time_step, "time_step")
+        quad_order = validate_positive_integer(quad_order, "quad_order")
 
         return _core.fbm_eatamsd(
             self.start_position,
             self.hurst_exponent,
-            _duration,
-            _delta,
-            _particles,
-            _step_size,
+            duration,
+            delta,
+            particles,
+            time_step,
             quad_order,
         )

@@ -24,16 +24,27 @@ def validate_order(order: int) -> int:
     return order
 
 
+def validate_positive_integer(val: int, name: str) -> int:
+    """Validate that val is a positive integer."""
+    if not isinstance(val, int):
+        raise TypeError(f"{name} must be an integer, got {type(val).__name__}")
+    if val <= 0:
+        raise ValueError(f"{name} must be positive")
+    return val
+
+
+def validate_bool(val: bool, name: str):
+    """Validate that val is a boolean."""
+    if not isinstance(val, bool):
+        raise TypeError(f"{name} must be a boolean, got {type(val).__name__}")
+
+
 def validate_particles(particles: int) -> int:
     """Validate that particles is a positive integer."""
-    if not isinstance(particles, int):
-        raise TypeError(f"particles must be an integer, got {type(particles).__name__}")
-    if particles <= 0:
-        raise ValueError("particles must be positive")
-    return particles
+    return validate_positive_integer(particles, "particles")
 
 
-def validate_positive_float_param(value: real, param_name: str) -> float:
+def validate_positive_float(value: real, param_name: str) -> float:
     """Validate that a parameter is a positive float after conversion."""
     try:
         float_value = ensure_float(value)
@@ -51,7 +62,7 @@ def validate_domain(
 ) -> tuple[float, float]:
     """Validate domain based on type and convert its elements to float."""
     if not (isinstance(domain, tuple) and len(domain) == 2):
-        base_msg = f"domain must be a tuple of two real numbers"
+        base_msg = "domain must be a tuple of two real numbers"
         if process_name:
             base_msg += f" for {process_name}"
         raise TypeError(f"{base_msg}, got {type(domain).__name__}")
@@ -60,7 +71,7 @@ def validate_domain(
         a = ensure_float(domain[0])
         b = ensure_float(domain[1])
     except TypeError as e:
-        base_msg = f"Domain elements must be numbers convertible to float"
+        base_msg = "Domain elements must be numbers convertible to float"
         if process_name:
             base_msg += f" for {process_name}"
         raise TypeError(f"{base_msg}. Error: {e}") from e

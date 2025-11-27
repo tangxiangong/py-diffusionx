@@ -87,7 +87,7 @@ pub fn langevin_fpt(
     start_position: f64,
     domain: (f64, f64),
     max_duration: f64,
-    step_size: f64,
+    time_step: f64,
 ) -> XPyResult<Option<f64>> {
     let langevin = {
         let drift = |x: f64, t: f64| -> f64 { call_py_func(&drift_func, (x, t)) };
@@ -97,7 +97,7 @@ pub fn langevin_fpt(
         Langevin::new(drift, diffusion, start_position)?
     };
 
-    let result = langevin.fpt(domain, max_duration, step_size)?;
+    let result = langevin.fpt(domain, max_duration, time_step)?;
     Ok(result)
 }
 
@@ -111,7 +111,7 @@ pub fn langevin_fpt_raw_moment(
     max_duration: f64,
     order: i32,
     particles: usize,
-    step_size: f64,
+    time_step: f64,
 ) -> XPyResult<Option<f64>> {
     let langevin = {
         let drift = |x: f64, t: f64| -> f64 { call_py_func(&drift_func, (x, t)) };
@@ -121,7 +121,7 @@ pub fn langevin_fpt_raw_moment(
         Langevin::new(drift, diffusion, start_position)?
     };
     let fpt = FirstPassageTime::new(&langevin, domain)?;
-    let result = fpt.raw_moment(order, particles, max_duration, step_size)?;
+    let result = fpt.raw_moment(order, particles, max_duration, time_step)?;
     Ok(result)
 }
 
@@ -135,7 +135,7 @@ pub fn langevin_fpt_central_moment(
     max_duration: f64,
     order: i32,
     particles: usize,
-    step_size: f64,
+    time_step: f64,
 ) -> XPyResult<Option<f64>> {
     let langevin = {
         let drift = |x: f64, t: f64| -> f64 { call_py_func(&drift_func, (x, t)) };
@@ -145,7 +145,7 @@ pub fn langevin_fpt_central_moment(
         Langevin::new(drift, diffusion, start_position)?
     };
     let fpt = FirstPassageTime::new(&langevin, domain)?;
-    let result = fpt.central_moment(order, particles, max_duration, step_size)?;
+    let result = fpt.central_moment(order, particles, max_duration, time_step)?;
     Ok(result)
 }
 
@@ -157,7 +157,7 @@ pub fn langevin_occupation_time(
     start_position: f64,
     domain: (f64, f64),
     duration: f64,
-    step_size: f64,
+    time_step: f64,
 ) -> XPyResult<f64> {
     let langevin = {
         let drift = |x: f64, t: f64| -> f64 { call_py_func(&drift_func, (x, t)) };
@@ -166,7 +166,7 @@ pub fn langevin_occupation_time(
 
         Langevin::new(drift, diffusion, start_position)?
     };
-    let result = langevin.occupation_time(domain, duration, step_size)?;
+    let result = langevin.occupation_time(domain, duration, time_step)?;
     Ok(result)
 }
 
@@ -180,7 +180,7 @@ pub fn langevin_occupation_time_raw_moment(
     duration: f64,
     order: i32,
     particles: usize,
-    step_size: f64,
+    time_step: f64,
 ) -> XPyResult<f64> {
     let langevin = {
         let drift = |x: f64, t: f64| -> f64 { call_py_func(&drift_func, (x, t)) };
@@ -190,7 +190,7 @@ pub fn langevin_occupation_time_raw_moment(
         Langevin::new(drift, diffusion, start_position)?
     };
     let oc = OccupationTime::new(&langevin, domain, duration)?;
-    let result = oc.raw_moment(order, particles, step_size)?;
+    let result = oc.raw_moment(order, particles, time_step)?;
     Ok(result)
 }
 
@@ -204,7 +204,7 @@ pub fn langevin_occupation_time_central_moment(
     duration: f64,
     order: i32,
     particles: usize,
-    step_size: f64,
+    time_step: f64,
 ) -> XPyResult<f64> {
     let langevin = {
         let drift = |x: f64, t: f64| -> f64 { call_py_func(&drift_func, (x, t)) };
@@ -214,7 +214,7 @@ pub fn langevin_occupation_time_central_moment(
         Langevin::new(drift, diffusion, start_position)?
     };
     let oc = OccupationTime::new(&langevin, domain, duration)?;
-    let result = oc.central_moment(order, particles, step_size)?;
+    let result = oc.central_moment(order, particles, time_step)?;
     Ok(result)
 }
 
@@ -226,7 +226,7 @@ pub fn langevin_tamsd(
     start_position: f64,
     duration: f64,
     delta: f64,
-    step_size: f64,
+    time_step: f64,
     quad_order: usize,
 ) -> XPyResult<f64> {
     let langevin = {
@@ -236,7 +236,7 @@ pub fn langevin_tamsd(
 
         Langevin::new(drift, diffusion, start_position)?
     };
-    let result = langevin.tamsd(duration, delta, step_size, quad_order)?;
+    let result = langevin.tamsd(duration, delta, time_step, quad_order)?;
     Ok(result)
 }
 
@@ -249,7 +249,7 @@ pub fn langevin_eatamsd(
     duration: f64,
     delta: f64,
     particles: usize,
-    step_size: f64,
+    time_step: f64,
     quad_order: usize,
 ) -> XPyResult<f64> {
     let langevin = {
@@ -259,7 +259,7 @@ pub fn langevin_eatamsd(
 
         Langevin::new(drift, diffusion, start_position)?
     };
-    let result = langevin.eatamsd(duration, delta, particles, step_size, quad_order)?;
+    let result = langevin.eatamsd(duration, delta, particles, time_step, quad_order)?;
     Ok(result)
 }
 
@@ -344,7 +344,7 @@ pub fn generalized_langevin_fpt(
     alpha: f64,
     domain: (f64, f64),
     max_duration: f64,
-    step_size: f64,
+    time_step: f64,
 ) -> XPyResult<Option<f64>> {
     let langevin = {
         let drift = |x: f64, t: f64| -> f64 { call_py_func(&drift_func, (x, t)) };
@@ -354,7 +354,7 @@ pub fn generalized_langevin_fpt(
         GeneralizedLangevin::new(drift, diffusion, start_position, alpha)?
     };
 
-    let result = langevin.fpt(domain, max_duration, step_size)?;
+    let result = langevin.fpt(domain, max_duration, time_step)?;
     Ok(result)
 }
 
@@ -369,7 +369,7 @@ pub fn generalized_langevin_fpt_raw_moment(
     max_duration: f64,
     order: i32,
     particles: usize,
-    step_size: f64,
+    time_step: f64,
 ) -> XPyResult<Option<f64>> {
     let langevin = {
         let drift = |x: f64, t: f64| -> f64 { call_py_func(&drift_func, (x, t)) };
@@ -379,7 +379,7 @@ pub fn generalized_langevin_fpt_raw_moment(
         GeneralizedLangevin::new(drift, diffusion, start_position, alpha)?
     };
     let fpt = FirstPassageTime::new(&langevin, domain)?;
-    let result = fpt.raw_moment(order, particles, max_duration, step_size)?;
+    let result = fpt.raw_moment(order, particles, max_duration, time_step)?;
     Ok(result)
 }
 
@@ -394,7 +394,7 @@ pub fn generalized_langevin_fpt_central_moment(
     max_duration: f64,
     order: i32,
     particles: usize,
-    step_size: f64,
+    time_step: f64,
 ) -> XPyResult<Option<f64>> {
     let langevin = {
         let drift = |x: f64, t: f64| -> f64 { call_py_func(&drift_func, (x, t)) };
@@ -404,7 +404,7 @@ pub fn generalized_langevin_fpt_central_moment(
         GeneralizedLangevin::new(drift, diffusion, start_position, alpha)?
     };
     let fpt = FirstPassageTime::new(&langevin, domain)?;
-    let result = fpt.central_moment(order, particles, max_duration, step_size)?;
+    let result = fpt.central_moment(order, particles, max_duration, time_step)?;
     Ok(result)
 }
 
@@ -417,7 +417,7 @@ pub fn generalized_langevin_occupation_time(
     alpha: f64,
     domain: (f64, f64),
     duration: f64,
-    step_size: f64,
+    time_step: f64,
 ) -> XPyResult<f64> {
     let langevin = {
         let drift = |x: f64, t: f64| -> f64 { call_py_func(&drift_func, (x, t)) };
@@ -426,7 +426,7 @@ pub fn generalized_langevin_occupation_time(
 
         GeneralizedLangevin::new(drift, diffusion, start_position, alpha)?
     };
-    let result = langevin.occupation_time(domain, duration, step_size)?;
+    let result = langevin.occupation_time(domain, duration, time_step)?;
     Ok(result)
 }
 
@@ -441,7 +441,7 @@ pub fn generalized_langevin_occupation_time_raw_moment(
     duration: f64,
     order: i32,
     particles: usize,
-    step_size: f64,
+    time_step: f64,
 ) -> XPyResult<f64> {
     let langevin = {
         let drift = |x: f64, t: f64| -> f64 { call_py_func(&drift_func, (x, t)) };
@@ -451,7 +451,7 @@ pub fn generalized_langevin_occupation_time_raw_moment(
         GeneralizedLangevin::new(drift, diffusion, start_position, alpha)?
     };
     let oc = OccupationTime::new(&langevin, domain, duration)?;
-    let result = oc.raw_moment(order, particles, step_size)?;
+    let result = oc.raw_moment(order, particles, time_step)?;
     Ok(result)
 }
 
@@ -466,7 +466,7 @@ pub fn generalized_langevin_occupation_time_central_moment(
     duration: f64,
     order: i32,
     particles: usize,
-    step_size: f64,
+    time_step: f64,
 ) -> XPyResult<f64> {
     let langevin = {
         let drift = |x: f64, t: f64| -> f64 { call_py_func(&drift_func, (x, t)) };
@@ -476,7 +476,7 @@ pub fn generalized_langevin_occupation_time_central_moment(
         GeneralizedLangevin::new(drift, diffusion, start_position, alpha)?
     };
     let oc = OccupationTime::new(&langevin, domain, duration)?;
-    let result = oc.central_moment(order, particles, step_size)?;
+    let result = oc.central_moment(order, particles, time_step)?;
     Ok(result)
 }
 
@@ -489,7 +489,7 @@ pub fn generalized_langevin_tamsd(
     alpha: f64,
     duration: f64,
     delta: f64,
-    step_size: f64,
+    time_step: f64,
     quad_order: usize,
 ) -> XPyResult<f64> {
     let langevin = {
@@ -499,7 +499,7 @@ pub fn generalized_langevin_tamsd(
 
         GeneralizedLangevin::new(drift, diffusion, start_position, alpha)?
     };
-    let result = langevin.tamsd(duration, delta, step_size, quad_order)?;
+    let result = langevin.tamsd(duration, delta, time_step, quad_order)?;
     Ok(result)
 }
 
@@ -513,7 +513,7 @@ pub fn generalized_langevin_eatamsd(
     duration: f64,
     delta: f64,
     particles: usize,
-    step_size: f64,
+    time_step: f64,
     quad_order: usize,
 ) -> XPyResult<f64> {
     let langevin = {
@@ -523,7 +523,7 @@ pub fn generalized_langevin_eatamsd(
 
         GeneralizedLangevin::new(drift, diffusion, start_position, alpha)?
     };
-    let result = langevin.eatamsd(duration, delta, particles, step_size, quad_order)?;
+    let result = langevin.eatamsd(duration, delta, particles, time_step, quad_order)?;
     Ok(result)
 }
 
@@ -608,7 +608,7 @@ pub fn subordinated_langevin_fpt(
     alpha: f64,
     domain: (f64, f64),
     max_duration: f64,
-    step_size: f64,
+    time_step: f64,
 ) -> XPyResult<Option<f64>> {
     let langevin = {
         let drift = |x: f64, t: f64| -> f64 { call_py_func(&drift_func, (x, t)) };
@@ -618,7 +618,7 @@ pub fn subordinated_langevin_fpt(
         SubordinatedLangevin::new(drift, diffusion, start_position, alpha)?
     };
 
-    let result = langevin.fpt(domain, max_duration, step_size)?;
+    let result = langevin.fpt(domain, max_duration, time_step)?;
     Ok(result)
 }
 
@@ -633,7 +633,7 @@ pub fn subordinated_langevin_fpt_raw_moment(
     max_duration: f64,
     order: i32,
     particles: usize,
-    step_size: f64,
+    time_step: f64,
 ) -> XPyResult<Option<f64>> {
     let langevin = {
         let drift = |x: f64, t: f64| -> f64 { call_py_func(&drift_func, (x, t)) };
@@ -643,7 +643,7 @@ pub fn subordinated_langevin_fpt_raw_moment(
         SubordinatedLangevin::new(drift, diffusion, start_position, alpha)?
     };
     let fpt = FirstPassageTime::new(&langevin, domain)?;
-    let result = fpt.raw_moment(order, particles, max_duration, step_size)?;
+    let result = fpt.raw_moment(order, particles, max_duration, time_step)?;
     Ok(result)
 }
 
@@ -658,7 +658,7 @@ pub fn subordinated_langevin_fpt_central_moment(
     max_duration: f64,
     order: i32,
     particles: usize,
-    step_size: f64,
+    time_step: f64,
 ) -> XPyResult<Option<f64>> {
     let langevin = {
         let drift = |x: f64, t: f64| -> f64 { call_py_func(&drift_func, (x, t)) };
@@ -668,7 +668,7 @@ pub fn subordinated_langevin_fpt_central_moment(
         SubordinatedLangevin::new(drift, diffusion, start_position, alpha)?
     };
     let fpt = FirstPassageTime::new(&langevin, domain)?;
-    let result = fpt.central_moment(order, particles, max_duration, step_size)?;
+    let result = fpt.central_moment(order, particles, max_duration, time_step)?;
     Ok(result)
 }
 
@@ -681,7 +681,7 @@ pub fn subordinated_langevin_occupation_time(
     alpha: f64,
     domain: (f64, f64),
     duration: f64,
-    step_size: f64,
+    time_step: f64,
 ) -> XPyResult<f64> {
     let langevin = {
         let drift = |x: f64, t: f64| -> f64 { call_py_func(&drift_func, (x, t)) };
@@ -690,7 +690,7 @@ pub fn subordinated_langevin_occupation_time(
 
         SubordinatedLangevin::new(drift, diffusion, start_position, alpha)?
     };
-    let result = langevin.occupation_time(domain, duration, step_size)?;
+    let result = langevin.occupation_time(domain, duration, time_step)?;
     Ok(result)
 }
 
@@ -705,7 +705,7 @@ pub fn subordinated_langevin_occupation_time_raw_moment(
     duration: f64,
     order: i32,
     particles: usize,
-    step_size: f64,
+    time_step: f64,
 ) -> XPyResult<f64> {
     let langevin = {
         let drift = |x: f64, t: f64| -> f64 { call_py_func(&drift_func, (x, t)) };
@@ -715,7 +715,7 @@ pub fn subordinated_langevin_occupation_time_raw_moment(
         SubordinatedLangevin::new(drift, diffusion, start_position, alpha)?
     };
     let oc = OccupationTime::new(&langevin, domain, duration)?;
-    let result = oc.raw_moment(order, particles, step_size)?;
+    let result = oc.raw_moment(order, particles, time_step)?;
     Ok(result)
 }
 
@@ -730,7 +730,7 @@ pub fn subordinated_langevin_occupation_time_central_moment(
     duration: f64,
     order: i32,
     particles: usize,
-    step_size: f64,
+    time_step: f64,
 ) -> XPyResult<f64> {
     let langevin = {
         let drift = |x: f64, t: f64| -> f64 { call_py_func(&drift_func, (x, t)) };
@@ -740,7 +740,7 @@ pub fn subordinated_langevin_occupation_time_central_moment(
         SubordinatedLangevin::new(drift, diffusion, start_position, alpha)?
     };
     let oc = OccupationTime::new(&langevin, domain, duration)?;
-    let result = oc.central_moment(order, particles, step_size)?;
+    let result = oc.central_moment(order, particles, time_step)?;
     Ok(result)
 }
 
@@ -753,7 +753,7 @@ pub fn subordinated_langevin_tamsd(
     alpha: f64,
     duration: f64,
     delta: f64,
-    step_size: f64,
+    time_step: f64,
     quad_order: usize,
 ) -> XPyResult<f64> {
     let langevin = {
@@ -763,7 +763,7 @@ pub fn subordinated_langevin_tamsd(
 
         SubordinatedLangevin::new(drift, diffusion, start_position, alpha)?
     };
-    let result = langevin.tamsd(duration, delta, step_size, quad_order)?;
+    let result = langevin.tamsd(duration, delta, time_step, quad_order)?;
     Ok(result)
 }
 
@@ -777,7 +777,7 @@ pub fn subordinated_langevin_eatamsd(
     duration: f64,
     delta: f64,
     particles: usize,
-    step_size: f64,
+    time_step: f64,
     quad_order: usize,
 ) -> XPyResult<f64> {
     let langevin = {
@@ -787,6 +787,6 @@ pub fn subordinated_langevin_eatamsd(
 
         SubordinatedLangevin::new(drift, diffusion, start_position, alpha)?
     };
-    let result = langevin.eatamsd(duration, delta, particles, step_size, quad_order)?;
+    let result = langevin.eatamsd(duration, delta, particles, time_step, quad_order)?;
     Ok(result)
 }

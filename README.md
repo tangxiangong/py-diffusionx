@@ -18,7 +18,7 @@ from diffusionx.simulation import Bm
 # Brownian motion simulation
 bm = Bm()
 traj = bm(10)
-times, positions = traj.simulate(step_size=0.01)  # Simulate Brownian motion trajectory, returns ndarray
+times, positions = traj.simulate(time_step=0.01)  # Simulate Brownian motion trajectory, returns ndarray
 
 # Monte Carlo simulation of Brownian motion statistics
 raw_moment = traj.raw_moment(order=1, particles=1000)  # First-order raw moment

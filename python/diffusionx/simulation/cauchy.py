@@ -1,19 +1,17 @@
 from diffusionx import _core
-from typing import Union, Optional
-from .basic import ContinuousProcess
+from .basic import real, Vector
 from .utils import (
     ensure_float,
     validate_domain,
     validate_order,
     validate_particles,
-    validate_positive_float_param,
+    validate_positive_float,
+    validate_positive_integer,
+    validate_bool,
 )
-import numpy as np
-
-real = Union[float, int]
 
 
-class Cauchy(ContinuousProcess):
+class Cauchy:
     def __init__(
         self,
         start_position: real = 0.0,
@@ -23,29 +21,31 @@ class Cauchy(ContinuousProcess):
 
         Args:
             start_position (real, optional): Starting position. Defaults to 0.0.
-
-        Raises:
-            TypeError: If start_position is not a number.
         """
-        try:
-            _start_position = ensure_float(start_position)
-        except TypeError as e:
-            raise TypeError(f"Input parameters must be numbers. Error: {e}") from e
-
-        self.start_position = _start_position
+        self.start_position: float = ensure_float(start_position)
 
     def simulate(
         self,
         duration: real,
-        step_size: float = 0.01,
-    ) -> tuple[np.ndarray, np.ndarray]:
-        _duration = validate_positive_float_param(duration, "duration")
-        _step_size = validate_positive_float_param(step_size, "step_size")
+        time_step: float = 0.01,
+    ) -> tuple[Vector, Vector]:
+        """
+        Simulate the Cauchy process.
+
+        Args:
+            duration (real): Total duration of the simulation.
+            time_step (float, optional): Step size of the simulation. Defaults to 0.01.
+
+        Returns:
+            tuple[np.ndarray, np.ndarray]: A tuple containing the times and positions of the Cauchy process.
+        """
+        duration = validate_positive_float(duration, "duration")
+        time_step = validate_positive_float(time_step, "time_step")
 
         return _core.cauchy_simulate(
             self.start_position,
-            _duration,
-            _step_size,
+            duration,
+            time_step,
         )
 
     def moment(
@@ -53,32 +53,43 @@ class Cauchy(ContinuousProcess):
         duration: real,
         order: int,
         particles: int = 10_000,
-        step_size: float = 0.01,
+        time_step: float = 0.01,
         central: bool = True,
     ) -> float:
-        _order = validate_order(order)
-        _particles = validate_particles(particles)
-        _duration = validate_positive_float_param(duration, "duration")
-        _step_size = validate_positive_float_param(step_size, "step_size")
+        """
+        Calculate the raw moment of the Cauchy process.
 
-        if not isinstance(central, bool):
-            raise TypeError("central must be a boolean")
+        Args:
+            duration (real): Duration of the simulation for moment calculation.
+            order (int): Order of the moment (non-negative integer).
+            particles (int, optional): Number of particles (positive integer) for ensemble averaging. Defaults to 10_000.
+            time_step (real, optional): Step size for the simulation. Defaults to 0.01.
+            central (bool, optional): Whether to calculate the central moment. Defaults to True.
+
+        Returns:
+            float: The raw moment of the Cauchy process.
+        """
+        validate_bool(central, "central")
+        order = validate_order(order)
+        particles = validate_particles(particles)
+        duration = validate_positive_float(duration, "duration")
+        time_step = validate_positive_float(time_step, "time_step")
 
         result = (
             _core.cauchy_raw_moment(
                 self.start_position,
-                _duration,
-                _step_size,
-                _order,
-                _particles,
+                duration,
+                time_step,
+                order,
+                particles,
             )
             if not central
             else _core.cauchy_central_moment(
                 self.start_position,
-                _duration,
-                _step_size,
-                _order,
-                _particles,
+                duration,
+                time_step,
+                order,
+                particles,
             )
         )
         return result
@@ -87,17 +98,28 @@ class Cauchy(ContinuousProcess):
         self,
         domain: tuple[real, real],
         max_duration: real = 1000,
-        step_size: float = 0.01,
-    ) -> Optional[float]:
-        _a, _b = validate_domain(domain, process_name="Cauchy FPT")
-        _step_size = validate_positive_float_param(step_size, "step_size")
-        _max_duration = validate_positive_float_param(max_duration, "max_duration")
+        time_step: float = 0.01,
+    ) -> float | None:
+        """
+        Calculate the first passage time of the Cauchy process.
+
+        Args:
+            domain (tuple[real, real]): The domain (a, b) for FPT. a must be less than b.
+            max_duration (real, optional): Maximum duration to simulate for FPT. Defaults to 1000.
+            time_step (real, optional): Step size for the simulation. Defaults to 0.01.
+
+        Returns:
+            Optional[float]: The first passage time, or None if max_duration is reached before FPT.
+        """
+        a, b = validate_domain(domain, process_name="Cauchy FPT")
+        time_step = validate_positive_float(time_step, "time_step")
+        max_duration = validate_positive_float(max_duration, "max_duration")
 
         return _core.cauchy_fpt(
             self.start_position,
-            _step_size,
-            (_a, _b),
-            _max_duration,
+            time_step,
+            (a, b),
+            max_duration,
         )
 
     def fpt_moment(
@@ -107,33 +129,46 @@ class Cauchy(ContinuousProcess):
         central: bool = True,
         particles: int = 10_000,
         max_duration: real = 1000,
-        step_size: float = 0.01,
-    ) -> Optional[float]:
-        _a, _b = validate_domain(domain, process_name="Cauchy FPT raw moment")
-        _order = validate_order(order)
-        _particles = validate_particles(particles)
-        _step_size = validate_positive_float_param(step_size, "step_size")
-        _max_duration = validate_positive_float_param(max_duration, "max_duration")
-        if not isinstance(central, bool):
-            raise TypeError("central must be a boolean")
+        time_step: float = 0.01,
+    ) -> float | None:
+        """
+        Calculate the moment of the first passage time for the Cauchy process.
+
+        Args:
+            domain (tuple[real, real]): The domain (a, b). a must be less than b.
+            order (int): Order of the moment (non-negative integer).
+            particles (int): Number of particles for ensemble average (positive integer).
+            time_step (real, optional): Step size. Defaults to 0.01.
+            max_duration (real, optional): Maximum duration. Defaults to 1000.
+            central (bool, optional): Whether to calculate the central moment. Defaults to True.
+
+        Returns:
+            float | None: The moment of FPT, or None if no passage for some particles.
+        """
+        validate_bool(central, "central")
+        a, b = validate_domain(domain, process_name="Cauchy FPT raw moment")
+        order = validate_order(order)
+        particles = validate_particles(particles)
+        time_step = validate_positive_float(time_step, "time_step")
+        max_duration = validate_positive_float(max_duration, "max_duration")
 
         result = (
             _core.cauchy_fpt_raw_moment(
                 self.start_position,
-                (_a, _b),
-                _order,
-                _particles,
-                _step_size,
-                _max_duration,
+                (a, b),
+                order,
+                particles,
+                time_step,
+                max_duration,
             )
             if not central
             else _core.cauchy_fpt_central_moment(
                 self.start_position,
-                (_a, _b),
-                _order,
-                _particles,
-                _step_size,
-                _max_duration,
+                (a, b),
+                order,
+                particles,
+                time_step,
+                max_duration,
             )
         )
         return result
@@ -142,17 +177,28 @@ class Cauchy(ContinuousProcess):
         self,
         domain: tuple[real, real],
         duration: real,
-        step_size: float = 0.01,
+        time_step: float = 0.01,
     ) -> float:
-        _a, _b = validate_domain(domain, process_name="Cauchy Occupation Time")
-        _duration = validate_positive_float_param(duration, "duration")
-        _step_size = validate_positive_float_param(step_size, "step_size")
+        """
+        Calculate the occupation time of the Cauchy process in a given domain.
+
+        Args:
+            domain (tuple[real, real]): The domain (a, b) for occupation time. a must be less than b.
+            duration (real): The total duration of the simulation.
+            time_step (real, optional): Step size for the simulation. Defaults to 0.01.
+
+        Returns:
+            float: The occupation time of the Cauchy process in the domain.
+        """
+        a, b = validate_domain(domain, process_name="Cauchy Occupation Time")
+        duration = validate_positive_float(duration, "duration")
+        time_step = validate_positive_float(time_step, "time_step")
 
         return _core.cauchy_occupation_time(
             self.start_position,
-            _step_size,
-            (_a, _b),
-            _duration,
+            (a, b),
+            time_step,
+            duration,
         )
 
     def occupation_time_moment(
@@ -162,34 +208,46 @@ class Cauchy(ContinuousProcess):
         order: int,
         central: bool = True,
         particles: int = 10_000,
-        step_size: float = 0.01,
+        time_step: float = 0.01,
     ) -> float:
-        _a, _b = validate_domain(domain, process_name="Cauchy Occupation raw moment")
-        _order = validate_order(order)
-        _particles = validate_particles(particles)
-        _duration = validate_positive_float_param(duration, "duration")
-        _step_size = validate_positive_float_param(step_size, "step_size")
-        if not isinstance(central, bool):
-            raise TypeError("central must be a boolean")
+        """
+        Calculate the moment of the occupation time of the Cauchy process in a given domain.
+
+        Args:
+            domain (tuple[real, real]): The domain (a, b) for occupation time. a must be less than b.
+            duration (real): The total duration of the simulation.
+            order (int): Order of the moment (non-negative integer).
+            particles (int, optional): Number of particles (positive integer) for ensemble averaging. Defaults to 10_000.
+            time_step (real, optional): Step size for the simulation. Defaults to 0.01.
+            central (bool, optional): Whether to calculate the central moment. Defaults to True.
+
+        Returns:
+            float: The moment of the occupation time of the Cauchy process in the domain.
+        """
+        validate_bool(central, "central")
+        a, b = validate_domain(domain, process_name="Cauchy Occupation raw moment")
+        order = validate_order(order)
+        particles = validate_particles(particles)
+        duration = validate_positive_float(duration, "duration")
+        time_step = validate_positive_float(time_step, "time_step")
 
         result = (
             _core.cauchy_occupation_time_raw_moment(
                 self.start_position,
-                (_a, _b),
-                _order,
-                _particles,
-                _step_size,
-                _duration,
+                (a, b),
+                order,
+                particles,
+                time_step,
+                duration,
             )
             if not central
             else _core.cauchy_occupation_time_central_moment(
                 self.start_position,
-                self.scale,
-                (_a, _b),
-                _order,
-                _particles,
-                _step_size,
-                _duration,
+                (a, b),
+                order,
+                particles,
+                time_step,
+                duration,
             )
         )
         return result
@@ -198,20 +256,31 @@ class Cauchy(ContinuousProcess):
         self,
         duration: real,
         delta: real,
-        step_size: float = 0.01,
+        time_step: float = 0.01,
         quad_order: int = 10,
     ) -> float:
-        _duration = validate_positive_float_param(duration, "duration")
-        _delta = validate_positive_float_param(delta, "delta")
-        _step_size = validate_positive_float_param(step_size, "step_size")
-        if not isinstance(quad_order, int) or quad_order <= 0:
-            raise ValueError("quad_order must be a positive integer.")
+        """
+        Calculate the time-averaged mean squared displacement (TAMS) of the Cauchy process.
+
+        Args:
+            duration (real): The total duration of the simulation.
+            delta (real): The time interval for TAMS calculation.
+            time_step (real, optional): Step size for the simulation. Defaults to 0.01.
+            quad_order (int, optional): Order of the quadrature for integration. Defaults to 10.
+
+        Returns:
+            float: The time-averaged mean squared displacement of the Cauchy process.
+        """
+        duration = validate_positive_float(duration, "duration")
+        delta = validate_positive_float(delta, "delta")
+        time_step = validate_positive_float(time_step, "time_step")
+        quad_order = validate_positive_integer(quad_order)
 
         return _core.cauchy_tamsd(
             self.start_position,
-            _duration,
-            _delta,
-            _step_size,
+            duration,
+            delta,
+            time_step,
             quad_order,
         )
 
@@ -220,27 +289,39 @@ class Cauchy(ContinuousProcess):
         duration: real,
         delta: real,
         particles: int = 10_000,
-        step_size: float = 0.01,
+        time_step: float = 0.01,
         quad_order: int = 10,
     ) -> float:
-        _duration = validate_positive_float_param(duration, "duration")
-        _delta = validate_positive_float_param(delta, "delta")
-        _particles = validate_particles(particles)
-        _step_size = validate_positive_float_param(step_size, "step_size")
-        if not isinstance(quad_order, int) or quad_order <= 0:
-            raise ValueError("quad_order must be a positive integer.")
+        """
+        Calculate the ensemble-averaged time-averaged mean squared displacement (EATAMS) of the Cauchy process.
+
+        Args:
+            duration (real): The total duration of the simulation.
+            delta (real): The time interval for EATAMS calculation.
+            particles (int, optional): Number of particles (positive integer) for ensemble averaging. Defaults to 10_000.
+            time_step (real, optional): Step size for the simulation. Defaults to 0.01.
+            quad_order (int, optional): Order of the quadrature for integration. Defaults to 10.
+
+        Returns:
+            float: The ensemble-averaged time-averaged mean squared displacement of the Cauchy process.
+        """
+        duration = validate_positive_float(duration, "duration")
+        delta = validate_positive_float(delta, "delta")
+        particles = validate_particles(particles)
+        time_step = validate_positive_float(time_step, "time_step")
+        quad_order = validate_positive_integer(quad_order)
 
         return _core.cauchy_eatamsd(
             self.start_position,
-            _duration,
-            _delta,
-            _particles,
-            _step_size,
+            duration,
+            delta,
+            particles,
+            time_step,
             quad_order,
         )
 
 
-class AsymmetricCauchy(ContinuousProcess):
+class AsymmetricCauchy:
     def __init__(
         self,
         beta: real = 0.0,
@@ -252,36 +333,38 @@ class AsymmetricCauchy(ContinuousProcess):
         Args:
             beta (real, optional): Skewness parameter. Must be in [-1, 1]. Defaults to 0.0 (symmetric Cauchy).
             start_position (real, optional): Starting position. Defaults to 0.0.
-
-        Raises:
-            TypeError: If start_position or beta are not numbers.
-            ValueError: If beta is not in [-1, 1].
         """
-        try:
-            _start_position = ensure_float(start_position)
-            _beta = ensure_float(beta)
-        except TypeError as e:
-            raise TypeError(f"Input parameters must be numbers. Error: {e}") from e
-
-        if not (-1 <= _beta <= 1):
+        beta = ensure_float(beta)
+        start_position = ensure_float(start_position)
+        if not (-1 <= beta <= 1):
             raise ValueError(
-                f"beta (skewness) must be in the range [-1, 1], got {_beta}"
+                f"beta (skewness) must be in the range [-1, 1], got {beta}"
             )
 
-        self.start_position = _start_position
-        self.beta = _beta
+        self.start_position: float = start_position
+        self.beta: float = beta
 
     def simulate(
-        self, duration: real, step_size: float = 0.01
-    ) -> tuple[np.ndarray, np.ndarray]:
-        _duration = validate_positive_float_param(duration, "duration")
-        _step_size = validate_positive_float_param(step_size, "step_size")
+        self, duration: real, time_step: float = 0.01
+    ) -> tuple[Vector, Vector]:
+        """
+        Simulate the Asymmetric Cauchy process.
+
+        Args:
+            duration (real): Total duration of the simulation.
+            time_step (float, optional): Step size of the simulation. Defaults to 0.01.
+
+        Returns:
+            tuple[np.ndarray, np.ndarray]: A tuple containing the times and positions of the Asymmetric Cauchy process.
+        """
+        duration = validate_positive_float(duration, "duration")
+        time_step = validate_positive_float(time_step, "time_step")
 
         return _core.asymmetric_cauchy_simulate(
             self.start_position,
             self.beta,
-            _duration,
-            _step_size,
+            duration,
+            time_step,
         )
 
     def moment(
@@ -289,34 +372,45 @@ class AsymmetricCauchy(ContinuousProcess):
         duration: real,
         order: int,
         particles: int = 10_000,
-        step_size: float = 0.01,
+        time_step: float = 0.01,
         central: bool = True,
     ) -> float:
-        _order = validate_order(order)
-        _particles = validate_particles(particles)
-        _duration = validate_positive_float_param(duration, "duration")
-        _step_size = validate_positive_float_param(step_size, "step_size")
+        """
+        Calculate the moment of the Asymmetric Cauchy process.
 
-        if not isinstance(central, bool):
-            raise TypeError("central must be a boolean")
+        Args:
+            duration (real): Total duration of the simulation.
+            order (int): Order of the moment (non-negative integer).
+            particles (int, optional): Number of particles (positive integer) for ensemble averaging. Defaults to 10_000.
+            time_step (float, optional): Step size of the simulation. Defaults to 0.01.
+            central (bool, optional): Whether to calculate the central moment. Defaults to True.
+
+        Returns:
+            float: The moment of the Asymmetric Cauchy process.
+        """
+        validate_bool(central, "central")
+        order = validate_order(order)
+        particles = validate_particles(particles)
+        duration = validate_positive_float(duration, "duration")
+        time_step = validate_positive_float(time_step, "time_step")
 
         result = (
             _core.asymmetric_cauchy_raw_moment(
                 self.start_position,
                 self.beta,
-                _duration,
-                _step_size,
-                _order,
-                _particles,
+                duration,
+                time_step,
+                order,
+                particles,
             )
             if not central
             else _core.asymmetric_cauchy_central_moment(
                 self.start_position,
                 self.beta,
-                _duration,
-                _step_size,
-                _order,
-                _particles,
+                duration,
+                time_step,
+                order,
+                particles,
             )
         )
         return result
@@ -325,18 +419,29 @@ class AsymmetricCauchy(ContinuousProcess):
         self,
         domain: tuple[real, real],
         max_duration: real = 1000,
-        step_size: float = 0.01,
-    ) -> Optional[float]:
-        _a, _b = validate_domain(domain, process_name="AsymmetricCauchy FPT")
-        _step_size = validate_positive_float_param(step_size, "step_size")
-        _max_duration = validate_positive_float_param(max_duration, "max_duration")
+        time_step: float = 0.01,
+    ) -> float | None:
+        """
+        Calculate the first passage time of the Asymmetric Cauchy process.
+
+        Args:
+            domain (tuple[real, real]): The domain (a, b) for FPT. a must be less than b.
+            max_duration (real, optional): Maximum duration to simulate for FPT. Defaults to 1000.
+            time_step (real, optional): Step size for the simulation. Defaults to 0.01.
+
+        Returns:
+            Optional[float]: The first passage time, or None if max_duration is reached before FPT.
+        """
+        a, b = validate_domain(domain, process_name="AsymmetricCauchy FPT")
+        time_step = validate_positive_float(time_step, "time_step")
+        max_duration = validate_positive_float(max_duration, "max_duration")
 
         return _core.asymmetric_cauchy_fpt(
             self.start_position,
             self.beta,
-            _step_size,
-            (_a, _b),
-            _max_duration,
+            time_step,
+            (a, b),
+            max_duration,
         )
 
     def fpt_moment(
@@ -346,35 +451,48 @@ class AsymmetricCauchy(ContinuousProcess):
         central: bool = True,
         particles: int = 10_000,
         max_duration: real = 1000,
-        step_size: float = 0.01,
-    ) -> Optional[float]:
-        _a, _b = validate_domain(domain, process_name="AsymmetricCauchy FPT raw moment")
-        _order = validate_order(order)
-        _particles = validate_particles(particles)
-        _step_size = validate_positive_float_param(step_size, "step_size")
-        _max_duration = validate_positive_float_param(max_duration, "max_duration")
-        if not isinstance(central, bool):
-            raise TypeError("central must be a boolean")
+        time_step: float = 0.01,
+    ) -> float | None:
+        """
+        Calculate the raw moment of the first passage time for the Asymmetric Cauchy process.
+
+        Args:
+            domain (tuple[real, real]): The domain (a, b). a must be less than b.
+            order (int): Order of the moment (non-negative integer).
+            particles (int): Number of particles for ensemble average (positive integer).
+            time_step (real, optional): Step size. Defaults to 0.01.
+            max_duration (real, optional): Maximum duration. Defaults to 1000.
+            central (bool, optional): Whether to calculate the central moment. Defaults to True.
+
+        Returns:
+            Optional[float]: The raw moment of FPT, or None if no passage for some particles.
+        """
+        validate_bool(central, "central")
+        a, b = validate_domain(domain, process_name="AsymmetricCauchy FPT raw moment")
+        order = validate_order(order)
+        particles = validate_particles(particles)
+        time_step = validate_positive_float(time_step, "time_step")
+        max_duration = validate_positive_float(max_duration, "max_duration")
 
         result = (
             _core.asymmetric_cauchy_fpt_raw_moment(
                 self.start_position,
                 self.beta,
-                (_a, _b),
-                _order,
-                _particles,
-                _step_size,
-                _max_duration,
+                (a, b),
+                order,
+                particles,
+                time_step,
+                max_duration,
             )
             if not central
             else _core.asymmetric_cauchy_fpt_central_moment(
                 self.start_position,
                 self.beta,
-                (_a, _b),
-                _order,
-                _particles,
-                _step_size,
-                _max_duration,
+                (a, b),
+                order,
+                particles,
+                time_step,
+                max_duration,
             )
         )
         return result
@@ -383,20 +501,29 @@ class AsymmetricCauchy(ContinuousProcess):
         self,
         domain: tuple[real, real],
         duration: real,
-        step_size: float = 0.01,
+        time_step: float = 0.01,
     ) -> float:
-        _a, _b = validate_domain(
-            domain, process_name="AsymmetricCauchy Occupation Time"
-        )
-        _duration = validate_positive_float_param(duration, "duration")
-        _step_size = validate_positive_float_param(step_size, "step_size")
+        """
+        Calculate the occupation time of the Asymmetric Cauchy process in a given domain.
+
+        Args:
+            domain (tuple[real, real]): The domain (a, b) for occupation time. a must be less than b.
+            duration (real): The total duration of the simulation.
+            time_step (real, optional): Step size for the simulation. Defaults to 0.01.
+
+        Returns:
+            float: The occupation time of the Asymmetric Cauchy process in the domain.
+        """
+        a, b = validate_domain(domain, process_name="AsymmetricCauchy Occupation Time")
+        duration = validate_positive_float(duration, "duration")
+        time_step = validate_positive_float(time_step, "time_step")
 
         return _core.asymmetric_cauchy_occupation_time(
             self.start_position,
             self.beta,
-            _step_size,
-            (_a, _b),
-            _duration,
+            (a, b),
+            time_step,
+            duration,
         )
 
     def occupation_time_moment(
@@ -406,37 +533,50 @@ class AsymmetricCauchy(ContinuousProcess):
         order: int,
         central: bool = True,
         particles: int = 10_000,
-        step_size: float = 0.01,
+        time_step: float = 0.01,
     ) -> float:
-        _a, _b = validate_domain(
+        """
+        Calculate the raw moment of the occupation time for the Asymmetric Cauchy process.
+
+        Args:
+            domain (tuple[real, real]): The domain (a, b). a must be less than b.
+            duration (real): The total duration of the simulation.
+            order (int): Order of the moment (non-negative integer).
+            particles (int): Number of particles for ensemble average (positive integer).
+            time_step (real, optional): Step size. Defaults to 0.01.
+            central (bool, optional): Whether to calculate the central moment. Defaults to True.
+
+        Returns:
+            float: The raw moment of occupation time, or None if no passage for some particles.
+        """
+        validate_bool(central, "central")
+        a, b = validate_domain(
             domain, process_name="AsymmetricCauchy Occupation raw moment"
         )
-        _order = validate_order(order)
-        _particles = validate_particles(particles)
-        _duration = validate_positive_float_param(duration, "duration")
-        _step_size = validate_positive_float_param(step_size, "step_size")
-        if not isinstance(central, bool):
-            raise TypeError("central must be a boolean")
+        order = validate_order(order)
+        particles = validate_particles(particles)
+        duration = validate_positive_float(duration, "duration")
+        time_step = validate_positive_float(time_step, "time_step")
 
         result = (
             _core.asymmetric_cauchy_occupation_time_raw_moment(
                 self.start_position,
                 self.beta,
-                (_a, _b),
-                _order,
-                _particles,
-                _step_size,
-                _duration,
+                (a, b),
+                order,
+                particles,
+                time_step,
+                duration,
             )
             if not central
             else _core.asymmetric_cauchy_occupation_time_central_moment(
                 self.start_position,
                 self.beta,
-                (_a, _b),
-                _order,
-                _particles,
-                _step_size,
-                _duration,
+                (a, b),
+                order,
+                particles,
+                time_step,
+                duration,
             )
         )
         return result
@@ -445,21 +585,32 @@ class AsymmetricCauchy(ContinuousProcess):
         self,
         duration: real,
         delta: real,
-        step_size: float = 0.01,
+        time_step: float = 0.01,
         quad_order: int = 10,
     ) -> float:
-        _duration = validate_positive_float_param(duration, "duration")
-        _delta = validate_positive_float_param(delta, "delta")
-        _step_size = validate_positive_float_param(step_size, "step_size")
-        if not isinstance(quad_order, int) or quad_order <= 0:
-            raise ValueError("quad_order must be a positive integer.")
+        """
+        Calculate the time-averaged mean squared displacement (TAMS) of the Asymmetric Cauchy process.
+
+        Args:
+            duration (real): The total duration of the simulation.
+            delta (real): The time interval for TAMS calculation.
+            time_step (real, optional): Step size. Defaults to 0.01.
+            quad_order (int, optional): Order of the quadrature. Defaults to 10.
+
+        Returns:
+            float: The time-averaged mean squared displacement of the Asymmetric Cauchy process.
+        """
+        duration = validate_positive_float(duration, "duration")
+        delta = validate_positive_float(delta, "delta")
+        time_step = validate_positive_float(time_step, "time_step")
+        quad_order = validate_positive_integer(quad_order)
 
         return _core.asymmetric_cauchy_tamsd(
             self.start_position,
             self.beta,
-            _duration,
-            _delta,
-            _step_size,
+            duration,
+            delta,
+            time_step,
             quad_order,
         )
 
@@ -468,22 +619,34 @@ class AsymmetricCauchy(ContinuousProcess):
         duration: real,
         delta: real,
         particles: int = 10_000,
-        step_size: float = 0.01,
+        time_step: float = 0.01,
         quad_order: int = 10,
     ) -> float:
-        _duration = validate_positive_float_param(duration, "duration")
-        _delta = validate_positive_float_param(delta, "delta")
-        _particles = validate_particles(particles)
-        _step_size = validate_positive_float_param(step_size, "step_size")
-        if not isinstance(quad_order, int) or quad_order <= 0:
-            raise ValueError("quad_order must be a positive integer.")
+        """
+        Calculate the ensemble-averaged time-averaged mean squared displacement (EATAMS) of the Asymmetric Cauchy process.
+
+        Args:
+            duration (real): The total duration of the simulation.
+            delta (real): The time interval for EATAMS calculation.
+            particles (int, optional): Number of particles for ensemble average (positive integer). Defaults to 10_000.
+            time_step (real, optional): Step size. Defaults to 0.01.
+            quad_order (int, optional): Order of the quadrature. Defaults to 10.
+
+        Returns:
+            float: The ensemble-averaged time-averaged mean squared displacement of the Asymmetric Cauchy process.
+        """
+        duration = validate_positive_float(duration, "duration")
+        delta = validate_positive_float(delta, "delta")
+        particles = validate_particles(particles)
+        time_step = validate_positive_float(time_step, "time_step")
+        quad_order = validate_positive_integer(quad_order)
 
         return _core.asymmetric_cauchy_eatamsd(
             self.start_position,
             self.beta,
-            _duration,
-            _delta,
-            _particles,
-            _step_size,
+            duration,
+            delta,
+            particles,
+            time_step,
             quad_order,
         )
