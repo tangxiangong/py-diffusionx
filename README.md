@@ -2,8 +2,13 @@
 
 English | [简体中文](README-zh.md)
 
+![PyPI](https://img.shields.io/pypi/v/diffusionx)
+![PyPI - License](https://img.shields.io/pypi/l/diffusionx)
+
 > [!NOTE]
-> Development is in progress. DiffusionX is the Python binding of multi-threaded high-performance Rust library for random number/stochastic process simulation, via [PyO3](https://github.com/PyO3/pyo3). 
+> Development is in progress. 
+>
+> The Python binding of the same-named Rust crate [diffusionx](https://crates.io/crates/diffusionx), a multi-threaded Rust crate for random number generation and stochastic process simulation, via [PyO3](https://github.com/PyO3/pyo3). 
 
 ## Usage
 
@@ -52,42 +57,7 @@ fpt = bm.fpt((-1, 1))
 
 ## Benchmark
 
-### Test Results
-
-
-Generating random array of length `10_000_000`
-|                          | Standard Normal | Uniform [0, 1] | Stable   |
-| :----------------------: | :----------: | :---------------: | :--------: |
-|  DiffusionX (Rust ver.)  |  17.576 ms   |     15.131 ms     | 133.85 ms  |
-| DiffusionX (Python ver.) |   41.2 ms    |     34.3 ms     |  293 ms  |
-|          Julia           |  27.671 ms   |     12.755 ms      | 570.260 ms |
-|      NumPy / SciPy       |    199 ms    |      66.6 ms      |   1.67 s   |
-|          Numba           |      -       |         -         |   1.15 s   |
-|   Baltamatic  |    160.7 ms     |     64.6 ms    | 564.3 ms   |
-
-### Test Environment
-
-#### Hardware Configuration
-- Device Model: MacBook Air 13-inch (2024)
-- Processor: Apple M3 
-- Memory: 16GB
-
-#### Software Environment
-- Operating System: macOS Sequoia 15.3
-- Rust: 1.85.0
-- Python: 3.12
-- Julia: 1.11
-- NumPy: 2
-- SciPy: 1.15.1
-- Baltamatic: 4.0.0
-
-## Tech Stack & Features
-
-- 🦀 Rust 2024 Edition
-- 🔄 PyO3: Rust/Python bindings
-- 🔢 NumPy: Zero-cost array conversion
-- 🚀 High performance
-- 🔄 Zero-cost NumPy compatibility: All random number generation functions return NumPy arrays directly
+Performance benchmark tests compare the Rust, C++, Julia, and Python implementations, which can be found [here](https://github.com/tangxiangong/diffusionx-benches).
 
 ## License
 
@@ -97,3 +67,9 @@ This project is dual-licensed under:
 * [Apache License Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
 You can choose to use either license. 
+
+### Contribution
+
+Unless you explicitly state otherwise, any contribution intentionally submitted
+for inclusion in the work by you, as defined in the Apache-2.0 license, shall be dual licensed as above, without any
+additional terms or conditions.
