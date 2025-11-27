@@ -56,6 +56,14 @@ fn _core(_py: Python, m: &Bound<'_, PyModule>) -> PyResult<()> {
         random::skew_stable_rands,
         random::bool_rand,
         random::bool_rands,
+        // Trait methods wrapper
+        simulation::moment,
+        simulation::mean,
+        simulation::msd,
+        simulation::fpt,
+        simulation::occupation_time,
+        simulation::tamsd,
+        simulation::eatamsd,
         // Brownian Motion
         simulation::bm_simulate,
         simulation::bm_raw_moment,
