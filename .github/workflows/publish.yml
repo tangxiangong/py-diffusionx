@@ -79,7 +79,8 @@ jobs:
         uses: PyO3/maturin-action@v1
         with:
           target: ${{ matrix.target }}
-          args: --release --out dist
+          # generate-import-lib needed for aarch64 cross-compilation without native Python
+          args: --release --out dist --features pyo3/generate-import-lib
 
       - name: Upload wheels
         uses: actions/upload-artifact@v4
