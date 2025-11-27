@@ -275,6 +275,7 @@ pub fn langevin_eatamsd(
 }
 
 /// Py function wrapper for GeneralizedLangevin simulation
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn generalized_langevin_simulate(
     py: Python<'_>,
@@ -749,7 +750,7 @@ pub fn subordinated_langevin_occupation_time_raw_moment(
 }
 
 /// Get the central moment of the occupation time of SubordinatedLangevin process.
-    #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn subordinated_langevin_occupation_time_central_moment(
     drift_func: Py<PyAny>,
