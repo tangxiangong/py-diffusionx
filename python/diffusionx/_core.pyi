@@ -596,6 +596,11 @@ def generalized_langevin_raw_moment(drift_func: typing.Any, diffusion_func: typi
     Get the raw moment of GeneralizedLangevin process.
     """
 
+def generalized_langevin_simulate(drift_func: typing.Any, diffusion_func: typing.Any, start_position: builtins.float, alpha: builtins.float, duration: builtins.float, time_step: builtins.float) -> tuple[numpy.typing.NDArray[numpy.float64], numpy.typing.NDArray[numpy.float64]]:
+    r"""
+    Py function wrapper for GeneralizedLangevin simulation
+    """
+
 def generalized_langevin_tamsd(drift_func: typing.Any, diffusion_func: typing.Any, start_position: builtins.float, alpha: builtins.float, duration: builtins.float, delta: builtins.float, time_step: builtins.float, quad_order: builtins.int) -> builtins.float:
     r"""
     Get the time-averaged mean squared displacement of GeneralizedLangevin process.
