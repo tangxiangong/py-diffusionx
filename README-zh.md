@@ -7,87 +7,99 @@
 
 ## 使用示例
 
-```python
-from diffusionx.simulation import Bm
-
-# 布朗运动模拟
-bm = Bm() 
-traj = bm(10)
-times, positions = traj.simulate(time_step=0.01)  # 模拟布朗运动轨迹，返回 ndarray 数组
-
-# 蒙特卡罗模拟布朗运动的统计量
-raw_moment = traj.raw_moment(order=1, particles=1000)  # 一阶原点矩
-central_moment = traj.central_moment(order=2, particles=1000)  # 二阶中心矩
-
-# 布朗运动首次通过时间
-fpt = bm.fpt((-1, 1))
-```
-
-## 进展
 ### 随机数生成
 
-- [x] 正态分布
-- [x] 均匀分布
-- [x] 指数分布
-- [x] 泊松分布
-- [x] alpha 稳定分布
+使用 `diffusionx.random` 进行高性能并行随机数生成。
 
-### 随机过程
+```python
+from diffusionx import random
 
-- [x] 布朗运动
-- [x] alpha 稳定 Lévy 过程
-- [x] 从属过程
-- [x] 逆从属过程
-- [x] 分数布朗运动
-- [x] 泊松过程
-- [ ] 复合泊松过程
-- [x] Langevin 过程
-- [x] 广义 Langevin 方程
-- [x] 从属 Langevin 方程
+# 生成标准正态分布随机数 (10 个样本)
+x = random.randn(10)
 
-### 泛函
+# 生成均匀分布随机数 (3x3 矩阵)，范围 [0, 1)
+u = random.uniform((3, 3), low=0.0, high=1.0)
 
-- [x] 首次通过时间
-- [x] 停留时间
+# 生成 alpha 稳定分布随机数 (alpha=1.5, beta=0.5)
+s = random.stable_rand(alpha=1.5, beta=0.5, size=1000)
+```
+
+### 随机过程模拟
+
+使用 `diffusionx.simulation` 模拟各类随机过程并计算泛函。
+
+```python
+from diffusionx.simulation import Bm, FBm, Levy
+
+# --- 布朗运动 (Brownian Motion) ---
+bm = Bm(start_position=0.0, diffusion_coefficient=1.0)
+# 模拟轨迹
+times, positions = bm.simulate(duration=10.0, time_step=0.01)
+# 计算首次通过时间 (FPT)，区间 (-1, 1)
+fpt = bm.fpt(domain=(-1, 1))
+
+# --- 分数布朗运动 (Fractional Brownian Motion) ---
+fbm = FBm(hurst_exponent=0.7)
+# 计算时间平均均方位移 (TAMSD)
+tamsd = fbm.tamsd(duration=10.0, delta=1.0)
+
+# --- Alpha 稳定 Lévy 过程 ---
+levy = Levy(alpha=1.5)
+# 计算区间 (-1, 1) 内的停留时间 (Occupation Time)
+occ_time = levy.occupation_time(domain=(-1, 1), duration=10.0)
+```
+
+## 功能特性
+
+### 随机数生成 (`diffusionx.random`)
+
+- **高斯分布**: `randn`
+- **均匀分布**: `uniform`
+- **指数分布**: `randexp`
+- **泊松分布**: `poisson`
+- **$\alpha$-稳定分布**: `stable_rand`, `skew_stable_rand`
+- **伯努利分布**: `bool_rand`
+
+### 随机过程 (`diffusionx.simulation`)
+
+**扩散与 Lévy 过程**
+- 布朗运动 (`Bm`)
+- 几何布朗运动 (`GeometricBm`)
+- 分数布朗运动 (`FBm`)
+- Lévy 过程 (`Levy`, `AsymmetricLevy`)
+- 柯西过程 (`Cauchy`, `AsymmetricCauchy`)
+- Gamma 过程 (`Gamma`)
+- Ornstein-Uhlenbeck 过程 (`OU`)
+
+**从属过程 (Subordinators)**
+- 稳定从属过程 (`Subordinator`)
+- 逆稳定从属过程 (`InvSubordinator`)
+
+**Langevin 动力学**
+- Langevin 方程 (`Langevin`)
+- 广义 Langevin 方程 (`GeneralizedLangevin`)
+- 从属 Langevin 方程 (`SubordinatedLangevin`)
+
+**布朗泛函**
+- 布朗桥 (`BrownianBridge`)
+- 布朗主要项 (`BrownianExcursion`)
+- 布朗蜿蜒 (`BrownianMeander`)
+
+**其他**
+- 连续时间随机游走 (`CTRW`)
+- 泊松过程 (`Poisson`)
+- Lévy 游走 (`LevyWalk`)
+
+### 泛函计算
+
+支持对大多数过程计算以下泛函：
+- **FPT**: 首次通过时间 (First Passage Time) 及其矩
+- **Occupation Time**: 停留时间及其矩
+- **MSD/TAMSD**: 均方位移 / 时间平均均方位移
 
 ## Benchmark
 
-### 测试结果
-
-生成长度为 `10_000_000` 的随机数组
-
-|                          | 标准正态分布 | `[0, 1]` 均匀分布 |  稳定分布  |
-| :----------------------: | :----------: | :---------------: | :--------: |
-|  DiffusionX (Rust 版本)  |  17.576 ms   |     15.131 ms     | 133.85 ms  |
-| DiffusionX (Python 版本) |   41.2 ms    |     34.3 ms     |  293 ms  |
-|          Julia           |  27.671 ms   |     12.755 ms      | 570.260 ms |
-|      NumPy / SciPy       |    199 ms    |      66.6 ms      |   1.67 s   |
-|          Numba           |      -       |         -         |   1.15 s   |
-|   北太天元  |    160.7 ms     |     64.6 ms    | 564.3 ms   |
-
-### 测试环境
-
-#### 硬件配置
-- 设备型号：MacBook Air 13-inch (2024)
-- 处理器：Apple M3 
-- 内存：16GB
-
-#### 软件环境
-- 操作系统：macOS Sequoia 15.3
-- Rust：1.85.0
-- Python：3.12
-- Julia：1.11
-- NumPy：2
-- SciPy：1.15.1
-- 北太天元：4.0.0
-
-## 技术栈 & 特性
-
-- 🦀 Rust 2024 Edition
-- 🔄 PyO3：Rust/Python 绑定
-- 🔢 NumPy：零开销数组转换
-- 🚀 高性能 
-- 🔄 零开销 NumPy 兼容：所有随机数生成函数直接返回 NumPy 数组
+性能基准测试对比了 Rust, C++, Julia 和 Python 的实现，详情请见 [此处](https://github.com/tangxiangong/diffusionx-benches)。
 
 ## 许可证
 
