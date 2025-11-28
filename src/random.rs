@@ -216,6 +216,7 @@ pub fn skew_stable_rands(
     Ok(result)
 }
 
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 #[pyo3(signature = (p = 0.5))]
 pub fn bool_rand(p: f64) -> XPyResult<bool> {

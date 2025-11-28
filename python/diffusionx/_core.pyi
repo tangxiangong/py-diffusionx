@@ -271,6 +271,8 @@ def bm_tamsd(start_position: builtins.float, diffusion_coefficient: builtins.flo
     Get the time-averaged mean square displacement of Brownian motion.
     """
 
+def bool_rand(p: builtins.float = 0.5) -> builtins.bool: ...
+
 def bool_rands(n: builtins.int, /, p: builtins.float = 0.5) -> typing.Annotated[numpy.typing.NDArray[numpy.bool], typing.Literal["N"]]: ...
 
 def cauchy_central_moment(start_position: builtins.float, duration: builtins.float, time_step: builtins.float, order: builtins.int, particles: builtins.int) -> builtins.float:
