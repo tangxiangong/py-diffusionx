@@ -12,7 +12,7 @@ from .utils import (
 )
 
 
-class OrnsteinUhlenbeck:
+class OU:
     def __init__(
         self,
         theta: real,

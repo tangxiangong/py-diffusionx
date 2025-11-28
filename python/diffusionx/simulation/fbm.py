@@ -12,7 +12,7 @@ from .utils import (
 )
 
 
-class FBM:
+class FBm:
     def __init__(
         self,
         start_position: real = 0.0,

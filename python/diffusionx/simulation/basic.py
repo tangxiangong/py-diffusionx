@@ -5,7 +5,7 @@ import numpy as np
 import numpy.typing as npt
 
 from diffusionx import _core
-from python.diffusionx.simulation.utils import (
+from .utils import (
     validate_bool,
     validate_domain,
     validate_particles,

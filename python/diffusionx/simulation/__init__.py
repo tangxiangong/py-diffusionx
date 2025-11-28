@@ -1,21 +1,17 @@
 from .bm import Bm
 from .levy import Levy, Subordinator, InvSubordinator, AsymmetricLevy
-from .fbm import FBM
+from .fbm import FBm
 from .ctrw import CTRW
 from .poisson import Poisson
 from .langevin import Langevin, GeneralizedLangevin, SubordinatedLangevin
-from .functional import (
-    FPT,
-    OccupationTime,
-)
 from .bb import BrownianBridge
 from .be import BrownianExcursion
 from .meander import BrownianMeander
 from .cauchy import Cauchy, AsymmetricCauchy
 from .gamma import Gamma
-from .gb import GeometricBM
+from .gb import GeometricBm
 from .levy_walk import LevyWalk
-from .ou import OrnsteinUhlenbeck
+from .ou import OU
 
 __all__ = [
     "Bm",
@@ -23,7 +19,7 @@ __all__ = [
     "AsymmetricLevy",
     "Subordinator",
     "InvSubordinator",
-    "FBM",
+    "FBm",
     "CTRW",
     "Poisson",
     "Langevin",
@@ -35,9 +31,7 @@ __all__ = [
     "Cauchy",
     "AsymmetricCauchy",
     "Gamma",
-    "GeometricBM",
+    "GeometricBm",
     "LevyWalk",
-    "OrnsteinUhlenbeck",
-    "FPT",
-    "OccupationTime",
+    "OU",
 ]

@@ -12,7 +12,7 @@ from .utils import (
 )
 
 
-class GeometricBM:
+class GeometricBm:
     def __init__(
         self,
         start_value: real = 1.0,
