@@ -79,8 +79,7 @@ jobs:
         uses: PyO3/maturin-action@v1
         with:
           target: ${{ matrix.target }}
-          # generate-import-lib needed for aarch64 cross-compilation without native Python
-          args: --release --out dist --features pyo3/generate-import-lib
+          args: --release --out dist ${{ matrix.target == 'aarch64' && '--features pyo3/generate-import-lib' || '' }}
 
       - name: Upload wheels
         uses: actions/upload-artifact@v4
@@ -151,7 +150,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        target: [x64, aarch64]
+        # CPython 3.13t is only available on Windows x64 currently
+        target: [x64]
     steps:
       - uses: actions/checkout@v4
         with:
@@ -167,8 +167,7 @@ jobs:
         uses: PyO3/maturin-action@v1
         with:
           target: ${{ matrix.target }}
-          # generate-import-lib needed for aarch64 cross-compilation without native Python
-          args: --release --out dist --features pyo3/generate-import-lib
+          args: --release --out dist --interpreter 3.13t
 
       - name: Upload wheels
         uses: actions/upload-artifact@v4
@@ -262,3 +261,10 @@ jobs:
         with:
           verbose: true
           skip-existing: true
+
+      - name: Upload assets to GitHub Release
+        if: github.event_name == 'release'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.event.release.tag_name }}
+          files: dist/*
