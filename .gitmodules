@@ -1,0 +1,3 @@
+[submodule "benchmark/cpp/diffusionx"]
+	path = benchmark/cpp/diffusionx
+	url = https://github.com/tangxiangong/diffusionx.cpp.git

@@ -1,0 +1,3 @@
+[submodule "cpp/diffusionx"]
+	path = cpp/diffusionx
+	url = https://github.com/tangxiangong/diffusionx.cpp
