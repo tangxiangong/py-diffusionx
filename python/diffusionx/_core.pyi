@@ -380,7 +380,7 @@ def ctrw_simulate_step(alpha: builtins.float, beta: builtins.float, start_positi
     Simulate CTRW.
     """
 
-def eatamsd(process: typing.Any, duration: builtins.float, delta: builtins.float, particles: builtins.int, time_step: builtins.float, quad_order: builtins.int) -> builtins.float: ...
+def eatamsd(simulate_fn: typing.Any, duration: builtins.float, delta: builtins.float, particles: builtins.int, time_step: builtins.float, quad_order: builtins.int) -> builtins.float: ...
 
 def exp_rand(scale: builtins.float = 1.0) -> builtins.float: ...
 
@@ -440,8 +440,6 @@ def fbm_tamsd(start_position: builtins.float, hurst_exponent: builtins.float, du
     r"""
     Get the time-averaged mean squared displacement of FBm.
     """
-
-def fpt(process: typing.Any, domain: tuple[builtins.float, builtins.float], max_duration: builtins.float, time_step: builtins.float) -> typing.Optional[builtins.float]: ...
 
 def gamma_central_moment(shape: builtins.float, rate: builtins.float, duration: builtins.float, time_step: builtins.float, order: builtins.int, particles: builtins.int) -> builtins.float:
     r"""
@@ -773,7 +771,7 @@ def levy_walk_simulate(alpha: builtins.float, velocity: builtins.float, start_po
     Simulate Levy walk.
     """
 
-def mean(process: typing.Any, duration: builtins.float, time_step: builtins.float, particles: builtins.int) -> builtins.float: ...
+def mean(simulate_fn: typing.Any, duration: builtins.float, time_step: builtins.float, particles: builtins.int) -> builtins.float: ...
 
 def meander_central_moment(duration: builtins.float, time_step: builtins.float, order: builtins.int, particles: builtins.int) -> builtins.float:
     r"""
@@ -830,15 +828,13 @@ def meander_tamsd(duration: builtins.float, delta: builtins.float, time_step: bu
     Get the time-averaged mean square displacement of Brownian meander.
     """
 
-def moment(process: typing.Any, central: builtins.bool, order: builtins.int, duration: builtins.float, time_step: builtins.float, particles: builtins.int) -> builtins.float: ...
+def moment(simulate_fn: typing.Any, central: builtins.bool, order: builtins.int, duration: builtins.float, time_step: builtins.float, particles: builtins.int) -> builtins.float: ...
 
-def msd(process: typing.Any, duration: builtins.float, time_step: builtins.float, particles: builtins.int) -> builtins.float: ...
+def msd(simulate_fn: typing.Any, duration: builtins.float, time_step: builtins.float, particles: builtins.int) -> builtins.float: ...
 
 def normal_rand(mu: builtins.float = 0.0, sigma: builtins.float = 1.0) -> builtins.float: ...
 
 def normal_rands(n: builtins.int, /, mu: builtins.float = 0.0, sigma: builtins.float = 1.0) -> numpy.typing.NDArray[numpy.float64]: ...
-
-def occupation_time(process: typing.Any, domain: tuple[builtins.float, builtins.float], duration: builtins.float, time_step: builtins.float) -> builtins.float: ...
 
 def ou_central_moment(theta: builtins.float, sigma: builtins.float, start_position: builtins.float, duration: builtins.float, time_step: builtins.float, order: builtins.int, particles: builtins.int) -> builtins.float:
     r"""
@@ -1047,7 +1043,7 @@ def subordinator_simulate(alpha: builtins.float, duration: builtins.float, time_
     Simulate subordinator process.
     """
 
-def tamsd(process: typing.Any, duration: builtins.float, delta: builtins.float, time_step: builtins.float, quad_order: builtins.int) -> builtins.float: ...
+def tamsd(simulate_fn: typing.Any, duration: builtins.float, delta: builtins.float, time_step: builtins.float, quad_order: builtins.int) -> builtins.float: ...
 
 def uniform_rand_float(low: builtins.float = 0.0, high: builtins.float = 1.0, /, end: builtins.bool = False) -> builtins.float: ...
 

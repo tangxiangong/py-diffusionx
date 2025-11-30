@@ -7,7 +7,6 @@ import numpy.typing as npt
 from diffusionx import _core
 from .utils import (
     validate_bool,
-    validate_domain,
     validate_particles,
     validate_positive_float,
     validate_positive_integer,
@@ -50,7 +49,9 @@ class ContinuousProcess(ABC):
         duration = validate_positive_float(duration, "duration")
         time_step = validate_positive_float(time_step, "time_step")
         particles = validate_particles(particles)
-        return _core.moment(self, central, order, duration, time_step, particles)
+        return _core.moment(
+            self.simulate, central, order, duration, time_step, particles
+        )
 
     def mean(
         self, duration: real, time_step: float = 0.01, particles: int = 10_000
@@ -58,7 +59,7 @@ class ContinuousProcess(ABC):
         duration = validate_positive_float(duration, "duration")
         time_step = validate_positive_float(time_step, "time_step")
         particles = validate_particles(particles)
-        return _core.mean(self, duration, time_step, particles)
+        return _core.mean(self.simulate, duration, time_step, particles)
 
     def msd(
         self, duration: real, time_step: float = 0.01, particles: int = 10_000
@@ -66,7 +67,7 @@ class ContinuousProcess(ABC):
         duration = validate_positive_float(duration, "duration")
         time_step = validate_positive_float(time_step, "time_step")
         particles = validate_particles(particles)
-        return _core.msd(self, duration, time_step, particles)
+        return _core.msd(self.simulate, duration, time_step, particles)
 
     def eatamsd(
         self,
@@ -81,7 +82,9 @@ class ContinuousProcess(ABC):
         time_step = validate_positive_float(time_step, "time_step")
         quad_order = validate_positive_integer(quad_order, "quad_order")
         particles = validate_particles(particles)
-        return _core.eatamsd(self, duration, delta, particles, time_step, quad_order)
+        return _core.eatamsd(
+            self.simulate, duration, delta, particles, time_step, quad_order
+        )
 
     def tamsd(
         self, duration: real, delta: float, time_step: float = 0.01, quad_order: int = 5
@@ -90,26 +93,26 @@ class ContinuousProcess(ABC):
         delta = validate_positive_float(delta, "delta")
         time_step = validate_positive_float(time_step, "time_step")
         quad_order = validate_positive_integer(quad_order, "quad_order")
-        return _core.tamsd(self, duration, delta, time_step, quad_order)
+        return _core.tamsd(self.simulate, duration, delta, time_step, quad_order)
 
-    def fpt(
-        self,
-        domain: tuple[real, real],
-        time_step: float = 0.01,
-        max_duration: real = 100,
-    ) -> float | None:
-        domain = validate_domain(domain, "poisson_fpt", self.__class__.__name__)
-        time_step = validate_positive_float(time_step, "time_step")
-        max_duration = validate_positive_float(max_duration, "max_duration")
-        return _core.fpt(self, domain, max_duration, time_step)
+    # def fpt(
+    #     self,
+    #     domain: tuple[real, real],
+    #     time_step: float = 0.01,
+    #     max_duration: real = 100,
+    # ) -> float | None:
+    #     domain = validate_domain(domain, "poisson_fpt", self.__class__.__name__)
+    #     time_step = validate_positive_float(time_step, "time_step")
+    #     max_duration = validate_positive_float(max_duration, "max_duration")
+    #     return _core.fpt(self, domain, max_duration, time_step)
 
-    def occupation_time(
-        self,
-        domain: tuple[real, real],
-        duration: real,
-        time_step: float = 0.01,
-    ) -> float:
-        domain = validate_domain(domain, "poisson_fpt", self.__class__.__name__)
-        time_step = validate_positive_float(time_step, "time_step")
-        duration = validate_positive_float(duration, "duration")
-        return _core.occupation_time(self, domain, duration, time_step)
+    # def occupation_time(
+    #     self,
+    #     domain: tuple[real, real],
+    #     duration: real,
+    #     time_step: float = 0.01,
+    # ) -> float:
+    #     domain = validate_domain(domain, "poisson_fpt", self.__class__.__name__)
+    #     time_step = validate_positive_float(time_step, "time_step")
+    #     duration = validate_positive_float(duration, "duration")
+    #     return _core.occupation_time(self, domain, duration, time_step)
