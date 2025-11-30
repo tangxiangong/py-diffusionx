@@ -6,10 +6,7 @@
 import diffusionx.random;
 
 int main(int argc, char **argv) {
-    size_t bench_size = 20;
-    if (argc > 1) {
-        bench_size = std::atoi(argv[1]);
-    }
+    size_t bench_size = 200;
     size_t len = 10000000;
 
     auto uniform = [len]() { auto result = rand(len).value(); };
@@ -18,6 +15,8 @@ int main(int argc, char **argv) {
 
     auto normal = [len]() { auto result = randn(len).value(); };
 
+    auto exponential = [len]() { auto result = randexp(len).value(); };
+
     std::println("==========================C++==========================");
     std::println("\n");
 
@@ -25,16 +24,10 @@ int main(int argc, char **argv) {
                  len);
     std::println("\n");
 
-    std::println("-----------uniform random number sampling--------------");
     bench("uniform random number sampling", uniform, bench_size);
-
-    std::println("------------normal random number sampling--------------");
     bench("normal random number sampling", normal, bench_size);
-
-    std::println("-----------stable random number sampling---------------");
+    bench("exponential random number sampling", exponential, bench_size);
     bench("stable random number sampling", stable, bench_size);
 
-    std::println("=======================================================");
-    std::println("\n");
     return 0;
 }

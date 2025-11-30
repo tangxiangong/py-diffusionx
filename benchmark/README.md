@@ -1,30 +1,40 @@
 # Benchmarks
 
-## Random Number Sampling
+## Random Number Sampling (unit: ms, len: 10_000_000)
 
-### Uniform 
-| | mean | stddev | min | max |
-|:---:|:---:|:---:|:---:|:---:|
-| C++ | 0.0188 | 0.0046 | 0.0169 | 0.0382 |
-| Rust | 0.0153 |  | 0.0135 | 0.0298 |
-| Julia | 0.0092 | 0.0042 | 0.0079 | 0.0266 |
-| Python (Rust wrapper) | 0.0140 | 0.0003 | 0.0136 | 0.0148  |
-| Python (NumPy / SciPy) | 0.0289 | 0.0008 | 0.0283 | 0.0318 |
+### Uniform distribution
+| | mean | min | max |
+|:---:|:---:|:---:|:---:|
+| C++ | 12.848 | 11.963 | 25.771 |
+| Rust | 1.641 | 1.628 | 1.655 |
+| Julia | 4.198 | 4.030 | 33.727 |
+| Python (Rust wrapper) | - | - | - |
+| Python (NumPy / SciPy) | 26.22 | 25.84 | 26.61 |
 
-### Normal
-| | mean | stddev | min | max |
-|:---:|:---:|:---:|:---:|:---:|
-| C++ | 0.0552 | 0.0018 | 0.0516 | 0.0587 |
-| Rust | 0.0175 |  | 0.0171 | 0.0183 |
-| Julia | 0.0182 | 0.0062 | 0.0165 | 0.0446 |
-| Python (Rust wrapper) | 0.0177 | 0.0003 | 0.0174 | 0.0186 |
-| Python (NumPy / SciPy) | 0.1180 | 0.0002 | 0.1177 | 0.1186 |
+### Normal distribution
+| | mean | min | max |
+|:---:|:---:|:---:|:---:|
+| C++ | 50.348 | 45.629 | 134.988 |
+| Rust | 6.701 | 6.631 | 6.810 |
+| Julia | 12.831 | 12.393 | 43.719 |
+| Python (Rust wrapper) | - | - | - |
+| Python (NumPy / SciPy) | 108.02 | 106.00 | 132.79 |
 
-### Stable
-| | mean | stddev | min | max |
-|:---:|:---:|:---:|:---:|:---:|
-| C++ | 0.1398 | 0.0034 | 0.1337 | 0.1503 |
-| Rust | 0.1184 |  | 0.1169 | 0.1224 |
-| Julia | 0.3056 | 0.0063 | 0.2941 | 0.3170 |
-| Python (Rust wrapper) | 0.1200 | 0.0013 | 0.1175 | 0.1225 |
-| Python (NumPy / SciPy) | 0.7646 | 0.0118 | 0.7548 | 0.8133 |
+### Exponential distribution
+| | mean | min | max |
+|:---:|:---:|:---:|:---:|
+| C++ | 33.3436  | 28.1625 | 40.7075 |
+| Rust | 7.010 | 6.978 | 7.048 |
+| Julia | 13.545 | 13.312 | 26.987 |
+| Python (Rust wrapper) | - | - | - |
+| Python (NumPy / SciPy) | 86.37 | 86.07 | 87.04 |
+
+
+### Stable distribution
+| | mean | min | max |
+|:---:|:---:|:---:|:---:|
+| C++ | 145.7687 | 132.5238 | 187.3853 |
+| Rust | 73.293  | 73.488 | 73.702 |
+| Julia | 274.270 | 261.133 | 286.218 |
+| Python (Rust wrapper) | - | - | - |
+| Python (NumPy / SciPy) | 615.60 | 612.23 | 621.36 |
