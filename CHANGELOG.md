@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.1.1] - 2025-11-30
+
+### Changes
+
+- Simplified Python integration by removing the `ContinuousProcess` wrapper in favor of direct callables
+- Updated APIs to accept `simulate` callables instead of process instances
+- Bumped crate version to `0.1.1`
+- Updated `pyo3` to `0.27.2`
+- Updated `diffusionx` to `0.8.2` (now using `Xoshiro256++` for RNG)
+
 ## [0.1.0] - 2025-11-28
 
 ### 🚀 Features
