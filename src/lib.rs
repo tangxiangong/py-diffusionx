@@ -31,7 +31,8 @@ macro_rules! register_functions {
 /// A Python module implemented in Rust. The name of this function must match
 /// the `lib.name` setting in the `Cargo.toml`, else Python will not be able to
 /// import the module.
-#[pymodule]
+
+#[pymodule(gil_used = false)]
 fn _core(_py: Python, m: &Bound<'_, PyModule>) -> PyResult<()> {
     rayon::ThreadPoolBuilder::new()
         .num_threads(num_cpus::get())
@@ -60,8 +61,8 @@ fn _core(_py: Python, m: &Bound<'_, PyModule>) -> PyResult<()> {
         simulation::moment,
         simulation::mean,
         simulation::msd,
-        simulation::fpt,
-        simulation::occupation_time,
+        // simulation::fpt,
+        // simulation::occupation_time,
         simulation::tamsd,
         simulation::eatamsd,
         // Brownian Motion

@@ -8,11 +8,19 @@ pub type XPyResult<T> = Result<T, XPyError>;
 pub enum XPyError {
     #[error("Invalid value: {0}")]
     ValueError(String),
+    #[error("{0}")]
+    GaussLegendreError(String),
 }
 
 impl From<XError> for XPyError {
     fn from(error: XError) -> Self {
         XPyError::ValueError(error.to_string())
+    }
+}
+
+impl From<gauss_quad::legendre::GaussLegendreError> for XPyError {
+    fn from(error: gauss_quad::legendre::GaussLegendreError) -> Self {
+        XPyError::GaussLegendreError(error.to_string())
     }
 }
 
