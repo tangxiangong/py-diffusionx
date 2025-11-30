@@ -2,7 +2,7 @@
 name = "py-diffusionx"
 authors = ["xiangong tang <tangxiangong@gmail.com>"]
 edition = "2024"
-version = "0.1.0"
+version = "0.1.1"
 
 [lib]
 name = "_core"
@@ -22,7 +22,7 @@ diffusionx = "0.8.2"
 gauss-quad = "0.2.4"
 num_cpus = "1.17"
 numpy = "0.27"
-pyo3 = { version = "0.27", features = ["abi3-py311", "experimental-inspect"] }
+pyo3 = { version = "0.27.2", features = ["abi3-py311", "experimental-inspect"] }
 pyo3-stub-gen = { version = "0.17.2", optional = true }
 rand = "0.9"
 rayon = "1.11"
