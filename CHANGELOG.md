@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.1.2] - 2025-12-01
+
+### 🚀 Features
+
+- Add `mean` and `msd` methods to `BrownianBridge`, `BrownianExcursion`, `Bm`, `CTRW`, `FBm`, `Gamma`, `GeometricBm`, `GeneralizedLangevin`, `Langevin`,  `BrownianMeander`, `OU`, `Poisson`, and `SubordinatedLangevin`  classes.
+
 ## [0.1.1] - 2025-11-30
 
 ### Changes
