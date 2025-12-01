@@ -170,3 +170,33 @@ pub fn ctrw_occupation_time_central_moment(
     let result = oc.central_moment_p(order, particles)?;
     Ok(result)
 }
+
+/// Get the mean of CTRW.
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
+#[pyfunction]
+pub fn ctrw_mean(
+    alpha: f64,
+    beta: f64,
+    start_position: f64,
+    duration: f64,
+    particles: usize,
+) -> XPyResult<f64> {
+    let ctrw = CTRW::new(alpha, beta, start_position)?;
+    let result = ctrw.mean(duration, particles)?;
+    Ok(result)
+}
+
+/// Get the msd of CTRW.
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
+#[pyfunction]
+pub fn ctrw_msd(
+    alpha: f64,
+    beta: f64,
+    start_position: f64,
+    duration: f64,
+    particles: usize,
+) -> XPyResult<f64> {
+    let ctrw = CTRW::new(alpha, beta, start_position)?;
+    let result = ctrw.msd(duration, particles)?;
+    Ok(result)
+}

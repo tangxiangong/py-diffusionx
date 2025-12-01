@@ -286,3 +286,51 @@ class BrownianBridge:
             time_step,
             quad_order,
         )
+
+    def mean(
+        self, duration: real, time_step: float = 0.01, particles: int = 10_000
+    ) -> float:
+        """
+        Calculate the mean of the Brownian bridge.
+
+        Args:
+            duration (real): The total duration of the simulation.
+            time_step (real, optional): Step size for the simulation. Defaults to 0.01.
+            particles (int, optional): Number of particles (positive integer) for ensemble averaging. Defaults to 10_000.
+
+        Returns:
+            float: The mean of the Brownian bridge.
+        """
+        duration = validate_positive_float(duration, "duration")
+        particles = validate_particles(particles)
+        time_step = validate_positive_float(time_step, "time_step")
+
+        return _core.bb_mean(
+            duration,
+            particles,
+            time_step,
+        )
+
+    def msd(
+        self, duration: real, time_step: float = 0.01, particles: int = 10_000
+    ) -> float:
+        """
+        Calculate the mean squared displacement (MSD) of the Brownian bridge.
+
+        Args:
+            duration (real): The total duration of the simulation.
+            time_step (real, optional): Step size for the simulation. Defaults to 0.01.
+            particles (int, optional): Number of particles (positive integer) for ensemble averaging. Defaults to 10_000.
+
+        Returns:
+            float: The mean squared displacement of the Brownian bridge.
+        """
+        duration = validate_positive_float(duration, "duration")
+        particles = validate_particles(particles)
+        time_step = validate_positive_float(time_step, "time_step")
+
+        return _core.bb_msd(
+            duration,
+            particles,
+            time_step,
+        )

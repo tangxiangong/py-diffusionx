@@ -160,3 +160,21 @@ pub fn meander_eatamsd(
     let result = bm.eatamsd(duration, delta, particles, time_step, quad_order)?;
     Ok(result)
 }
+
+/// Get the mean of Brownian meander.
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
+#[pyfunction]
+pub fn meander_mean(duration: f64, particles: usize, time_step: f64) -> XPyResult<f64> {
+    let bm = BrownianMeander;
+    let result = bm.mean(duration, particles, time_step)?;
+    Ok(result)
+}
+
+/// Get the msd of Brownian meander.
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
+#[pyfunction]
+pub fn meander_msd(duration: f64, particles: usize, time_step: f64) -> XPyResult<f64> {
+    let bm = BrownianMeander;
+    let result = bm.msd(duration, particles, time_step)?;
+    Ok(result)
+}

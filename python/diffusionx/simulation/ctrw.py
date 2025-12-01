@@ -229,3 +229,47 @@ class CTRW:
             )
         )
         return result
+
+    def mean(self, duration: real, particles: int = 10_000) -> float:
+        """
+        Calculate the mean of the CTRW.
+
+        Args:
+            duration (real): The total duration of the simulation.
+            particles (int, optional): Number of particles (positive integer) for ensemble averaging. Defaults to 10_000.
+
+        Returns:
+            float: The mean of the CTRW.
+        """
+        duration = validate_positive_float(duration, "duration (motion duration)")
+        particles = validate_particles(particles)
+
+        return _core.ctrw_mean(
+            self.alpha,
+            self.beta,
+            self.start_position,
+            duration,
+            particles,
+        )
+
+    def msd(self, duration: real, particles: int = 10_000) -> float:
+        """
+        Calculate the mean squared displacement (MSD) of the CTRW.
+
+        Args:
+            duration (real): The total duration of the simulation.
+            particles (int, optional): Number of particles (positive integer) for ensemble averaging. Defaults to 10_000.
+
+        Returns:
+            float: The mean squared displacement of the CTRW.
+        """
+        duration = validate_positive_float(duration, "duration (motion duration)")
+        particles = validate_particles(particles)
+
+        return _core.ctrw_msd(
+            self.alpha,
+            self.beta,
+            self.start_position,
+            duration,
+            particles,
+        )

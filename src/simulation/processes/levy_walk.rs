@@ -68,3 +68,35 @@ pub fn levy_walk_fpt(
     let result = levy_walk.fpt(domain, max_duration, 0.1)?;
     Ok(result)
 }
+
+/// Get the mean of Levy walk.
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
+#[pyfunction]
+pub fn levy_walk_mean(
+    alpha: f64,
+    velocity: f64,
+    start_position: f64,
+    duration: f64,
+    particles: usize,
+    time_step: f64,
+) -> XPyResult<f64> {
+    let levy_walk = LevyWalk::new(alpha, velocity, start_position)?;
+    let result = levy_walk.mean(duration, particles, time_step)?;
+    Ok(result)
+}
+
+/// Get the msd of Levy walk.
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
+#[pyfunction]
+pub fn levy_walk_msd(
+    alpha: f64,
+    velocity: f64,
+    start_position: f64,
+    duration: f64,
+    particles: usize,
+    time_step: f64,
+) -> XPyResult<f64> {
+    let levy_walk = LevyWalk::new(alpha, velocity, start_position)?;
+    let result = levy_walk.msd(duration, particles, time_step)?;
+    Ok(result)
+}

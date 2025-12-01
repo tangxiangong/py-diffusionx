@@ -335,3 +335,55 @@ class Bm:
             time_step,
             quad_order,
         )
+
+    def mean(
+        self, duration: real, time_step: float = 0.01, particles: int = 10_000
+    ) -> float:
+        """
+        Calculate the mean of the Brownian motion.
+
+        Args:
+            duration (real): The total duration of the simulation.
+            time_step (real, optional): Step size for the simulation. Defaults to 0.01.
+            particles (int, optional): Number of particles (positive integer) for ensemble averaging. Defaults to 10_000.
+
+        Returns:
+            float: The mean of the Brownian motion.
+        """
+        duration = validate_positive_float(duration, "duration (motion duration)")
+        particles = validate_particles(particles)
+        time_step = validate_positive_float(time_step, "time_step")
+
+        return _core.bm_mean(
+            self.start_position,
+            self.diffusion_coefficient,
+            duration,
+            particles,
+            time_step,
+        )
+
+    def msd(
+        self, duration: real, time_step: float = 0.01, particles: int = 10_000
+    ) -> float:
+        """
+        Calculate the mean squared displacement (MSD) of the Brownian motion.
+
+        Args:
+            duration (real): The total duration of the simulation.
+            time_step (real, optional): Step size for the simulation. Defaults to 0.01.
+            particles (int, optional): Number of particles (positive integer) for ensemble averaging. Defaults to 10_000.
+
+        Returns:
+            float: The mean squared displacement of the Brownian motion.
+        """
+        duration = validate_positive_float(duration, "duration (motion duration)")
+        particles = validate_particles(particles)
+        time_step = validate_positive_float(time_step, "time_step")
+
+        return _core.bm_msd(
+            self.start_position,
+            self.diffusion_coefficient,
+            duration,
+            particles,
+            time_step,
+        )

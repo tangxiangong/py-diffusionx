@@ -188,3 +188,33 @@ pub fn bm_eatamsd(
     let result = bm.eatamsd(duration, delta, particles, time_step, quad_order)?;
     Ok(result)
 }
+
+/// Get the mean of Brownian motion.
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
+#[pyfunction]
+pub fn bm_mean(
+    start_position: f64,
+    diffusion_coefficient: f64,
+    duration: f64,
+    particles: usize,
+    time_step: f64,
+) -> XPyResult<f64> {
+    let bm = Bm::new(start_position, diffusion_coefficient)?;
+    let result = bm.mean(duration, particles, time_step)?;
+    Ok(result)
+}
+
+/// Get the msd of Brownian motion.
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
+#[pyfunction]
+pub fn bm_msd(
+    start_position: f64,
+    diffusion_coefficient: f64,
+    duration: f64,
+    particles: usize,
+    time_step: f64,
+) -> XPyResult<f64> {
+    let bm = Bm::new(start_position, diffusion_coefficient)?;
+    let result = bm.msd(duration, particles, time_step)?;
+    Ok(result)
+}

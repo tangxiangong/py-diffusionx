@@ -147,3 +147,21 @@ pub fn be_eatamsd(
     let result = be.eatamsd(duration, delta, particles, time_step, quad_order)?;
     Ok(result)
 }
+
+/// Get the mean of Brownian excursion.
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
+#[pyfunction]
+pub fn be_mean(duration: f64, particles: usize, time_step: f64) -> XPyResult<f64> {
+    let be = BrownianExcursion;
+    let result = be.mean(duration, particles, time_step)?;
+    Ok(result)
+}
+
+/// Get the msd of Brownian excursion.
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
+#[pyfunction]
+pub fn be_msd(duration: f64, particles: usize, time_step: f64) -> XPyResult<f64> {
+    let be = BrownianExcursion;
+    let result = be.msd(duration, particles, time_step)?;
+    Ok(result)
+}

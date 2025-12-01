@@ -142,3 +142,21 @@ pub fn poisson_occupation_time_central_moment(
     let result = oc.central_moment_p(order, particles)?;
     Ok(result)
 }
+
+/// Get the mean of Poisson process.
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
+#[pyfunction]
+pub fn poisson_mean(lambda_: f64, duration: f64, particles: usize) -> XPyResult<f64> {
+    let poisson = Poisson::new(lambda_)?;
+    let result = poisson.mean(duration, particles)?;
+    Ok(result)
+}
+
+/// Get the msd of Poisson process.
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
+#[pyfunction]
+pub fn poisson_msd(lambda_: f64, duration: f64, particles: usize) -> XPyResult<f64> {
+    let poisson = Poisson::new(lambda_)?;
+    let result = poisson.msd(duration, particles)?;
+    Ok(result)
+}

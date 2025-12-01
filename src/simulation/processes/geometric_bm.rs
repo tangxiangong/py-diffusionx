@@ -199,3 +199,35 @@ pub fn gb_eatamsd(
     let result = gb.eatamsd(duration, delta, particles, time_step, quad_order)?;
     Ok(result)
 }
+
+/// Get the mean of Geometric Brownian Motion.
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
+#[pyfunction]
+pub fn gb_mean(
+    start_position: f64,
+    mu: f64,
+    sigma: f64,
+    duration: f64,
+    particles: usize,
+    time_step: f64,
+) -> XPyResult<f64> {
+    let gb = GeometricBm::new(start_position, mu, sigma)?;
+    let result = gb.mean(duration, particles, time_step)?;
+    Ok(result)
+}
+
+/// Get the msd of Geometric Brownian Motion.
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
+#[pyfunction]
+pub fn gb_msd(
+    start_position: f64,
+    mu: f64,
+    sigma: f64,
+    duration: f64,
+    particles: usize,
+    time_step: f64,
+) -> XPyResult<f64> {
+    let gb = GeometricBm::new(start_position, mu, sigma)?;
+    let result = gb.msd(duration, particles, time_step)?;
+    Ok(result)
+}

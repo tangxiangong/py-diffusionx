@@ -220,3 +220,47 @@ class Poisson:
                 particles,
             )
         )
+
+    def mean(self, duration: real, particles: int = 10_000) -> float:
+        """
+        Calculate the mean of the Poisson process.
+
+        Args:
+            duration (real): The total duration of the simulation.
+            particles (int, optional): Number of particles (positive integer) for ensemble averaging. Defaults to 10_000.
+
+        Returns:
+            float: The mean of the Poisson process.
+        """
+        duration = validate_positive_float(duration, "duration (motion duration)")
+        particles = validate_particles(particles)
+
+        return _core.poisson_mean(
+            self.lambda_,
+            duration,
+            particles,
+        )
+
+    def msd(
+        self,
+        duration: real,
+        particles: int = 10_000,
+    ) -> float:
+        """
+        Calculate the mean squared displacement (MSD) of the Poisson process.
+
+        Args:
+            duration (real): The total duration of the simulation.
+            particles (int, optional): Number of particles (positive integer) for ensemble averaging. Defaults to 10_000.
+
+        Returns:
+            float: The mean squared displacement of the Poisson process.
+        """
+        duration = validate_positive_float(duration, "duration (motion duration)")
+        particles = validate_particles(particles)
+
+        return _core.poisson_msd(
+            self.lambda_,
+            duration,
+            particles,
+        )

@@ -188,3 +188,33 @@ pub fn gamma_eatamsd(
     let result = gamma.eatamsd(duration, delta, particles, time_step, quad_order)?;
     Ok(result)
 }
+
+/// Get the mean of Gamma.
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
+#[pyfunction]
+pub fn gamma_mean(
+    shape: f64,
+    rate: f64,
+    duration: f64,
+    particles: usize,
+    time_step: f64,
+) -> XPyResult<f64> {
+    let gamma = Gamma::new(shape, rate)?;
+    let result = gamma.mean(duration, particles, time_step)?;
+    Ok(result)
+}
+
+/// Get the msd of Gamma.
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
+#[pyfunction]
+pub fn gamma_msd(
+    shape: f64,
+    rate: f64,
+    duration: f64,
+    particles: usize,
+    time_step: f64,
+) -> XPyResult<f64> {
+    let gamma = Gamma::new(shape, rate)?;
+    let result = gamma.msd(duration, particles, time_step)?;
+    Ok(result)
+}

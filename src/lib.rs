@@ -77,6 +77,8 @@ fn _core(_py: Python, m: &Bound<'_, PyModule>) -> PyResult<()> {
         simulation::bm_occupation_time_central_moment,
         simulation::bm_tamsd,
         simulation::bm_eatamsd,
+        simulation::bm_mean,
+        simulation::bm_msd,
         // Fractional Brownian Motion
         simulation::fbm_simulate,
         simulation::fbm_raw_moment,
@@ -89,6 +91,8 @@ fn _core(_py: Python, m: &Bound<'_, PyModule>) -> PyResult<()> {
         simulation::fbm_occupation_time_central_moment,
         simulation::fbm_tamsd,
         simulation::fbm_eatamsd,
+        simulation::fbm_mean,
+        simulation::fbm_msd,
         // Continuous Time Random Walk
         simulation::ctrw_simulate_duration,
         simulation::ctrw_simulate_step,
@@ -167,6 +171,8 @@ fn _core(_py: Python, m: &Bound<'_, PyModule>) -> PyResult<()> {
         simulation::poisson_occupation_time,
         simulation::poisson_occupation_time_raw_moment,
         simulation::poisson_occupation_time_central_moment,
+        simulation::poisson_mean,
+        simulation::poisson_msd,
         // Subordinator
         simulation::subordinator_simulate,
         simulation::subordinator_fpt,
@@ -194,6 +200,8 @@ fn _core(_py: Python, m: &Bound<'_, PyModule>) -> PyResult<()> {
         simulation::bb_occupation_time,
         simulation::bb_occupation_time_raw_moment,
         simulation::bb_occupation_time_central_moment,
+        simulation::bb_mean,
+        simulation::bb_msd,
         simulation::bb_tamsd,
         simulation::bb_eatamsd,
         // Brownian Excursion
@@ -206,6 +214,8 @@ fn _core(_py: Python, m: &Bound<'_, PyModule>) -> PyResult<()> {
         simulation::be_occupation_time,
         simulation::be_occupation_time_raw_moment,
         simulation::be_occupation_time_central_moment,
+        simulation::be_mean,
+        simulation::be_msd,
         simulation::be_tamsd,
         simulation::be_eatamsd,
         // Brownian Meander
@@ -218,6 +228,8 @@ fn _core(_py: Python, m: &Bound<'_, PyModule>) -> PyResult<()> {
         simulation::meander_occupation_time,
         simulation::meander_occupation_time_raw_moment,
         simulation::meander_occupation_time_central_moment,
+        simulation::meander_mean,
+        simulation::meander_msd,
         simulation::meander_tamsd,
         simulation::meander_eatamsd,
         // Cauchy Process
@@ -254,6 +266,8 @@ fn _core(_py: Python, m: &Bound<'_, PyModule>) -> PyResult<()> {
         simulation::gamma_occupation_time,
         simulation::gamma_occupation_time_raw_moment,
         simulation::gamma_occupation_time_central_moment,
+        simulation::gamma_mean,
+        simulation::gamma_msd,
         simulation::gamma_tamsd,
         simulation::gamma_eatamsd,
         // Geometric Brownian Motion
@@ -266,6 +280,8 @@ fn _core(_py: Python, m: &Bound<'_, PyModule>) -> PyResult<()> {
         simulation::gb_occupation_time,
         simulation::gb_occupation_time_raw_moment,
         simulation::gb_occupation_time_central_moment,
+        simulation::gb_mean,
+        simulation::gb_msd,
         simulation::gb_tamsd,
         simulation::gb_eatamsd,
         // Levy Walk
@@ -273,13 +289,6 @@ fn _core(_py: Python, m: &Bound<'_, PyModule>) -> PyResult<()> {
         simulation::levy_walk_raw_moment,
         simulation::levy_walk_central_moment,
         simulation::levy_walk_fpt,
-        // simulation::levy_walk_fpt_raw_moment,
-        // simulation::levy_walk_fpt_central_moment,
-        // simulation::levy_walk_occupation_time,
-        // simulation::levy_walk_occupation_time_raw_moment,
-        // simulation::levy_walk_occupation_time_central_moment,
-        // simulation::levy_walk_tamsd,
-        // simulation::levy_walk_eatamsd,
         // Ornstein-Uhlenbeck Process
         simulation::ou_simulate,
         simulation::ou_raw_moment,
@@ -290,6 +299,8 @@ fn _core(_py: Python, m: &Bound<'_, PyModule>) -> PyResult<()> {
         simulation::ou_occupation_time,
         simulation::ou_occupation_time_raw_moment,
         simulation::ou_occupation_time_central_moment,
+        simulation::ou_mean,
+        simulation::ou_msd,
         simulation::ou_tamsd,
         simulation::ou_eatamsd,
     );

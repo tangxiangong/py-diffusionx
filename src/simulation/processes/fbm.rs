@@ -188,3 +188,33 @@ pub fn fbm_eatamsd(
     let result = fbm.eatamsd(duration, delta, particles, time_step, quad_order)?;
     Ok(result)
 }
+
+/// Get the mean of FBm.
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
+#[pyfunction]
+pub fn fbm_mean(
+    start_position: f64,
+    hurst_exponent: f64,
+    duration: f64,
+    particles: usize,
+    time_step: f64,
+) -> XPyResult<f64> {
+    let fbm = FBm::new(start_position, hurst_exponent)?;
+    let result = fbm.mean(duration, particles, time_step)?;
+    Ok(result)
+}
+
+/// Get the msd of FBm.
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
+#[pyfunction]
+pub fn fbm_msd(
+    start_position: f64,
+    hurst_exponent: f64,
+    duration: f64,
+    particles: usize,
+    time_step: f64,
+) -> XPyResult<f64> {
+    let fbm = FBm::new(start_position, hurst_exponent)?;
+    let result = fbm.msd(duration, particles, time_step)?;
+    Ok(result)
+}

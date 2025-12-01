@@ -274,6 +274,50 @@ pub fn langevin_eatamsd(
     Ok(result)
 }
 
+/// Get the mean of Langevin process.
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
+#[pyfunction]
+pub fn langevin_mean(
+    drift_func: Py<PyAny>,
+    diffusion_func: Py<PyAny>,
+    start_position: f64,
+    duration: f64,
+    particles: usize,
+    time_step: f64,
+) -> XPyResult<f64> {
+    let langevin = {
+        let drift = |x: f64, t: f64| -> f64 { call_py_func(&drift_func, (x, t)) };
+
+        let diffusion = |x: f64, t: f64| -> f64 { call_py_func(&diffusion_func, (x, t)) };
+
+        Langevin::new(drift, diffusion, start_position)?
+    };
+    let result = langevin.mean(duration, particles, time_step)?;
+    Ok(result)
+}
+
+/// Get the msd of Langevin process.
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
+#[pyfunction]
+pub fn langevin_msd(
+    drift_func: Py<PyAny>,
+    diffusion_func: Py<PyAny>,
+    start_position: f64,
+    duration: f64,
+    particles: usize,
+    time_step: f64,
+) -> XPyResult<f64> {
+    let langevin = {
+        let drift = |x: f64, t: f64| -> f64 { call_py_func(&drift_func, (x, t)) };
+
+        let diffusion = |x: f64, t: f64| -> f64 { call_py_func(&diffusion_func, (x, t)) };
+
+        Langevin::new(drift, diffusion, start_position)?
+    };
+    let result = langevin.msd(duration, particles, time_step)?;
+    Ok(result)
+}
+
 /// Py function wrapper for GeneralizedLangevin simulation
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
@@ -549,6 +593,52 @@ pub fn generalized_langevin_eatamsd(
     Ok(result)
 }
 
+/// Get the mean of GeneralizedLangevin process.
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
+#[pyfunction]
+pub fn generalized_langevin_mean(
+    drift_func: Py<PyAny>,
+    diffusion_func: Py<PyAny>,
+    start_position: f64,
+    alpha: f64,
+    duration: f64,
+    particles: usize,
+    time_step: f64,
+) -> XPyResult<f64> {
+    let langevin = {
+        let drift = |x: f64, t: f64| -> f64 { call_py_func(&drift_func, (x, t)) };
+
+        let diffusion = |x: f64, t: f64| -> f64 { call_py_func(&diffusion_func, (x, t)) };
+
+        GeneralizedLangevin::new(drift, diffusion, start_position, alpha)?
+    };
+    let result = langevin.mean(duration, particles, time_step)?;
+    Ok(result)
+}
+
+/// Get the msd of GeneralizedLangevin process.
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
+#[pyfunction]
+pub fn generalized_langevin_msd(
+    drift_func: Py<PyAny>,
+    diffusion_func: Py<PyAny>,
+    start_position: f64,
+    alpha: f64,
+    duration: f64,
+    particles: usize,
+    time_step: f64,
+) -> XPyResult<f64> {
+    let langevin = {
+        let drift = |x: f64, t: f64| -> f64 { call_py_func(&drift_func, (x, t)) };
+
+        let diffusion = |x: f64, t: f64| -> f64 { call_py_func(&diffusion_func, (x, t)) };
+
+        GeneralizedLangevin::new(drift, diffusion, start_position, alpha)?
+    };
+    let result = langevin.msd(duration, particles, time_step)?;
+    Ok(result)
+}
+
 /// Simulate SubordinatedLangevin process.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
@@ -821,5 +911,51 @@ pub fn subordinated_langevin_eatamsd(
         SubordinatedLangevin::new(drift, diffusion, start_position, alpha)?
     };
     let result = langevin.eatamsd(duration, delta, particles, time_step, quad_order)?;
+    Ok(result)
+}
+
+/// Get the mean of SubordinatedLangevin process.
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
+#[pyfunction]
+pub fn subordinated_langevin_mean(
+    drift_func: Py<PyAny>,
+    diffusion_func: Py<PyAny>,
+    start_position: f64,
+    alpha: f64,
+    duration: f64,
+    particles: usize,
+    time_step: f64,
+) -> XPyResult<f64> {
+    let langevin = {
+        let drift = |x: f64, t: f64| -> f64 { call_py_func(&drift_func, (x, t)) };
+
+        let diffusion = |x: f64, t: f64| -> f64 { call_py_func(&diffusion_func, (x, t)) };
+
+        SubordinatedLangevin::new(drift, diffusion, start_position, alpha)?
+    };
+    let result = langevin.mean(duration, particles, time_step)?;
+    Ok(result)
+}
+
+/// Get the msd of SubordinatedLangevin process.
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
+#[pyfunction]
+pub fn subordinated_langevin_msd(
+    drift_func: Py<PyAny>,
+    diffusion_func: Py<PyAny>,
+    start_position: f64,
+    alpha: f64,
+    duration: f64,
+    particles: usize,
+    time_step: f64,
+) -> XPyResult<f64> {
+    let langevin = {
+        let drift = |x: f64, t: f64| -> f64 { call_py_func(&drift_func, (x, t)) };
+
+        let diffusion = |x: f64, t: f64| -> f64 { call_py_func(&diffusion_func, (x, t)) };
+
+        SubordinatedLangevin::new(drift, diffusion, start_position, alpha)?
+    };
+    let result = langevin.msd(duration, particles, time_step)?;
     Ok(result)
 }

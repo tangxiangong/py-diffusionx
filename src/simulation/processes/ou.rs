@@ -199,3 +199,35 @@ pub fn ou_eatamsd(
     let result = ou.eatamsd(duration, delta, particles, time_step, quad_order)?;
     Ok(result)
 }
+
+/// Get the mean of Ornstein-Uhlenbeck process.
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
+#[pyfunction]
+pub fn ou_mean(
+    theta: f64,
+    sigma: f64,
+    start_position: f64,
+    duration: f64,
+    particles: usize,
+    time_step: f64,
+) -> XPyResult<f64> {
+    let ou = OrnsteinUhlenbeck::new(theta, sigma, start_position)?;
+    let result = ou.mean(duration, particles, time_step)?;
+    Ok(result)
+}
+
+/// Get the msd of Ornstein-Uhlenbeck process.
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
+#[pyfunction]
+pub fn ou_msd(
+    theta: f64,
+    sigma: f64,
+    start_position: f64,
+    duration: f64,
+    particles: usize,
+    time_step: f64,
+) -> XPyResult<f64> {
+    let ou = OrnsteinUhlenbeck::new(theta, sigma, start_position)?;
+    let result = ou.msd(duration, particles, time_step)?;
+    Ok(result)
+}

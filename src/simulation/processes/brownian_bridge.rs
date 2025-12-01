@@ -150,3 +150,21 @@ pub fn bb_eatamsd(
     let result = bb.eatamsd(duration, delta, particles, time_step, quad_order)?;
     Ok(result)
 }
+
+/// Get the mean of Brownian bridge.
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
+#[pyfunction]
+pub fn bb_mean(duration: f64, particles: usize, time_step: f64) -> XPyResult<f64> {
+    let bb = BrownianBridge;
+    let result = bb.mean(duration, particles, time_step)?;
+    Ok(result)
+}
+
+/// Get the msd of Brownian bridge.
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
+#[pyfunction]
+pub fn bb_msd(duration: f64, particles: usize, time_step: f64) -> XPyResult<f64> {
+    let bb = BrownianBridge;
+    let result = bb.msd(duration, particles, time_step)?;
+    Ok(result)
+}

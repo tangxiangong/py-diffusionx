@@ -925,3 +925,60 @@ class SubordinatedLangevin:
             time_step,
             quad_order,
         )
+
+    def mean(
+        self, duration: real, time_step: float = 0.01, particles: int = 10_000
+    ) -> float:
+        """
+        Calculate the mean of the Langevin process.
+
+        Args:
+            duration (real): The total duration of the simulation.
+            time_step (float, optional): Step size for the simulation. Defaults to 0.01.
+            particles (int, optional): Number of particles (positive integer) for ensemble averaging. Defaults to 10_000.
+
+        Returns:
+            float: The mean of the Langevin process.
+        """
+        duration = validate_positive_float(duration, "duration (motion duration)")
+        particles = validate_particles(particles)
+        time_step = validate_positive_float(time_step, "time_step")
+
+        return _core.langevin_mean(
+            self.drift_func,
+            self.diffusion_func,
+            self.start_position,
+            duration,
+            time_step,
+            particles,
+        )
+
+    def msd(
+        self,
+        duration: real,
+        time_step: float = 0.01,
+        particles: int = 10_000,
+    ) -> float:
+        """
+        Calculate the mean squared displacement (MSD) of the Langevin process.
+
+        Args:
+            duration (real): The total duration of the simulation.
+            time_step (float, optional): Step size for the simulation. Defaults to 0.01.
+            particles (int, optional): Number of particles (positive integer) for ensemble averaging. Defaults to 10_000.
+
+        Returns:
+            float: The mean squared displacement of the Langevin process.
+        """
+        duration = validate_positive_float(duration, "duration (motion duration)")
+        particles = validate_particles(particles)
+        time_step = validate_positive_float(time_step, "time_step")
+
+        return _core.langevin_msd(
+            self.drift_func,
+            self.diffusion_func,
+            self.start_position,
+            duration,
+            time_step,
+            particles,
+        )
