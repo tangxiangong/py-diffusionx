@@ -241,6 +241,7 @@ jobs:
     # Required permissions for OIDC authentication with PyPI
     permissions:
       id-token: write
+      contents: write
 
     steps:
       - name: Download artifacts
