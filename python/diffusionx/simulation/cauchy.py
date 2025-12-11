@@ -52,7 +52,7 @@ class Cauchy:
     def moment(
         self,
         duration: real,
-        order: int,
+        order: int | float,
         particles: int = 10_000,
         time_step: float = 0.01,
         central: bool = True,
@@ -62,7 +62,7 @@ class Cauchy:
 
         Args:
             duration (real): Duration of the simulation for moment calculation.
-            order (int): Order of the moment (non-negative integer).
+            order (int | float): Order of the moment (integer or float).
             particles (int, optional): Number of particles (positive integer) for ensemble averaging. Defaults to 10_000.
             time_step (real, optional): Step size for the simulation. Defaults to 0.01.
             central (bool, optional): Whether to calculate the central moment. Defaults to True.
@@ -71,29 +71,48 @@ class Cauchy:
             float: The raw moment of the Cauchy process.
         """
         validate_bool(central, "central")
-        order = validate_order(order)
+        validate_order(order)
         particles = validate_particles(particles)
         duration = validate_positive_float(duration, "duration")
         time_step = validate_positive_float(time_step, "time_step")
 
-        result = (
-            _core.cauchy_raw_moment(
-                self.start_position,
-                duration,
-                time_step,
-                order,
-                particles,
+        return (
+            (
+                _core.cauchy_raw_moment(
+                    self.start_position,
+                    duration,
+                    time_step,
+                    order,
+                    particles,
+                )
+                if not central
+                else _core.cauchy_central_moment(
+                    self.start_position,
+                    duration,
+                    time_step,
+                    order,
+                    particles,
+                )
             )
-            if not central
-            else _core.cauchy_central_moment(
-                self.start_position,
-                duration,
-                time_step,
-                order,
-                particles,
+            if isinstance(order, int)
+            else (
+                _core.cauchy_frac_raw_moment(
+                    self.start_position,
+                    duration,
+                    time_step,
+                    order,
+                    particles,
+                )
+                if not central
+                else _core.cauchy_frac_central_moment(
+                    self.start_position,
+                    duration,
+                    time_step,
+                    order,
+                    particles,
+                )
             )
         )
-        return result
 
     def fpt(
         self,
@@ -147,8 +166,8 @@ class Cauchy:
             float | None: The moment of FPT, or None if no passage for some particles.
         """
         validate_bool(central, "central")
+        validate_order(order)
         a, b = validate_domain(domain, process_name="Cauchy FPT raw moment")
-        order = validate_order(order)
         particles = validate_particles(particles)
         time_step = validate_positive_float(time_step, "time_step")
         max_duration = validate_positive_float(max_duration, "max_duration")
@@ -226,8 +245,8 @@ class Cauchy:
             float: The moment of the occupation time of the Cauchy process in the domain.
         """
         validate_bool(central, "central")
+        validate_order(order)
         a, b = validate_domain(domain, process_name="Cauchy Occupation raw moment")
-        order = validate_order(order)
         particles = validate_particles(particles)
         duration = validate_positive_float(duration, "duration")
         time_step = validate_positive_float(time_step, "time_step")
@@ -371,7 +390,7 @@ class AsymmetricCauchy:
     def moment(
         self,
         duration: real,
-        order: int,
+        order: int | float,
         particles: int = 10_000,
         time_step: float = 0.01,
         central: bool = True,
@@ -390,31 +409,52 @@ class AsymmetricCauchy:
             float: The moment of the Asymmetric Cauchy process.
         """
         validate_bool(central, "central")
-        order = validate_order(order)
+        validate_order(order)
         particles = validate_particles(particles)
         duration = validate_positive_float(duration, "duration")
         time_step = validate_positive_float(time_step, "time_step")
 
-        result = (
-            _core.asymmetric_cauchy_raw_moment(
-                self.start_position,
-                self.beta,
-                duration,
-                time_step,
-                order,
-                particles,
+        return (
+            (
+                _core.asymmetric_cauchy_raw_moment(
+                    self.start_position,
+                    self.beta,
+                    duration,
+                    time_step,
+                    order,
+                    particles,
+                )
+                if not central
+                else _core.asymmetric_cauchy_central_moment(
+                    self.start_position,
+                    self.beta,
+                    duration,
+                    time_step,
+                    order,
+                    particles,
+                )
             )
-            if not central
-            else _core.asymmetric_cauchy_central_moment(
-                self.start_position,
-                self.beta,
-                duration,
-                time_step,
-                order,
-                particles,
+            if isinstance(order, int)
+            else (
+                _core.asymmetric_cauchy_frac_raw_moment(
+                    self.start_position,
+                    self.beta,
+                    duration,
+                    time_step,
+                    order,
+                    particles,
+                )
+                if not central
+                else _core.asymmetric_cauchy_frac_central_moment(
+                    self.start_position,
+                    self.beta,
+                    duration,
+                    time_step,
+                    order,
+                    particles,
+                )
             )
         )
-        return result
 
     def fpt(
         self,
@@ -459,7 +499,7 @@ class AsymmetricCauchy:
 
         Args:
             domain (tuple[real, real]): The domain (a, b). a must be less than b.
-            order (int): Order of the moment (non-negative integer).
+            order (int | float): Order of the moment (integer or float).
             particles (int): Number of particles for ensemble average (positive integer).
             time_step (real, optional): Step size. Defaults to 0.01.
             max_duration (real, optional): Maximum duration. Defaults to 1000.
@@ -469,8 +509,8 @@ class AsymmetricCauchy:
             Optional[float]: The raw moment of FPT, or None if no passage for some particles.
         """
         validate_bool(central, "central")
+        validate_order(order)
         a, b = validate_domain(domain, process_name="AsymmetricCauchy FPT raw moment")
-        order = validate_order(order)
         particles = validate_particles(particles)
         time_step = validate_positive_float(time_step, "time_step")
         max_duration = validate_positive_float(max_duration, "max_duration")
@@ -551,10 +591,10 @@ class AsymmetricCauchy:
             float: The raw moment of occupation time, or None if no passage for some particles.
         """
         validate_bool(central, "central")
+        validate_order(order)
         a, b = validate_domain(
             domain, process_name="AsymmetricCauchy Occupation raw moment"
         )
-        order = validate_order(order)
         particles = validate_particles(particles)
         duration = validate_positive_float(duration, "duration")
         time_step = validate_positive_float(time_step, "time_step")

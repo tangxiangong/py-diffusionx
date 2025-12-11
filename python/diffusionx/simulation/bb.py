@@ -38,7 +38,7 @@ class BrownianBridge:
     def moment(
         self,
         duration: real,
-        order: int,
+        order: int | float,
         time_step: float = 0.01,
         central: bool = True,
         particles: int = 10000,
@@ -48,7 +48,7 @@ class BrownianBridge:
 
         Args:
             duration (real): Duration of the simulation for moment calculation.
-            order (int): Order of the moment (non-negative integer).
+            order (int | float): Order of the moment (integer or float).
             particles (int, optional): Number of particles (positive integer) for ensemble averaging. Defaults to 10_000.
             time_step (real, optional): Step size for the simulation. Defaults to 0.01.
             central (bool, optional): Whether to calculate the central moment. Defaults to True.
@@ -57,17 +57,24 @@ class BrownianBridge:
             float: The moment of the Brownian bridge.
         """
         validate_bool(central, "central")
-        order = validate_order(order)
+        validate_order(order)
         particles = validate_particles(particles)
         duration = validate_positive_float(duration, "duration")
         time_step = validate_positive_float(time_step, "time_step")
 
-        result = (
-            _core.bb_raw_moment(duration, time_step, order, particles)
-            if not central
-            else _core.bb_central_moment(duration, time_step, order, particles)
+        return (
+            (
+                _core.bb_raw_moment(duration, time_step, order, particles)
+                if not central
+                else _core.bb_central_moment(duration, time_step, order, particles)
+            )
+            if isinstance(order, int)
+            else (
+                _core.bb_frac_raw_moment(duration, time_step, order, particles)
+                if not central
+                else _core.bb_frac_central_moment(duration, time_step, order, particles)
+            )
         )
-        return result
 
     def fpt(
         self,
@@ -118,8 +125,8 @@ class BrownianBridge:
             Optional[float]: The moment of FPT, or None if no passage for some particles.
         """
         validate_bool(central, "central")
+        validate_order(order)
         a, b = validate_domain(domain, process_name="Brownian bridge FPT moment")
-        order = validate_order(order)
         particles = validate_particles(particles)
         time_step = validate_positive_float(time_step, "time_step")
         max_duration = validate_positive_float(max_duration, "max_duration")
@@ -194,10 +201,10 @@ class BrownianBridge:
             float: The raw moment of occupation time.
         """
         validate_bool(central, "central")
+        validate_order(order)
         a, b = validate_domain(
             domain, process_name="Brownian bridge Occupation Time moment"
         )
-        order = validate_order(order)
         particles = validate_particles(particles)
         duration = validate_positive_float(duration, "duration")
         time_step = validate_positive_float(time_step, "time_step")

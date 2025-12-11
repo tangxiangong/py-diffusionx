@@ -81,7 +81,7 @@ class Langevin:
     def moment(
         self,
         duration: real,
-        order: int,
+        order: int | float,
         central: bool = True,
         particles: int = 10_000,
         time_step: real = 0.01,
@@ -93,8 +93,8 @@ class Langevin:
         ----------
         duration : real
             Simulation duration (must be positive).
-        order : int
-            Order of the moment (must be non-negative).
+        order : int | float
+            Order of the moment (integer or float).
         particles : int
             Number of particles to simulate (must be positive).
         time_step : real
@@ -106,37 +106,56 @@ class Langevin:
             Raw moment.
         """
         validate_bool(central, "central")
-        order = validate_order(order)
+        validate_order(order)
         particles = validate_particles(particles)
         duration = validate_positive_float(duration, "duration")
         time_step = validate_positive_float(time_step, "time_step")
 
-        if order == 0:
-            return 1.0
-
-        result = (
-            _core.langevin_raw_moment(
-                self.drift_func,
-                self.diffusion_func,
-                self.start_position,
-                duration,
-                order,
-                particles,
-                time_step,
+        return (
+            (
+                _core.langevin_raw_moment(
+                    self.drift_func,
+                    self.diffusion_func,
+                    self.start_position,
+                    duration,
+                    order,
+                    particles,
+                    time_step,
+                )
+                if not central
+                else _core.langevin_central_moment(
+                    self.drift_func,
+                    self.diffusion_func,
+                    self.start_position,
+                    duration,
+                    order,
+                    particles,
+                    time_step,
+                )
             )
-            if not central
-            else _core.langevin_central_moment(
-                self.drift_func,
-                self.diffusion_func,
-                self.start_position,
-                duration,
-                order,
-                particles,
-                time_step,
+            if isinstance(order, int)
+            else (
+                _core.langevin_frac_raw_moment(
+                    self.drift_func,
+                    self.diffusion_func,
+                    self.start_position,
+                    duration,
+                    order,
+                    particles,
+                    time_step,
+                )
+                if not central
+                else _core.langevin_frac_central_moment(
+                    self.drift_func,
+                    self.diffusion_func,
+                    self.start_position,
+                    duration,
+                    order,
+                    particles,
+                    time_step,
+                )
             )
         )
-
-        return result
 
     def fpt(
         self,
@@ -167,8 +186,8 @@ class Langevin:
         max_duration: real = 1000,
     ) -> float | None:
         validate_bool(central, "central")
+        validate_order(order)
         a, b = validate_domain(domain, process_name="Langevin FPT raw moment")
-        order = validate_order(order)
         particles = validate_particles(particles)
         time_step = validate_positive_float(time_step, "time_step")
         max_duration = validate_positive_float(max_duration, "max_duration")
@@ -227,14 +246,11 @@ class Langevin:
         time_step: real = 0.01,
     ) -> float:
         validate_bool(central, "central")
+        validate_order(order)
         a, b = validate_domain(domain, process_name="Langevin Occupation raw moment")
-        order = validate_order(order)
         particles = validate_particles(particles)
         duration = validate_positive_float(duration, "duration")
         time_step = validate_positive_float(time_step, "time_step")
-
-        if order == 0:
-            return 1.0
 
         result = (
             _core.langevin_occupation_time_raw_moment(
@@ -391,7 +407,7 @@ class GeneralizedLangevin:
     def moment(
         self,
         duration: real,
-        order: int,
+        order: int | float,
         central: bool = True,
         particles: int = 10_000,
         time_step: real = 0.01,
@@ -403,8 +419,8 @@ class GeneralizedLangevin:
         ----------
         duration : real
             Simulation duration (must be positive).
-        order : int
-            Order of the moment (must be non-negative).
+        order : int | float
+            Order of the moment (integer or float).
         particles : int
             Number of particles (must be positive).
         time_step : real
@@ -416,38 +432,60 @@ class GeneralizedLangevin:
             Raw moment.
         """
         validate_bool(central, "central")
-        order = validate_order(order)
+        validate_order(order)
         particles = validate_particles(particles)
         duration = validate_positive_float(duration, "duration")
         time_step = validate_positive_float(time_step, "time_step")
 
-        if order == 0:
-            return 1.0
-
-        result = (
-            _core.generalized_langevin_raw_moment(
-                self.drift_func,
-                self.diffusion_func,
-                self.start_position,
-                self.alpha,
-                duration,
-                order,
-                particles,
-                time_step,
+        return (
+            (
+                _core.generalized_langevin_raw_moment(
+                    self.drift_func,
+                    self.diffusion_func,
+                    self.start_position,
+                    self.alpha,
+                    duration,
+                    order,
+                    particles,
+                    time_step,
+                )
+                if not central
+                else _core.generalized_langevin_central_moment(
+                    self.drift_func,
+                    self.diffusion_func,
+                    self.start_position,
+                    self.alpha,
+                    duration,
+                    order,
+                    particles,
+                    time_step,
+                )
             )
-            if not central
-            else _core.generalized_langevin_central_moment(
-                self.drift_func,
-                self.diffusion_func,
-                self.start_position,
-                self.alpha,
-                duration,
-                order,
-                particles,
-                time_step,
+            if isinstance(order, int)
+            else (
+                _core.generalized_langevin_frac_raw_moment(
+                    self.drift_func,
+                    self.diffusion_func,
+                    self.start_position,
+                    self.alpha,
+                    duration,
+                    order,
+                    particles,
+                    time_step,
+                )
+                if not central
+                else _core.generalized_langevin_frac_central_moment(
+                    self.drift_func,
+                    self.diffusion_func,
+                    self.start_position,
+                    self.alpha,
+                    duration,
+                    order,
+                    particles,
+                    time_step,
+                )
             )
         )
-        return result
 
     def fpt(
         self,
@@ -479,10 +517,10 @@ class GeneralizedLangevin:
         max_duration: real = 1000,
     ) -> float | None:
         validate_bool(central, "central")
+        validate_order(order)
         a, b = validate_domain(
             domain, process_name="GeneralizedLangevin FPT raw moment"
         )
-        order = validate_order(order)
         particles = validate_particles(particles)
         time_step = validate_positive_float(time_step, "time_step")
         max_duration = validate_positive_float(max_duration, "max_duration")
@@ -546,16 +584,13 @@ class GeneralizedLangevin:
         time_step: real = 0.01,
     ) -> float:
         validate_bool(central, "central")
+        validate_order(order)
         a, b = validate_domain(
             domain, process_name="GeneralizedLangevin Occupation raw moment"
         )
-        order = validate_order(order)
         particles = validate_particles(particles)
         duration = validate_positive_float(duration, "duration")
         time_step = validate_positive_float(time_step, "time_step")
-
-        if order == 0:
-            return 1.0
 
         result = (
             _core.generalized_langevin_occupation_time_raw_moment(
@@ -699,48 +734,66 @@ class SubordinatedLangevin:
     def moment(
         self,
         duration: real,
-        order: int,
+        order: int | float,
         central: bool = True,
         particles: int = 10_000,
         time_step: float = 0.01,
     ) -> float:
-        """
-        Calculate the raw moment of the Subordinated Langevin process.
-        (Parameters, Raises, Returns are similar to Langevin.raw_moment)
-        """
         validate_bool(central, "central")
-        order = validate_order(order)
+        validate_order(order)
         particles = validate_particles(particles)
         duration = validate_positive_float(duration, "duration")
         time_step = validate_positive_float(time_step, "time_step")
 
-        if order == 0:
-            return 1.0
-
-        result = (
-            _core.subordinated_langevin_raw_moment(
-                self.drift_func,
-                self.diffusion_func,
-                self.start_position,
-                self.alpha,
-                duration,
-                order,
-                particles,
-                time_step,
+        return (
+            (
+                _core.subordinated_langevin_raw_moment(
+                    self.drift_func,
+                    self.diffusion_func,
+                    self.start_position,
+                    self.alpha,
+                    duration,
+                    order,
+                    particles,
+                    time_step,
+                )
+                if not central
+                else _core.subordinated_langevin_central_moment(
+                    self.drift_func,
+                    self.diffusion_func,
+                    self.start_position,
+                    self.alpha,
+                    duration,
+                    order,
+                    particles,
+                    time_step,
+                )
             )
-            if not central
-            else _core.subordinated_langevin_central_moment(
-                self.drift_func,
-                self.diffusion_func,
-                self.start_position,
-                self.alpha,
-                duration,
-                order,
-                particles,
-                time_step,
+            if isinstance(order, int)
+            else (
+                _core.subordinated_langevin_frac_raw_moment(
+                    self.drift_func,
+                    self.diffusion_func,
+                    self.start_position,
+                    self.alpha,
+                    duration,
+                    order,
+                    particles,
+                    time_step,
+                )
+                if not central
+                else _core.subordinated_langevin_frac_central_moment(
+                    self.drift_func,
+                    self.diffusion_func,
+                    self.start_position,
+                    self.alpha,
+                    duration,
+                    order,
+                    particles,
+                    time_step,
+                )
             )
         )
-        return result
 
     def fpt(
         self,
@@ -772,10 +825,10 @@ class SubordinatedLangevin:
         max_duration: real = 1000,
     ) -> float | None:
         validate_bool(central, "central")
+        validate_order(order)
         a, b = validate_domain(
             domain, process_name="SubordinatedLangevin FPT raw moment"
         )
-        order = validate_order(order)
         particles = validate_particles(particles)
         time_step = validate_positive_float(time_step, "time_step")
         max_duration = validate_positive_float(max_duration, "max_duration")
@@ -839,16 +892,13 @@ class SubordinatedLangevin:
         time_step: float = 0.01,
     ) -> float:
         validate_bool(central, "central")
+        validate_order(order)
         a, b = validate_domain(
             domain, process_name="SubordinatedLangevin Occupation raw moment"
         )
-        order = validate_order(order)
         particles = validate_particles(particles)
         duration = validate_positive_float(duration, "duration")
         time_step = validate_positive_float(time_step, "time_step")
-
-        if order == 0:
-            return 1.0
 
         result = (
             _core.subordinated_langevin_occupation_time_raw_moment(

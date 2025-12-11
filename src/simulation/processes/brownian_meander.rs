@@ -48,6 +48,34 @@ pub fn meander_central_moment(
     Ok(result)
 }
 
+/// Get the fractional raw moment of Brownian meander.
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
+#[pyfunction]
+pub fn meander_frac_raw_moment(
+    duration: f64,
+    time_step: f64,
+    order: f64,
+    particles: usize,
+) -> XPyResult<f64> {
+    let bm = BrownianMeander::new();
+    let result = bm.frac_raw_moment(duration, order, particles, time_step)?;
+    Ok(result)
+}
+
+/// Get the fractional central moment of Brownian meander.
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
+#[pyfunction]
+pub fn meander_frac_central_moment(
+    duration: f64,
+    time_step: f64,
+    order: f64,
+    particles: usize,
+) -> XPyResult<f64> {
+    let bm = BrownianMeander::new();
+    let result = bm.frac_central_moment(duration, order, particles, time_step)?;
+    Ok(result)
+}
+
 /// Get the first passage time of Brownian meander.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]

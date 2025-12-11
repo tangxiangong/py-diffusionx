@@ -74,35 +74,56 @@ class CTRW:
     def moment(
         self,
         duration: real,
-        order: int,
+        order: int | float,
         central: bool = True,
         particles: int = 10_000,
     ) -> float:
         validate_bool(central, "central")
-        order = validate_order(order)
+        validate_order(order)
         particles = validate_particles(particles)
         duration = validate_positive_float(duration, "duration")
 
-        result = (
-            _core.ctrw_raw_moment(
-                self.alpha,
-                self.beta,
-                self.start_position,
-                duration,
-                order,
-                particles,
+        return (
+            (
+                _core.ctrw_raw_moment(
+                    self.alpha,
+                    self.beta,
+                    self.start_position,
+                    duration,
+                    order,
+                    particles,
+                )
+                if not central
+                else _core.ctrw_central_moment(
+                    self.alpha,
+                    self.beta,
+                    self.start_position,
+                    duration,
+                    order,
+                    particles,
+                )
             )
-            if not central
-            else _core.ctrw_central_moment(
-                self.alpha,
-                self.beta,
-                self.start_position,
-                duration,
-                order,
-                particles,
+            if isinstance(order, int)
+            else (
+                _core.ctrw_frac_raw_moment(
+                    self.alpha,
+                    self.beta,
+                    self.start_position,
+                    duration,
+                    order,
+                    particles,
+                )
+                if not central
+                else _core.ctrw_frac_central_moment(
+                    self.alpha,
+                    self.beta,
+                    self.start_position,
+                    duration,
+                    order,
+                    particles,
+                )
             )
         )
-        return result
 
     def fpt(
         self,
@@ -139,8 +160,8 @@ class CTRW:
         max_duration: real = 1000,
     ) -> float | None:
         validate_bool(central, "central")
+        validate_order(order)
         a, b = validate_domain(domain, process_name="CTRW FPT raw moment")
-        order = validate_order(order)
         particles = validate_particles(particles)
         max_duration = validate_positive_float(max_duration, "max_duration")
 
@@ -202,8 +223,8 @@ class CTRW:
         particles: int = 10_000,
     ) -> float:
         validate_bool(central, "central")
+        validate_order(order)
         a, b = validate_domain(domain, process_name="CTRW Occupation raw moment")
-        order = validate_order(order)
         particles = validate_particles(particles)
         duration = validate_positive_float(duration, "duration")
 

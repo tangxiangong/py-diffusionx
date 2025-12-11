@@ -57,6 +57,40 @@ pub fn ou_central_moment(
     Ok(result)
 }
 
+/// Get the fractional raw moment of Ornstein-Uhlenbeck process.
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
+#[pyfunction]
+pub fn ou_frac_raw_moment(
+    theta: f64,
+    sigma: f64,
+    start_position: f64,
+    duration: f64,
+    time_step: f64,
+    order: f64,
+    particles: usize,
+) -> XPyResult<f64> {
+    let ou = OrnsteinUhlenbeck::new(theta, sigma, start_position)?;
+    let result = ou.frac_raw_moment(duration, order, particles, time_step)?;
+    Ok(result)
+}
+
+/// Get the fractional central moment of Ornstein-Uhlenbeck process.
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
+#[pyfunction]
+pub fn ou_frac_central_moment(
+    theta: f64,
+    sigma: f64,
+    start_position: f64,
+    duration: f64,
+    time_step: f64,
+    order: f64,
+    particles: usize,
+) -> XPyResult<f64> {
+    let ou = OrnsteinUhlenbeck::new(theta, sigma, start_position)?;
+    let result = ou.frac_central_moment(duration, order, particles, time_step)?;
+    Ok(result)
+}
+
 /// Get the first passage time of Ornstein-Uhlenbeck process.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]

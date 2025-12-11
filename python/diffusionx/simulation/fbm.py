@@ -97,8 +97,8 @@ class FBm:
         max_duration: real = 1000,
     ) -> float | None:
         validate_bool(central, "central")
+        validate_order(order)
         a, b = validate_domain(domain, process_name="Fbm FPT raw moment")
-        order = validate_order(order)
         particles = validate_particles(particles)
         time_step = validate_positive_float(time_step, "time_step")
         max_duration = validate_positive_float(max_duration, "max_duration")
@@ -130,7 +130,7 @@ class FBm:
     def moment(
         self,
         duration: real,
-        order: int,
+        order: int | float,
         central: bool = False,
         particles: int = 10_000,
         time_step: float = 0.01,
@@ -140,7 +140,7 @@ class FBm:
 
         Args:
             duration (real): Simulation duration.
-            order (int): Moment order (non-negative integer).
+            order (int | float): Moment order (integer or float).
             particles (int): Number of particles (positive integer).
             time_step (real, optional): Step size. Defaults to 0.01.
 
@@ -148,32 +148,52 @@ class FBm:
             float: The raw moment.
         """
         validate_bool(central, "central")
-        order = validate_order(order)
+        validate_order(order)
         particles = validate_particles(particles)
         duration = validate_positive_float(duration, "duration")
         time_step = validate_positive_float(time_step, "time_step")
 
-        result = (
-            _core.fbm_raw_moment(
-                self.start_position,
-                self.hurst_exponent,
-                duration,
-                time_step,
-                order,
-                particles,
+        return (
+            (
+                _core.fbm_raw_moment(
+                    self.start_position,
+                    self.hurst_exponent,
+                    duration,
+                    time_step,
+                    order,
+                    particles,
+                )
+                if not central
+                else _core.fbm_central_moment(
+                    self.start_position,
+                    self.hurst_exponent,
+                    duration,
+                    time_step,
+                    order,
+                    particles,
+                )
             )
-            if not central
-            else _core.fbm_central_moment(
-                self.start_position,
-                self.hurst_exponent,
-                duration,
-                time_step,
-                order,
-                particles,
+            if isinstance(order, int)
+            else (
+                _core.fbm_frac_raw_moment(
+                    self.start_position,
+                    self.hurst_exponent,
+                    duration,
+                    time_step,
+                    order,
+                    particles,
+                )
+                if not central
+                else _core.fbm_frac_central_moment(
+                    self.start_position,
+                    self.hurst_exponent,
+                    duration,
+                    time_step,
+                    order,
+                    particles,
+                )
             )
         )
-
-        return result
 
     def occupation_time(
         self,
@@ -214,8 +234,8 @@ class FBm:
         time_step: float = 0.01,
     ) -> float:
         validate_bool(central, "central")
+        validate_order(order)
         a, b = validate_domain(domain, process_name="Fbm Occupation raw moment")
-        order = validate_order(order)
         particles = validate_particles(particles)
         duration = validate_positive_float(duration, "duration")
         time_step = validate_positive_float(time_step, "time_step")

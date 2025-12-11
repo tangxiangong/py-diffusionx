@@ -51,43 +51,62 @@ class OU:
     def moment(
         self,
         duration: real,
-        order: int,
+        order: int | float,
         center: bool = False,
         particles: int = 10_000,
         time_step: float = 0.01,
     ) -> float:
         validate_bool(center, "center")
-        order = validate_order(order)
+        validate_order(order)
         particles = validate_particles(particles)
         duration = validate_positive_float(duration, "duration")
         time_step = validate_positive_float(time_step, "time_step")
 
-        if order == 0:
-            return 1.0
-
-        result = (
-            _core.ou_raw_moment(
-                self.theta,
-                self.sigma,
-                self.start_position,
-                duration,
-                time_step,
-                order,
-                particles,
+        return (
+            (
+                _core.ou_raw_moment(
+                    self.theta,
+                    self.sigma,
+                    self.start_position,
+                    duration,
+                    time_step,
+                    order,
+                    particles,
+                )
+                if not center
+                else _core.ou_central_moment(
+                    self.theta,
+                    self.sigma,
+                    self.start_position,
+                    duration,
+                    time_step,
+                    order,
+                    particles,
+                )
             )
-            if not center
-            else _core.ou_central_moment(
-                self.theta,
-                self.sigma,
-                self.start_position,
-                duration,
-                time_step,
-                order,
-                particles,
+            if isinstance(order, int)
+            else (
+                _core.ou_frac_raw_moment(
+                    self.theta,
+                    self.sigma,
+                    self.start_position,
+                    duration,
+                    time_step,
+                    order,
+                    particles,
+                )
+                if not center
+                else _core.ou_frac_central_moment(
+                    self.theta,
+                    self.sigma,
+                    self.start_position,
+                    duration,
+                    time_step,
+                    order,
+                    particles,
+                )
             )
         )
-
-        return result
 
     def fpt(
         self,
@@ -118,8 +137,8 @@ class OU:
         max_duration: real = 1000,
     ) -> float | None:
         validate_bool(center, "center")
+        validate_order(order)
         a, b = validate_domain(domain, process_name="Ou FPT raw moment")
-        order = validate_order(order)
         particles = validate_particles(particles)
         time_step = validate_positive_float(time_step, "time_step")
         max_duration = validate_positive_float(max_duration, "max_duration")
@@ -179,14 +198,11 @@ class OU:
         time_step: float = 0.01,
     ) -> float:
         validate_bool(center, "center")
+        validate_order(order)
         a, b = validate_domain(domain, process_name="Ou Occupation raw moment")
-        order = validate_order(order)
         particles = validate_particles(particles)
         duration = validate_positive_float(duration, "duration")
         time_step = validate_positive_float(time_step, "time_step")
-
-        if order == 0:
-            return 1.0
 
         result = (
             _core.ou_occupation_time_raw_moment(

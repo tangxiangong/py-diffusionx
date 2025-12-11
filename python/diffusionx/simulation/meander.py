@@ -34,37 +34,50 @@ class BrownianMeander:
     def moment(
         self,
         duration: real,
-        order: int,
+        order: int | float,
         center: bool = False,
         particles: int = 10_000,
         time_step: float = 0.01,
     ) -> float:
         validate_bool(center, "center")
-        order = validate_order(order)
+        validate_order(order)
         particles = validate_particles(particles)
         duration = validate_positive_float(duration, "duration")
         time_step = validate_positive_float(time_step, "time_step")
 
-        if order == 0:
-            return 1.0
-
-        result = (
-            _core.meander_raw_moment(
-                duration,
-                time_step,
-                order,
-                particles,
+        return (
+            (
+                _core.meander_raw_moment(
+                    duration,
+                    time_step,
+                    order,
+                    particles,
+                )
+                if not center
+                else _core.meander_central_moment(
+                    duration,
+                    time_step,
+                    order,
+                    particles,
+                )
             )
-            if not center
-            else _core.meander_central_moment(
-                duration,
-                time_step,
-                order,
-                particles,
+            if isinstance(order, int)
+            else (
+                _core.meander_frac_raw_moment(
+                    duration,
+                    time_step,
+                    order,
+                    particles,
+                )
+                if not center
+                else _core.meander_frac_central_moment(
+                    duration,
+                    time_step,
+                    order,
+                    particles,
+                )
             )
         )
-
-        return result
 
     def fpt(
         self,
@@ -87,8 +100,8 @@ class BrownianMeander:
         time_step: float = 0.01,
     ) -> float | None:
         validate_bool(center, "center")
+        validate_order(order)
         a, b = validate_domain(domain, process_name="Meander FPT raw moment")
-        order = validate_order(order)
         particles = validate_particles(particles)
         time_step = validate_positive_float(time_step, "time_step")
 
@@ -136,14 +149,11 @@ class BrownianMeander:
         time_step: float = 0.01,
     ) -> float:
         validate_bool(center, "center")
+        validate_order(order)
         a, b = validate_domain(domain, process_name="Meander Occupation raw moment")
-        order = validate_order(order)
         particles = validate_particles(particles)
         duration = validate_positive_float(duration, "duration (meander duration)")
         time_step = validate_positive_float(time_step, "time_step")
-
-        if order == 0:
-            return 1.0
 
         result = (
             _core.meander_occupation_time_raw_moment(

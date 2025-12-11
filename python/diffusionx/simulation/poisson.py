@@ -58,44 +58,61 @@ class Poisson:
         )
 
     def moment(
-        self, duration: real, order: int, center: bool = False, particles: int = 10_000
+        self,
+        duration: real,
+        order: int | float,
+        center: bool = False,
+        particles: int = 10_000,
     ) -> float:
         """
-        Calculate the raw moment of the Poisson process at a given duration.
+        Calculate the moment of the Poisson process at a given duration.
 
         Args:
             duration (real): Duration of the process (must be positive).
-            order (int): Order of the moment (must be non-negative).
+            order (int | float): Order of the moment (integer or float).
             particles (int): Number of particles for ensemble average (must be positive).
 
         Returns:
-            float: The raw moment of the Poisson process.
+            float: The moment of the Poisson process.
         """
         validate_bool(center, "center")
-        order = validate_order(order)
+        validate_order(order)
         particles = validate_particles(particles)
         duration = validate_positive_float(duration, "duration")
 
-        if order == 0:
-            return 1.0
-
-        result = (
-            _core.poisson_raw_moment(
-                self.lambda_,
-                duration,
-                order,
-                particles,
+        return (
+            (
+                _core.poisson_raw_moment(
+                    self.lambda_,
+                    duration,
+                    order,
+                    particles,
+                )
+                if not center
+                else _core.poisson_central_moment(
+                    self.lambda_,
+                    duration,
+                    order,
+                    particles,
+                )
             )
-            if not center
-            else _core.poisson_central_moment(
-                self.lambda_,
-                duration,
-                order,
-                particles,
+            if isinstance(order, int)
+            else (
+                _core.poisson_frac_raw_moment(
+                    self.lambda_,
+                    duration,
+                    order,
+                    particles,
+                )
+                if not center
+                else _core.poisson_frac_central_moment(
+                    self.lambda_,
+                    duration,
+                    order,
+                    particles,
+                )
             )
         )
-
-        return result
 
     def fpt(
         self,
@@ -159,10 +176,10 @@ class Poisson:
         max_duration: real = 1000,
     ) -> float | None:
         validate_bool(center, "center")
+        validate_order(order)
         a, b = validate_domain(
             domain, domain_type="poisson_fpt", process_name="Poisson FPT raw moment"
         )
-        order = validate_order(order)
         particles = validate_particles(particles)
         max_duration = validate_positive_float(max_duration, "max_duration")
 
@@ -192,16 +209,14 @@ class Poisson:
         center: bool = False,
         particles: int = 10_000,
     ) -> float:
+        validate_bool(center, "center")
+        validate_order(order)
         a, b = validate_domain(
             domain,
             process_name="Poisson Occupation raw moment",
         )
-        order = validate_order(order)
         particles = validate_particles(particles)
         duration = validate_positive_float(duration, "duration")
-
-        if order == 0:
-            return 1.0
 
         return (
             _core.poisson_occupation_time_raw_moment(

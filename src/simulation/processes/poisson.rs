@@ -61,6 +61,34 @@ pub fn poisson_central_moment(
     Ok(result)
 }
 
+/// Get the fractional raw moment of Poisson process.
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
+#[pyfunction]
+pub fn poisson_frac_raw_moment(
+    lambda_: f64,
+    duration: f64,
+    order: f64,
+    particles: usize,
+) -> XPyResult<f64> {
+    let poisson = Poisson::new(lambda_)?;
+    let result = poisson.frac_raw_moment(duration, order, particles)?;
+    Ok(result)
+}
+
+/// Get the fractional central moment of Poisson process.
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
+#[pyfunction]
+pub fn poisson_frac_central_moment(
+    lambda_: f64,
+    duration: f64,
+    order: f64,
+    particles: usize,
+) -> XPyResult<f64> {
+    let poisson = Poisson::new(lambda_)?;
+    let result = poisson.frac_central_moment(duration, order, particles)?;
+    Ok(result)
+}
+
 /// Get the first passage time of Poisson process.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]

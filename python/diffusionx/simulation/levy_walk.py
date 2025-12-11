@@ -54,39 +54,56 @@ class LevyWalk:
     def moment(
         self,
         duration: real,
-        order: int,
+        order: int | float,
         center: bool = False,
         particles: int = 10_000,
     ) -> float:
         validate_bool(center, "center")
-        order = validate_order(order)
+        validate_order(order)
         particles = validate_particles(particles)
         duration = validate_positive_float(duration, "duration")
 
-        if order == 0:
-            return 1.0
-
-        result = (
-            _core.levy_walk_raw_moment(
-                self.alpha,
-                self.velocity,
-                self.start_position,
-                duration,
-                order,
-                particles,
+        return (
+            (
+                _core.levy_walk_raw_moment(
+                    self.alpha,
+                    self.velocity,
+                    self.start_position,
+                    duration,
+                    order,
+                    particles,
+                )
+                if not center
+                else _core.levy_walk_central_moment(
+                    self.alpha,
+                    self.velocity,
+                    self.start_position,
+                    duration,
+                    order,
+                    particles,
+                )
             )
-            if not center
-            else _core.levy_walk_central_moment(
-                self.alpha,
-                self.velocity,
-                self.start_position,
-                duration,
-                order,
-                particles,
+            if isinstance(order, int)
+            else (
+                _core.levy_walk_frac_raw_moment(
+                    self.alpha,
+                    self.velocity,
+                    self.start_position,
+                    duration,
+                    order,
+                    particles,
+                )
+                if not center
+                else _core.levy_walk_frac_central_moment(
+                    self.alpha,
+                    self.velocity,
+                    self.start_position,
+                    duration,
+                    order,
+                    particles,
+                )
             )
         )
-
-        return result
 
     def fpt(
         self,

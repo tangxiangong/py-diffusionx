@@ -49,43 +49,63 @@ class GeometricBm:
     def moment(
         self,
         duration: real,
-        order: int,
+        order: int | float,
         central: bool = False,
         particles: int = 10_000,
         time_step: float = 0.01,
     ) -> float:
-        order = validate_order(order)
+        validate_bool(central, "central")
+        validate_order(order)
         particles = validate_particles(particles)
         duration = validate_positive_float(duration, "duration")
         time_step = validate_positive_float(time_step, "time_step")
         validate_bool(central, "central")
 
-        if order == 0:
-            return 1.0
-
-        result = (
-            _core.gb_raw_moment(
-                self.start_value,
-                self.mu,
-                self.sigma,
-                duration,
-                time_step,
-                order,
-                particles,
+        return (
+            (
+                _core.gb_raw_moment(
+                    self.start_value,
+                    self.mu,
+                    self.sigma,
+                    duration,
+                    time_step,
+                    order,
+                    particles,
+                )
+                if not central
+                else _core.gb_central_moment(
+                    self.start_value,
+                    self.mu,
+                    self.sigma,
+                    duration,
+                    time_step,
+                    order,
+                    particles,
+                )
             )
-            if not central
-            else _core.gb_central_moment(
-                self.start_value,
-                self.mu,
-                self.sigma,
-                duration,
-                time_step,
-                order,
-                particles,
+            if isinstance(order, int)
+            else (
+                _core.gb_frac_raw_moment(
+                    self.start_value,
+                    self.mu,
+                    self.sigma,
+                    duration,
+                    time_step,
+                    order,
+                    particles,
+                )
+                if not central
+                else _core.gb_frac_central_moment(
+                    self.start_value,
+                    self.mu,
+                    self.sigma,
+                    duration,
+                    time_step,
+                    order,
+                    particles,
+                )
             )
         )
-
-        return result
 
     def fpt(
         self,
@@ -116,8 +136,8 @@ class GeometricBm:
         max_duration: real = 1000,
     ) -> float | None:
         validate_bool(central, "central")
+        validate_order(order)
         a, b = validate_domain(domain, process_name="Gb FPT raw moment")
-        order = validate_order(order)
         particles = validate_particles(particles)
         time_step = validate_positive_float(time_step, "time_step")
         max_duration = validate_positive_float(max_duration, "max_duration")
@@ -176,14 +196,11 @@ class GeometricBm:
         time_step: float = 0.01,
     ) -> float:
         validate_bool(central, "central")
+        validate_order(order)
         a, b = validate_domain(domain, process_name="Gb Occupation raw moment")
-        order = validate_order(order)
         particles = validate_particles(particles)
         duration = validate_positive_float(duration, "duration")
         time_step = validate_positive_float(time_step, "time_step")
-
-        if order == 0:
-            return 1.0
 
         result = (
             _core.gb_occupation_time_raw_moment(

@@ -82,6 +82,54 @@ pub fn langevin_central_moment(
     Ok(result)
 }
 
+/// Get the fractional raw moment of Langevin process.
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
+#[pyfunction]
+pub fn langevin_frac_raw_moment(
+    drift_func: Py<PyAny>,
+    diffusion_func: Py<PyAny>,
+    start_position: f64,
+    duration: f64,
+    order: f64,
+    particles: usize,
+    time_step: f64,
+) -> XPyResult<f64> {
+    let langevin = {
+        let drift = |x: f64, t: f64| -> f64 { call_py_func(&drift_func, (x, t)) };
+
+        let diffusion = |x: f64, t: f64| -> f64 { call_py_func(&diffusion_func, (x, t)) };
+
+        Langevin::new(drift, diffusion, start_position)?
+    };
+
+    let result = langevin.frac_raw_moment(duration, order, particles, time_step)?;
+    Ok(result)
+}
+
+/// Get the fractional central moment of Langevin process.
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
+#[pyfunction]
+pub fn langevin_frac_central_moment(
+    drift_func: Py<PyAny>,
+    diffusion_func: Py<PyAny>,
+    start_position: f64,
+    duration: f64,
+    order: f64,
+    particles: usize,
+    time_step: f64,
+) -> XPyResult<f64> {
+    let langevin = {
+        let drift = |x: f64, t: f64| -> f64 { call_py_func(&drift_func, (x, t)) };
+
+        let diffusion = |x: f64, t: f64| -> f64 { call_py_func(&diffusion_func, (x, t)) };
+
+        Langevin::new(drift, diffusion, start_position)?
+    };
+
+    let result = langevin.frac_central_moment(duration, order, particles, time_step)?;
+    Ok(result)
+}
+
 /// Get the first passage time of Langevin process.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
@@ -390,6 +438,56 @@ pub fn generalized_langevin_central_moment(
     };
 
     let result = langevin.central_moment(duration, order, particles, time_step)?;
+    Ok(result)
+}
+
+/// Get the fractional raw moment of GeneralizedLangevin process.
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
+#[pyfunction]
+pub fn generalized_langevin_frac_raw_moment(
+    drift_func: Py<PyAny>,
+    diffusion_func: Py<PyAny>,
+    start_position: f64,
+    alpha: f64,
+    duration: f64,
+    order: f64,
+    particles: usize,
+    time_step: f64,
+) -> XPyResult<f64> {
+    let langevin = {
+        let drift = |x: f64, t: f64| -> f64 { call_py_func(&drift_func, (x, t)) };
+
+        let diffusion = |x: f64, t: f64| -> f64 { call_py_func(&diffusion_func, (x, t)) };
+
+        GeneralizedLangevin::new(drift, diffusion, start_position, alpha)?
+    };
+
+    let result = langevin.frac_raw_moment(duration, order, particles, time_step)?;
+    Ok(result)
+}
+
+/// Get the fractional central moment of GeneralizedLangevin process.
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
+#[pyfunction]
+pub fn generalized_langevin_frac_central_moment(
+    drift_func: Py<PyAny>,
+    diffusion_func: Py<PyAny>,
+    start_position: f64,
+    alpha: f64,
+    duration: f64,
+    order: f64,
+    particles: usize,
+    time_step: f64,
+) -> XPyResult<f64> {
+    let langevin = {
+        let drift = |x: f64, t: f64| -> f64 { call_py_func(&drift_func, (x, t)) };
+
+        let diffusion = |x: f64, t: f64| -> f64 { call_py_func(&diffusion_func, (x, t)) };
+
+        GeneralizedLangevin::new(drift, diffusion, start_position, alpha)?
+    };
+
+    let result = langevin.frac_central_moment(duration, order, particles, time_step)?;
     Ok(result)
 }
 
@@ -711,6 +809,56 @@ pub fn subordinated_langevin_central_moment(
     };
 
     let result = langevin.central_moment(duration, order, particles, time_step)?;
+    Ok(result)
+}
+
+/// Get the fractional raw moment of SubordinatedLangevin process.
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
+#[pyfunction]
+pub fn subordinated_langevin_frac_raw_moment(
+    drift_func: Py<PyAny>,
+    diffusion_func: Py<PyAny>,
+    start_position: f64,
+    alpha: f64,
+    duration: f64,
+    order: f64,
+    particles: usize,
+    time_step: f64,
+) -> XPyResult<f64> {
+    let langevin = {
+        let drift = |x: f64, t: f64| -> f64 { call_py_func(&drift_func, (x, t)) };
+
+        let diffusion = |x: f64, t: f64| -> f64 { call_py_func(&diffusion_func, (x, t)) };
+
+        SubordinatedLangevin::new(drift, diffusion, start_position, alpha)?
+    };
+
+    let result = langevin.frac_raw_moment(duration, order, particles, time_step)?;
+    Ok(result)
+}
+
+/// Get the fractional central moment of SubordinatedLangevin process.
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
+#[pyfunction]
+pub fn subordinated_langevin_frac_central_moment(
+    drift_func: Py<PyAny>,
+    diffusion_func: Py<PyAny>,
+    start_position: f64,
+    alpha: f64,
+    duration: f64,
+    order: f64,
+    particles: usize,
+    time_step: f64,
+) -> XPyResult<f64> {
+    let langevin = {
+        let drift = |x: f64, t: f64| -> f64 { call_py_func(&drift_func, (x, t)) };
+
+        let diffusion = |x: f64, t: f64| -> f64 { call_py_func(&diffusion_func, (x, t)) };
+
+        SubordinatedLangevin::new(drift, diffusion, start_position, alpha)?
+    };
+
+    let result = langevin.frac_central_moment(duration, order, particles, time_step)?;
     Ok(result)
 }
 

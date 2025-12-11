@@ -24,6 +24,21 @@ pub fn subordinator_simulate(
     Ok(vec_to_pyarray(py, times, positions))
 }
 
+/// Get the fractional raw moment of subordinator process.
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
+#[pyfunction]
+pub fn subordinator_frac_raw_moment(
+    alpha: f64,
+    duration: f64,
+    time_step: f64,
+    order: f64,
+    particles: usize,
+) -> XPyResult<f64> {
+    let subordinator = Subordinator::new(alpha)?;
+    let result = subordinator.frac_raw_moment(duration, order, particles, time_step)?;
+    Ok(result)
+}
+
 /// Get the first passage time of subordinator process.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
@@ -161,6 +176,36 @@ pub fn inv_subordinator_central_moment(
 ) -> XPyResult<f64> {
     let inv_subordinator = InvSubordinator::new(alpha)?;
     let result = inv_subordinator.central_moment(duration, order, particles, time_step)?;
+    Ok(result)
+}
+
+/// Get the fractional raw moment of inverse subordinator process.
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
+#[pyfunction]
+pub fn inv_subordinator_frac_raw_moment(
+    alpha: f64,
+    duration: f64,
+    time_step: f64,
+    order: f64,
+    particles: usize,
+) -> XPyResult<f64> {
+    let inv_subordinator = InvSubordinator::new(alpha)?;
+    let result = inv_subordinator.frac_raw_moment(duration, order, particles, time_step)?;
+    Ok(result)
+}
+
+/// Get the fractional central moment of inverse subordinator process.
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
+#[pyfunction]
+pub fn inv_subordinator_frac_central_moment(
+    alpha: f64,
+    duration: f64,
+    time_step: f64,
+    order: f64,
+    particles: usize,
+) -> XPyResult<f64> {
+    let inv_subordinator = InvSubordinator::new(alpha)?;
+    let result = inv_subordinator.frac_central_moment(duration, order, particles, time_step)?;
     Ok(result)
 }
 

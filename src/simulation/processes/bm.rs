@@ -218,3 +218,35 @@ pub fn bm_msd(
     let result = bm.msd(duration, particles, time_step)?;
     Ok(result)
 }
+
+/// Get the raw moment of Brownian motion.
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
+#[pyfunction]
+pub fn bm_frac_raw_moment(
+    start_position: f64,
+    diffusion_coefficient: f64,
+    duration: f64,
+    time_step: f64,
+    order: f64,
+    particles: usize,
+) -> XPyResult<f64> {
+    let bm = Bm::new(start_position, diffusion_coefficient)?;
+    let result = bm.frac_raw_moment(duration, order, particles, time_step)?;
+    Ok(result)
+}
+
+/// Get the fractional central moment of Brownian motion.
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
+#[pyfunction]
+pub fn bm_frac_central_moment(
+    start_position: f64,
+    diffusion_coefficient: f64,
+    duration: f64,
+    time_step: f64,
+    order: f64,
+    particles: usize,
+) -> XPyResult<f64> {
+    let bm = Bm::new(start_position, diffusion_coefficient)?;
+    let result = bm.frac_central_moment(duration, order, particles, time_step)?;
+    Ok(result)
+}

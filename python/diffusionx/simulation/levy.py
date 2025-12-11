@@ -123,8 +123,8 @@ class Levy:
         max_duration: real = 1000,
     ) -> float | None:
         validate_bool(center, "center")
+        validate_order(order)
         a, b = validate_domain(domain, process_name="Levy FPT raw moment")
-        order = validate_order(order)
         particles = validate_particles(particles)
         time_step = validate_positive_float(time_step, "time_step")
         max_duration = validate_positive_float(max_duration, "max_duration")
@@ -163,14 +163,11 @@ class Levy:
         time_step: float = 0.01,
     ) -> float:
         validate_bool(center, "center")
+        validate_order(order)
         a, b = validate_domain(domain, process_name="Levy Occupation raw moment")
-        order = validate_order(order)
         particles = validate_particles(particles)
         duration = validate_positive_float(duration, "duration")
         time_step = validate_positive_float(time_step, "time_step")
-
-        if order == 0:
-            return 1.0
 
         result = (
             _core.levy_occupation_time_raw_moment(
@@ -272,8 +269,8 @@ class Subordinator:
         max_duration: real = 1000,
     ) -> float | None:
         validate_bool(center, "center")
+        validate_order(order)
         a, b = validate_domain(domain, process_name="Subordinator FPT raw moment")
-        order = validate_order(order)
         particles = validate_particles(particles)
         time_step = validate_positive_float(time_step, "time_step")
         max_duration = validate_positive_float(max_duration, "max_duration")
@@ -310,16 +307,13 @@ class Subordinator:
         time_step: float = 0.01,
     ) -> float:
         validate_bool(center, "center")
+        validate_order(order)
         a, b = validate_domain(
             domain, process_name="Subordinator Occupation raw moment"
         )
-        order = validate_order(order)
         particles = validate_particles(particles)
         duration = validate_positive_float(duration, "duration")
         time_step = validate_positive_float(time_step, "time_step")
-
-        if order == 0:
-            return 1.0
 
         result = (
             _core.subordinator_occupation_time_raw_moment(
@@ -415,8 +409,8 @@ class InvSubordinator:
         max_duration: real = 1000,
     ) -> float | None:
         validate_bool(center, "center")
+        validate_order(order)
         a, b = validate_domain(domain, process_name="InvSubordinator FPT raw moment")
-        order = validate_order(order)
         particles = validate_particles(particles)
         time_step = validate_positive_float(time_step, "time_step")
         max_duration = validate_positive_float(max_duration, "max_duration")
@@ -453,16 +447,13 @@ class InvSubordinator:
         time_step: float = 0.01,
     ) -> float:
         validate_bool(center, "center")
+        validate_order(order)
         a, b = validate_domain(
             domain, process_name="InvSubordinator Occupation raw moment"
         )
-        order = validate_order(order)
         particles = validate_particles(particles)
         duration = validate_positive_float(duration, "duration")
         time_step = validate_positive_float(time_step, "time_step")
-
-        if order == 0:
-            return 1.0
 
         result = (
             _core.inv_subordinator_occupation_time_raw_moment(
@@ -558,8 +549,8 @@ class AsymmetricLevy:
         max_duration: real = 1000,
     ) -> float | None:
         validate_bool(center, "center")
+        validate_order(order)
         a, b = validate_domain(domain, process_name="AsymmetricLevy FPT raw moment")
-        order = validate_order(order)
         particles = validate_particles(particles)
         time_step = validate_positive_float(time_step, "time_step")
         max_duration = validate_positive_float(max_duration, "max_duration")
@@ -619,16 +610,13 @@ class AsymmetricLevy:
         time_step: float = 0.01,
     ) -> float:
         validate_bool(center, "center")
+        validate_order(order)
         a, b = validate_domain(
             domain, process_name="AsymmetricLevy Occupation raw moment"
         )
-        order = validate_order(order)
         particles = validate_particles(particles)
         duration = validate_positive_float(duration, "duration")
         time_step = validate_positive_float(time_step, "time_step")
-
-        if order == 0:
-            return 1.0
 
         result = (
             _core.asymmetric_levy_occupation_time_raw_moment(

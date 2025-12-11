@@ -54,6 +54,36 @@ pub fn cauchy_central_moment(
     Ok(result)
 }
 
+/// Get the fractional raw moment of Cauchy process.
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
+#[pyfunction]
+pub fn cauchy_frac_raw_moment(
+    start_position: f64,
+    duration: f64,
+    time_step: f64,
+    order: f64,
+    particles: usize,
+) -> XPyResult<f64> {
+    let cauchy = Cauchy::new(start_position);
+    let result = cauchy.frac_raw_moment(duration, order, particles, time_step)?;
+    Ok(result)
+}
+
+/// Get the fractional central moment of Cauchy process.
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
+#[pyfunction]
+pub fn cauchy_frac_central_moment(
+    start_position: f64,
+    duration: f64,
+    time_step: f64,
+    order: f64,
+    particles: usize,
+) -> XPyResult<f64> {
+    let cauchy = Cauchy::new(start_position);
+    let result = cauchy.frac_central_moment(duration, order, particles, time_step)?;
+    Ok(result)
+}
+
 /// Get the first passage time of Cauchy process.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
@@ -225,6 +255,38 @@ pub fn asymmetric_cauchy_central_moment(
 ) -> XPyResult<f64> {
     let cauchy = AsymmetricCauchy::new(start_position, beta)?;
     let result = cauchy.central_moment(duration, order, particles, time_step)?;
+    Ok(result)
+}
+
+/// Get the fractional raw moment of asymmetric Cauchy process.
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
+#[pyfunction]
+pub fn asymmetric_cauchy_frac_raw_moment(
+    start_position: f64,
+    beta: f64,
+    duration: f64,
+    time_step: f64,
+    order: f64,
+    particles: usize,
+) -> XPyResult<f64> {
+    let cauchy = AsymmetricCauchy::new(start_position, beta)?;
+    let result = cauchy.frac_raw_moment(duration, order, particles, time_step)?;
+    Ok(result)
+}
+
+/// Get the fractional central moment of asymmetric Cauchy process.
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
+#[pyfunction]
+pub fn asymmetric_cauchy_frac_central_moment(
+    start_position: f64,
+    beta: f64,
+    duration: f64,
+    time_step: f64,
+    order: f64,
+    particles: usize,
+) -> XPyResult<f64> {
+    let cauchy = AsymmetricCauchy::new(start_position, beta)?;
+    let result = cauchy.frac_central_moment(duration, order, particles, time_step)?;
     Ok(result)
 }
 

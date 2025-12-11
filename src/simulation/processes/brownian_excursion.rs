@@ -44,6 +44,34 @@ pub fn be_central_moment(
     Ok(result)
 }
 
+/// Get the fractional raw moment of Brownian excursion.
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
+#[pyfunction]
+pub fn be_frac_raw_moment(
+    duration: f64,
+    time_step: f64,
+    order: f64,
+    particles: usize,
+) -> XPyResult<f64> {
+    let be = BrownianExcursion::new();
+    let result = be.frac_raw_moment(duration, order, particles, time_step)?;
+    Ok(result)
+}
+
+/// Get the fractional central moment of Brownian excursion.
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
+#[pyfunction]
+pub fn be_frac_central_moment(
+    duration: f64,
+    time_step: f64,
+    order: f64,
+    particles: usize,
+) -> XPyResult<f64> {
+    let be = BrownianExcursion::new();
+    let result = be.frac_central_moment(duration, order, particles, time_step)?;
+    Ok(result)
+}
+
 /// Get the first passage time of Brownian excursion.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]

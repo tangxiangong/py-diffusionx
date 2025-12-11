@@ -54,6 +54,38 @@ pub fn gamma_central_moment(
     Ok(result)
 }
 
+/// Get the fractional raw moment of Gamma.
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
+#[pyfunction]
+pub fn gamma_frac_raw_moment(
+    shape: f64,
+    rate: f64,
+    duration: f64,
+    time_step: f64,
+    order: f64,
+    particles: usize,
+) -> XPyResult<f64> {
+    let gamma = Gamma::new(shape, rate)?;
+    let result = gamma.frac_raw_moment(duration, order, particles, time_step)?;
+    Ok(result)
+}
+
+/// Get the fractional central moment of Gamma.
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
+#[pyfunction]
+pub fn gamma_frac_central_moment(
+    shape: f64,
+    rate: f64,
+    duration: f64,
+    time_step: f64,
+    order: f64,
+    particles: usize,
+) -> XPyResult<f64> {
+    let gamma = Gamma::new(shape, rate)?;
+    let result = gamma.frac_central_moment(duration, order, particles, time_step)?;
+    Ok(result)
+}
+
 /// Get the first passage time of Gamma.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]

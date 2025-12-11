@@ -54,6 +54,38 @@ pub fn fbm_central_moment(
     Ok(result)
 }
 
+/// Get the fractional raw moment of FBm.
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
+#[pyfunction]
+pub fn fbm_frac_raw_moment(
+    start_position: f64,
+    hurst_exponent: f64,
+    duration: f64,
+    time_step: f64,
+    order: f64,
+    particles: usize,
+) -> XPyResult<f64> {
+    let fbm = FBm::new(start_position, hurst_exponent)?;
+    let result = fbm.frac_raw_moment(duration, order, particles, time_step)?;
+    Ok(result)
+}
+
+/// Get the fractional central moment of FBm.
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
+#[pyfunction]
+pub fn fbm_frac_central_moment(
+    start_position: f64,
+    hurst_exponent: f64,
+    duration: f64,
+    time_step: f64,
+    order: f64,
+    particles: usize,
+) -> XPyResult<f64> {
+    let fbm = FBm::new(start_position, hurst_exponent)?;
+    let result = fbm.frac_central_moment(duration, order, particles, time_step)?;
+    Ok(result)
+}
+
 /// Get the first passage time of FBm.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]

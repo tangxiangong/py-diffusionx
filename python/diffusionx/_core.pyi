@@ -31,6 +31,16 @@ def asymmetric_cauchy_fpt_raw_moment(start_position: builtins.float, beta: built
     Get the raw moment of the first passage time of asymmetric Cauchy process.
     """
 
+def asymmetric_cauchy_frac_central_moment(start_position: builtins.float, beta: builtins.float, duration: builtins.float, time_step: builtins.float, order: builtins.float, particles: builtins.int) -> builtins.float:
+    r"""
+    Get the fractional central moment of asymmetric Cauchy process.
+    """
+
+def asymmetric_cauchy_frac_raw_moment(start_position: builtins.float, beta: builtins.float, duration: builtins.float, time_step: builtins.float, order: builtins.float, particles: builtins.int) -> builtins.float:
+    r"""
+    Get the fractional raw moment of asymmetric Cauchy process.
+    """
+
 def asymmetric_cauchy_occupation_time(start_position: builtins.float, beta: builtins.float, domain: tuple[builtins.float, builtins.float], time_step: builtins.float, duration: builtins.float) -> builtins.float:
     r"""
     Get the occupation time of asymmetric Cauchy process.
@@ -61,6 +71,11 @@ def asymmetric_cauchy_tamsd(start_position: builtins.float, beta: builtins.float
     Get the time-averaged mean square displacement of asymmetric Cauchy process.
     """
 
+def asymmetric_levy_central_moment(start_position: builtins.float, alpha: builtins.float, beta: builtins.float, duration: builtins.float, time_step: builtins.float, order: builtins.int, particles: builtins.int) -> builtins.float:
+    r"""
+    Get the central moment of asymmetric Levy process.
+    """
+
 def asymmetric_levy_eatamsd(start_position: builtins.float, alpha: builtins.float, beta: builtins.float, duration: builtins.float, delta: builtins.float, particles: builtins.int, time_step: builtins.float, quad_order: builtins.int) -> builtins.float:
     r"""
     Get the effective time-averaged mean squared displacement of AsymmetricLevy process.
@@ -81,6 +96,16 @@ def asymmetric_levy_fpt_raw_moment(start_position: builtins.float, alpha: builti
     Get the raw moment of the first passage time of AsymmetricLevy process.
     """
 
+def asymmetric_levy_frac_central_moment(start_position: builtins.float, alpha: builtins.float, beta: builtins.float, duration: builtins.float, time_step: builtins.float, order: builtins.float, particles: builtins.int) -> builtins.float:
+    r"""
+    Get the fractional central moment of asymmetric Levy process.
+    """
+
+def asymmetric_levy_frac_raw_moment(start_position: builtins.float, alpha: builtins.float, beta: builtins.float, duration: builtins.float, time_step: builtins.float, order: builtins.float, particles: builtins.int) -> builtins.float:
+    r"""
+    Get the fractional raw moment of asymmetric Levy process.
+    """
+
 def asymmetric_levy_occupation_time(start_position: builtins.float, alpha: builtins.float, beta: builtins.float, time_step: builtins.float, domain: tuple[builtins.float, builtins.float], duration: builtins.float) -> builtins.float:
     r"""
     Get the occupation time of AsymmetricLevy process.
@@ -94,6 +119,11 @@ def asymmetric_levy_occupation_time_central_moment(start_position: builtins.floa
 def asymmetric_levy_occupation_time_raw_moment(start_position: builtins.float, alpha: builtins.float, beta: builtins.float, domain: tuple[builtins.float, builtins.float], duration: builtins.float, order: builtins.int, particles: builtins.int, time_step: builtins.float) -> builtins.float:
     r"""
     Get the raw moment of the occupation time of AsymmetricLevy process.
+    """
+
+def asymmetric_levy_raw_moment(start_position: builtins.float, alpha: builtins.float, beta: builtins.float, duration: builtins.float, time_step: builtins.float, order: builtins.int, particles: builtins.int) -> builtins.float:
+    r"""
+    Get the raw moment of asymmetric Levy process.
     """
 
 def asymmetric_levy_simulate(start_position: builtins.float, alpha: builtins.float, beta: builtins.float, duration: builtins.float, time_step: builtins.float) -> tuple[numpy.typing.NDArray[numpy.float64], numpy.typing.NDArray[numpy.float64]]:
@@ -129,6 +159,16 @@ def bb_fpt_central_moment(domain: tuple[builtins.float, builtins.float], order: 
 def bb_fpt_raw_moment(domain: tuple[builtins.float, builtins.float], order: builtins.int, particles: builtins.int, time_step: builtins.float, max_duration: builtins.float) -> typing.Optional[builtins.float]:
     r"""
     Get the raw moment of the first passage time of Brownian bridge.
+    """
+
+def bb_frac_central_moment(duration: builtins.float, time_step: builtins.float, order: builtins.float, particles: builtins.int) -> builtins.float:
+    r"""
+    Get the fractional central moment of Brownian bridge.
+    """
+
+def bb_frac_raw_moment(duration: builtins.float, time_step: builtins.float, order: builtins.float, particles: builtins.int) -> builtins.float:
+    r"""
+    Get the fractional raw moment of Brownian bridge.
     """
 
 def bb_mean(duration: builtins.float, particles: builtins.int, time_step: builtins.float) -> builtins.float:
@@ -196,6 +236,16 @@ def be_fpt_raw_moment(domain: tuple[builtins.float, builtins.float], order: buil
     Get the raw moment of the first passage time of Brownian excursion.
     """
 
+def be_frac_central_moment(duration: builtins.float, time_step: builtins.float, order: builtins.float, particles: builtins.int) -> builtins.float:
+    r"""
+    Get the fractional central moment of Brownian excursion.
+    """
+
+def be_frac_raw_moment(duration: builtins.float, time_step: builtins.float, order: builtins.float, particles: builtins.int) -> builtins.float:
+    r"""
+    Get the fractional raw moment of Brownian excursion.
+    """
+
 def be_mean(duration: builtins.float, particles: builtins.int, time_step: builtins.float) -> builtins.float:
     r"""
     Get the mean of Brownian excursion.
@@ -259,6 +309,16 @@ def bm_fpt_central_moment(start_position: builtins.float, diffusion_coefficient:
 def bm_fpt_raw_moment(start_position: builtins.float, diffusion_coefficient: builtins.float, domain: tuple[builtins.float, builtins.float], order: builtins.int, particles: builtins.int, time_step: builtins.float, max_duration: builtins.float) -> typing.Optional[builtins.float]:
     r"""
     Get the raw moment of the first passage time of Brownian motion.
+    """
+
+def bm_frac_central_moment(start_position: builtins.float, diffusion_coefficient: builtins.float, duration: builtins.float, time_step: builtins.float, order: builtins.float, particles: builtins.int) -> builtins.float:
+    r"""
+    Get the fractional central moment of Brownian motion.
+    """
+
+def bm_frac_raw_moment(start_position: builtins.float, diffusion_coefficient: builtins.float, duration: builtins.float, time_step: builtins.float, order: builtins.float, particles: builtins.int) -> builtins.float:
+    r"""
+    Get the raw moment of Brownian motion.
     """
 
 def bm_mean(start_position: builtins.float, diffusion_coefficient: builtins.float, duration: builtins.float, particles: builtins.int, time_step: builtins.float) -> builtins.float:
@@ -330,6 +390,16 @@ def cauchy_fpt_raw_moment(start_position: builtins.float, domain: tuple[builtins
     Get the raw moment of the first passage time of Cauchy process.
     """
 
+def cauchy_frac_central_moment(start_position: builtins.float, duration: builtins.float, time_step: builtins.float, order: builtins.float, particles: builtins.int) -> builtins.float:
+    r"""
+    Get the fractional central moment of Cauchy process.
+    """
+
+def cauchy_frac_raw_moment(start_position: builtins.float, duration: builtins.float, time_step: builtins.float, order: builtins.float, particles: builtins.int) -> builtins.float:
+    r"""
+    Get the fractional raw moment of Cauchy process.
+    """
+
 def cauchy_occupation_time(start_position: builtins.float, domain: tuple[builtins.float, builtins.float], time_step: builtins.float, duration: builtins.float) -> builtins.float:
     r"""
     Get the occupation time of Cauchy process.
@@ -378,6 +448,16 @@ def ctrw_fpt_central_moment(alpha: builtins.float, beta: builtins.float, start_p
 def ctrw_fpt_raw_moment(alpha: builtins.float, beta: builtins.float, start_position: builtins.float, domain: tuple[builtins.float, builtins.float], order: builtins.int, particles: builtins.int, max_duration: builtins.float) -> typing.Optional[builtins.float]:
     r"""
     Get the raw moment of the first passage time of CTRW.
+    """
+
+def ctrw_frac_central_moment(alpha: builtins.float, beta: builtins.float, start_position: builtins.float, duration: builtins.float, order: builtins.float, particles: builtins.int) -> builtins.float:
+    r"""
+    Get the fractional central moment of CTRW.
+    """
+
+def ctrw_frac_raw_moment(alpha: builtins.float, beta: builtins.float, start_position: builtins.float, duration: builtins.float, order: builtins.float, particles: builtins.int) -> builtins.float:
+    r"""
+    Get the fractional raw moment of CTRW.
     """
 
 def ctrw_mean(alpha: builtins.float, beta: builtins.float, start_position: builtins.float, duration: builtins.float, particles: builtins.int) -> builtins.float:
@@ -451,6 +531,16 @@ def fbm_fpt_raw_moment(start_position: builtins.float, hurst_exponent: builtins.
     Get the raw moment of the first passage time of FBm.
     """
 
+def fbm_frac_central_moment(start_position: builtins.float, hurst_exponent: builtins.float, duration: builtins.float, time_step: builtins.float, order: builtins.float, particles: builtins.int) -> builtins.float:
+    r"""
+    Get the fractional central moment of FBm.
+    """
+
+def fbm_frac_raw_moment(start_position: builtins.float, hurst_exponent: builtins.float, duration: builtins.float, time_step: builtins.float, order: builtins.float, particles: builtins.int) -> builtins.float:
+    r"""
+    Get the fractional raw moment of FBm.
+    """
+
 def fbm_mean(start_position: builtins.float, hurst_exponent: builtins.float, duration: builtins.float, particles: builtins.int, time_step: builtins.float) -> builtins.float:
     r"""
     Get the mean of FBm.
@@ -514,6 +604,16 @@ def gamma_fpt_central_moment(shape: builtins.float, rate: builtins.float, domain
 def gamma_fpt_raw_moment(shape: builtins.float, rate: builtins.float, domain: tuple[builtins.float, builtins.float], order: builtins.int, particles: builtins.int, time_step: builtins.float, max_duration: builtins.float) -> typing.Optional[builtins.float]:
     r"""
     Get the raw moment of the first passage time of Gamma.
+    """
+
+def gamma_frac_central_moment(shape: builtins.float, rate: builtins.float, duration: builtins.float, time_step: builtins.float, order: builtins.float, particles: builtins.int) -> builtins.float:
+    r"""
+    Get the fractional central moment of Gamma.
+    """
+
+def gamma_frac_raw_moment(shape: builtins.float, rate: builtins.float, duration: builtins.float, time_step: builtins.float, order: builtins.float, particles: builtins.int) -> builtins.float:
+    r"""
+    Get the fractional raw moment of Gamma.
     """
 
 def gamma_mean(shape: builtins.float, rate: builtins.float, duration: builtins.float, particles: builtins.int, time_step: builtins.float) -> builtins.float:
@@ -581,6 +681,16 @@ def gb_fpt_raw_moment(start_position: builtins.float, mu: builtins.float, sigma:
     Get the raw moment of the first passage time of Geometric Brownian Motion.
     """
 
+def gb_frac_central_moment(start_position: builtins.float, mu: builtins.float, sigma: builtins.float, duration: builtins.float, time_step: builtins.float, order: builtins.float, particles: builtins.int) -> builtins.float:
+    r"""
+    Get the fractional central moment of Geometric Brownian Motion.
+    """
+
+def gb_frac_raw_moment(start_position: builtins.float, mu: builtins.float, sigma: builtins.float, duration: builtins.float, time_step: builtins.float, order: builtins.float, particles: builtins.int) -> builtins.float:
+    r"""
+    Get the fractional raw moment of Geometric Brownian Motion.
+    """
+
 def gb_mean(start_position: builtins.float, mu: builtins.float, sigma: builtins.float, duration: builtins.float, particles: builtins.int, time_step: builtins.float) -> builtins.float:
     r"""
     Get the mean of Geometric Brownian Motion.
@@ -646,6 +756,16 @@ def generalized_langevin_fpt_raw_moment(drift_func: typing.Any, diffusion_func: 
     Get the raw moment of the first passage time of GeneralizedLangevin process.
     """
 
+def generalized_langevin_frac_central_moment(drift_func: typing.Any, diffusion_func: typing.Any, start_position: builtins.float, alpha: builtins.float, duration: builtins.float, order: builtins.float, particles: builtins.int, time_step: builtins.float) -> builtins.float:
+    r"""
+    Get the fractional central moment of GeneralizedLangevin process.
+    """
+
+def generalized_langevin_frac_raw_moment(drift_func: typing.Any, diffusion_func: typing.Any, start_position: builtins.float, alpha: builtins.float, duration: builtins.float, order: builtins.float, particles: builtins.int, time_step: builtins.float) -> builtins.float:
+    r"""
+    Get the fractional raw moment of GeneralizedLangevin process.
+    """
+
 def generalized_langevin_mean(drift_func: typing.Any, diffusion_func: typing.Any, start_position: builtins.float, alpha: builtins.float, duration: builtins.float, particles: builtins.int, time_step: builtins.float) -> builtins.float:
     r"""
     Get the mean of GeneralizedLangevin process.
@@ -706,6 +826,16 @@ def inv_subordinator_fpt_raw_moment(alpha: builtins.float, domain: tuple[builtin
     Get the raw moment of the first passage time of inverse subordinator process.
     """
 
+def inv_subordinator_frac_central_moment(alpha: builtins.float, duration: builtins.float, time_step: builtins.float, order: builtins.float, particles: builtins.int) -> builtins.float:
+    r"""
+    Get the fractional central moment of inverse subordinator process.
+    """
+
+def inv_subordinator_frac_raw_moment(alpha: builtins.float, duration: builtins.float, time_step: builtins.float, order: builtins.float, particles: builtins.int) -> builtins.float:
+    r"""
+    Get the fractional raw moment of inverse subordinator process.
+    """
+
 def inv_subordinator_occupation_time(alpha: builtins.float, domain: tuple[builtins.float, builtins.float], duration: builtins.float, time_step: builtins.float) -> builtins.float:
     r"""
     Get the occupation time of inverse subordinator process.
@@ -756,6 +886,16 @@ def langevin_fpt_raw_moment(drift_func: typing.Any, diffusion_func: typing.Any, 
     Get the raw moment of the first passage time of Langevin process.
     """
 
+def langevin_frac_central_moment(drift_func: typing.Any, diffusion_func: typing.Any, start_position: builtins.float, duration: builtins.float, order: builtins.float, particles: builtins.int, time_step: builtins.float) -> builtins.float:
+    r"""
+    Get the fractional central moment of Langevin process.
+    """
+
+def langevin_frac_raw_moment(drift_func: typing.Any, diffusion_func: typing.Any, start_position: builtins.float, duration: builtins.float, order: builtins.float, particles: builtins.int, time_step: builtins.float) -> builtins.float:
+    r"""
+    Get the fractional raw moment of Langevin process.
+    """
+
 def langevin_mean(drift_func: typing.Any, diffusion_func: typing.Any, start_position: builtins.float, duration: builtins.float, particles: builtins.int, time_step: builtins.float) -> builtins.float:
     r"""
     Get the mean of Langevin process.
@@ -796,6 +936,11 @@ def langevin_tamsd(drift_func: typing.Any, diffusion_func: typing.Any, start_pos
     Get the time-averaged mean squared displacement of Langevin process.
     """
 
+def levy_central_moment(start_position: builtins.float, alpha: builtins.float, duration: builtins.float, time_step: builtins.float, order: builtins.int, particles: builtins.int) -> builtins.float:
+    r"""
+    Get the central moment of Levy process.
+    """
+
 def levy_eatamsd(start_position: builtins.float, alpha: builtins.float, duration: builtins.float, delta: builtins.float, particles: builtins.int, time_step: builtins.float, quad_order: builtins.int) -> builtins.float:
     r"""
     Get the effective time-averaged mean squared displacement of Levy process.
@@ -816,6 +961,16 @@ def levy_fpt_raw_moment(start_position: builtins.float, alpha: builtins.float, d
     Get the raw moment of the first passage time of Levy process.
     """
 
+def levy_frac_central_moment(start_position: builtins.float, alpha: builtins.float, duration: builtins.float, time_step: builtins.float, order: builtins.float, particles: builtins.int) -> builtins.float:
+    r"""
+    Get the fractional central moment of Levy process.
+    """
+
+def levy_frac_raw_moment(start_position: builtins.float, alpha: builtins.float, duration: builtins.float, time_step: builtins.float, order: builtins.float, particles: builtins.int) -> builtins.float:
+    r"""
+    Get the fractional raw moment of Levy process.
+    """
+
 def levy_occupation_time(start_position: builtins.float, alpha: builtins.float, time_step: builtins.float, domain: tuple[builtins.float, builtins.float], duration: builtins.float) -> builtins.float:
     r"""
     Get the occupation time of Levy process.
@@ -829,6 +984,11 @@ def levy_occupation_time_central_moment(start_position: builtins.float, alpha: b
 def levy_occupation_time_raw_moment(start_position: builtins.float, alpha: builtins.float, domain: tuple[builtins.float, builtins.float], duration: builtins.float, order: builtins.int, particles: builtins.int, time_step: builtins.float) -> builtins.float:
     r"""
     Get the raw moment of the occupation time of Levy process.
+    """
+
+def levy_raw_moment(start_position: builtins.float, alpha: builtins.float, duration: builtins.float, time_step: builtins.float, order: builtins.int, particles: builtins.int) -> builtins.float:
+    r"""
+    Get the raw moment of Levy process.
     """
 
 def levy_simulate(start_position: builtins.float, alpha: builtins.float, duration: builtins.float, time_step: builtins.float) -> tuple[numpy.typing.NDArray[numpy.float64], numpy.typing.NDArray[numpy.float64]]:
@@ -849,6 +1009,16 @@ def levy_walk_central_moment(alpha: builtins.float, velocity: builtins.float, st
 def levy_walk_fpt(alpha: builtins.float, velocity: builtins.float, start_position: builtins.float, domain: tuple[builtins.float, builtins.float], max_duration: builtins.float) -> typing.Optional[builtins.float]:
     r"""
     Get the first passage time of Levy walk.
+    """
+
+def levy_walk_frac_central_moment(alpha: builtins.float, velocity: builtins.float, start_position: builtins.float, duration: builtins.float, order: builtins.float, particles: builtins.int) -> builtins.float:
+    r"""
+    Get the fractional central moment of Levy walk.
+    """
+
+def levy_walk_frac_raw_moment(alpha: builtins.float, velocity: builtins.float, start_position: builtins.float, duration: builtins.float, order: builtins.float, particles: builtins.int) -> builtins.float:
+    r"""
+    Get the fractional raw moment of Levy walk.
     """
 
 def levy_walk_mean(alpha: builtins.float, velocity: builtins.float, start_position: builtins.float, duration: builtins.float, particles: builtins.int, time_step: builtins.float) -> builtins.float:
@@ -896,6 +1066,16 @@ def meander_fpt_central_moment(domain: tuple[builtins.float, builtins.float], or
 def meander_fpt_raw_moment(domain: tuple[builtins.float, builtins.float], order: builtins.int, particles: builtins.int, time_step: builtins.float) -> typing.Optional[builtins.float]:
     r"""
     Get the raw moment of the first passage time of Brownian meander.
+    """
+
+def meander_frac_central_moment(duration: builtins.float, time_step: builtins.float, order: builtins.float, particles: builtins.int) -> builtins.float:
+    r"""
+    Get the fractional central moment of Brownian meander.
+    """
+
+def meander_frac_raw_moment(duration: builtins.float, time_step: builtins.float, order: builtins.float, particles: builtins.int) -> builtins.float:
+    r"""
+    Get the fractional raw moment of Brownian meander.
     """
 
 def meander_mean(duration: builtins.float, particles: builtins.int, time_step: builtins.float) -> builtins.float:
@@ -971,6 +1151,16 @@ def ou_fpt_raw_moment(theta: builtins.float, sigma: builtins.float, start_positi
     Get the raw moment of the first passage time of Ornstein-Uhlenbeck process.
     """
 
+def ou_frac_central_moment(theta: builtins.float, sigma: builtins.float, start_position: builtins.float, duration: builtins.float, time_step: builtins.float, order: builtins.float, particles: builtins.int) -> builtins.float:
+    r"""
+    Get the fractional central moment of Ornstein-Uhlenbeck process.
+    """
+
+def ou_frac_raw_moment(theta: builtins.float, sigma: builtins.float, start_position: builtins.float, duration: builtins.float, time_step: builtins.float, order: builtins.float, particles: builtins.int) -> builtins.float:
+    r"""
+    Get the fractional raw moment of Ornstein-Uhlenbeck process.
+    """
+
 def ou_mean(theta: builtins.float, sigma: builtins.float, start_position: builtins.float, duration: builtins.float, particles: builtins.int, time_step: builtins.float) -> builtins.float:
     r"""
     Get the mean of Ornstein-Uhlenbeck process.
@@ -1029,6 +1219,16 @@ def poisson_fpt_central_moment(lambda_: builtins.float, domain: tuple[builtins.f
 def poisson_fpt_raw_moment(lambda_: builtins.float, domain: tuple[builtins.float, builtins.float], max_duration: builtins.float, order: builtins.int, particles: builtins.int) -> typing.Optional[builtins.float]:
     r"""
     Get the raw moment of the first passage time of Poisson process.
+    """
+
+def poisson_frac_central_moment(lambda_: builtins.float, duration: builtins.float, order: builtins.float, particles: builtins.int) -> builtins.float:
+    r"""
+    Get the fractional central moment of Poisson process.
+    """
+
+def poisson_frac_raw_moment(lambda_: builtins.float, duration: builtins.float, order: builtins.float, particles: builtins.int) -> builtins.float:
+    r"""
+    Get the fractional raw moment of Poisson process.
     """
 
 def poisson_mean(lambda_: builtins.float, duration: builtins.float, particles: builtins.int) -> builtins.float:
@@ -1108,6 +1308,16 @@ def subordinated_langevin_fpt_raw_moment(drift_func: typing.Any, diffusion_func:
     Get the raw moment of the first passage time of SubordinatedLangevin process.
     """
 
+def subordinated_langevin_frac_central_moment(drift_func: typing.Any, diffusion_func: typing.Any, start_position: builtins.float, alpha: builtins.float, duration: builtins.float, order: builtins.float, particles: builtins.int, time_step: builtins.float) -> builtins.float:
+    r"""
+    Get the fractional central moment of SubordinatedLangevin process.
+    """
+
+def subordinated_langevin_frac_raw_moment(drift_func: typing.Any, diffusion_func: typing.Any, start_position: builtins.float, alpha: builtins.float, duration: builtins.float, order: builtins.float, particles: builtins.int, time_step: builtins.float) -> builtins.float:
+    r"""
+    Get the fractional raw moment of SubordinatedLangevin process.
+    """
+
 def subordinated_langevin_mean(drift_func: typing.Any, diffusion_func: typing.Any, start_position: builtins.float, alpha: builtins.float, duration: builtins.float, particles: builtins.int, time_step: builtins.float) -> builtins.float:
     r"""
     Get the mean of SubordinatedLangevin process.
@@ -1161,6 +1371,11 @@ def subordinator_fpt_central_moment(alpha: builtins.float, domain: tuple[builtin
 def subordinator_fpt_raw_moment(alpha: builtins.float, domain: tuple[builtins.float, builtins.float], max_duration: builtins.float, time_step: builtins.float, order: builtins.int, particles: builtins.int) -> typing.Optional[builtins.float]:
     r"""
     Get the raw moment of the first passage time of subordinator process.
+    """
+
+def subordinator_frac_raw_moment(alpha: builtins.float, duration: builtins.float, time_step: builtins.float, order: builtins.float, particles: builtins.int) -> builtins.float:
+    r"""
+    Get the fractional raw moment of subordinator process.
     """
 
 def subordinator_occupation_time(alpha: builtins.float, domain: tuple[builtins.float, builtins.float], duration: builtins.float, time_step: builtins.float) -> builtins.float:

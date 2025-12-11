@@ -15,13 +15,12 @@ def ensure_float(value: real) -> float:
         raise TypeError(f"Expected float or int, got {type(value).__name__}")
 
 
-def validate_order(order: int) -> int:
-    """Validate that order is a non-negative integer."""
-    if not isinstance(order, int):
-        raise TypeError(f"order must be an integer, got {type(order).__name__}")
-    if order < 0:
-        raise ValueError("order must be non-negative")
-    return order
+def validate_order(order: int | float) -> None:
+    """Validate that order is a non-negative integer or float."""
+    if not (isinstance(order, int) or isinstance(order, float)):
+        raise TypeError(
+            f"order must be an integer or float, got {type(order).__name__}"
+        )
 
 
 def validate_positive_integer(val: int, name: str) -> int:

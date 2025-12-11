@@ -69,6 +69,38 @@ pub fn ctrw_central_moment(
     Ok(result)
 }
 
+/// Get the fractional raw moment of CTRW.
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
+#[pyfunction]
+pub fn ctrw_frac_raw_moment(
+    alpha: f64,
+    beta: f64,
+    start_position: f64,
+    duration: f64,
+    order: f64,
+    particles: usize,
+) -> XPyResult<f64> {
+    let ctrw = CTRW::new(alpha, beta, start_position)?;
+    let result = ctrw.frac_raw_moment(duration, order, particles)?;
+    Ok(result)
+}
+
+/// Get the fractional central moment of CTRW.
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
+#[pyfunction]
+pub fn ctrw_frac_central_moment(
+    alpha: f64,
+    beta: f64,
+    start_position: f64,
+    duration: f64,
+    order: f64,
+    particles: usize,
+) -> XPyResult<f64> {
+    let ctrw = CTRW::new(alpha, beta, start_position)?;
+    let result = ctrw.frac_central_moment(duration, order, particles)?;
+    Ok(result)
+}
+
 /// Get the first passage time of CTRW.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]

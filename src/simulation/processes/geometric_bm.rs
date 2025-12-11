@@ -57,6 +57,40 @@ pub fn gb_central_moment(
     Ok(result)
 }
 
+/// Get the fractional raw moment of Geometric Brownian Motion.
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
+#[pyfunction]
+pub fn gb_frac_raw_moment(
+    start_position: f64,
+    mu: f64,
+    sigma: f64,
+    duration: f64,
+    time_step: f64,
+    order: f64,
+    particles: usize,
+) -> XPyResult<f64> {
+    let gb = GeometricBm::new(start_position, mu, sigma)?;
+    let result = gb.frac_raw_moment(duration, order, particles, time_step)?;
+    Ok(result)
+}
+
+/// Get the fractional central moment of Geometric Brownian Motion.
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
+#[pyfunction]
+pub fn gb_frac_central_moment(
+    start_position: f64,
+    mu: f64,
+    sigma: f64,
+    duration: f64,
+    time_step: f64,
+    order: f64,
+    particles: usize,
+) -> XPyResult<f64> {
+    let gb = GeometricBm::new(start_position, mu, sigma)?;
+    let result = gb.frac_central_moment(duration, order, particles, time_step)?;
+    Ok(result)
+}
+
 /// Get the first passage time of Geometric Brownian Motion.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]

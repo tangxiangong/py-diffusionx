@@ -54,6 +54,38 @@ pub fn levy_walk_central_moment(
     Ok(result)
 }
 
+/// Get the fractional raw moment of Levy walk.
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
+#[pyfunction]
+pub fn levy_walk_frac_raw_moment(
+    alpha: f64,
+    velocity: f64,
+    start_position: f64,
+    duration: f64,
+    order: f64,
+    particles: usize,
+) -> XPyResult<f64> {
+    let levy_walk = LevyWalk::new(alpha, velocity, start_position)?;
+    let result = levy_walk.frac_raw_moment(duration, order, particles, 0.1)?;
+    Ok(result)
+}
+
+/// Get the fractional central moment of Levy walk.
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
+#[pyfunction]
+pub fn levy_walk_frac_central_moment(
+    alpha: f64,
+    velocity: f64,
+    start_position: f64,
+    duration: f64,
+    order: f64,
+    particles: usize,
+) -> XPyResult<f64> {
+    let levy_walk = LevyWalk::new(alpha, velocity, start_position)?;
+    let result = levy_walk.frac_central_moment(duration, order, particles, 0.1)?;
+    Ok(result)
+}
+
 /// Get the first passage time of Levy walk.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]

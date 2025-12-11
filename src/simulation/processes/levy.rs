@@ -160,6 +160,70 @@ pub fn levy_eatamsd(
     Ok(result)
 }
 
+/// Get the raw moment of Levy process.
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
+#[pyfunction]
+pub fn levy_raw_moment(
+    start_position: f64,
+    alpha: f64,
+    duration: f64,
+    time_step: f64,
+    order: i32,
+    particles: usize,
+) -> XPyResult<f64> {
+    let levy = Levy::new(start_position, alpha)?;
+    let result = levy.raw_moment(duration, order, particles, time_step)?;
+    Ok(result)
+}
+
+/// Get the central moment of Levy process.
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
+#[pyfunction]
+pub fn levy_central_moment(
+    start_position: f64,
+    alpha: f64,
+    duration: f64,
+    time_step: f64,
+    order: i32,
+    particles: usize,
+) -> XPyResult<f64> {
+    let levy = Levy::new(start_position, alpha)?;
+    let result = levy.central_moment(duration, order, particles, time_step)?;
+    Ok(result)
+}
+
+/// Get the fractional raw moment of Levy process.
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
+#[pyfunction]
+pub fn levy_frac_raw_moment(
+    start_position: f64,
+    alpha: f64,
+    duration: f64,
+    time_step: f64,
+    order: f64,
+    particles: usize,
+) -> XPyResult<f64> {
+    let levy = Levy::new(start_position, alpha)?;
+    let result = levy.frac_raw_moment(duration, order, particles, time_step)?;
+    Ok(result)
+}
+
+/// Get the fractional central moment of Levy process.
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
+#[pyfunction]
+pub fn levy_frac_central_moment(
+    start_position: f64,
+    alpha: f64,
+    duration: f64,
+    time_step: f64,
+    order: f64,
+    particles: usize,
+) -> XPyResult<f64> {
+    let levy = Levy::new(start_position, alpha)?;
+    let result = levy.frac_central_moment(duration, order, particles, time_step)?;
+    Ok(result)
+}
+
 /// Simulate AsymmetricLevy process.
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
@@ -316,5 +380,73 @@ pub fn asymmetric_levy_eatamsd(
 ) -> XPyResult<f64> {
     let levy = AsymmetricLevy::new(start_position, alpha, beta)?;
     let result = levy.eatamsd(duration, delta, particles, time_step, quad_order)?;
+    Ok(result)
+}
+
+/// Get the raw moment of asymmetric Levy process.
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
+#[pyfunction]
+pub fn asymmetric_levy_raw_moment(
+    start_position: f64,
+    alpha: f64,
+    beta: f64,
+    duration: f64,
+    time_step: f64,
+    order: i32,
+    particles: usize,
+) -> XPyResult<f64> {
+    let levy = AsymmetricLevy::new(start_position, alpha, beta)?;
+    let result = levy.raw_moment(duration, order, particles, time_step)?;
+    Ok(result)
+}
+
+/// Get the central moment of asymmetric Levy process.
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
+#[pyfunction]
+pub fn asymmetric_levy_central_moment(
+    start_position: f64,
+    alpha: f64,
+    beta: f64,
+    duration: f64,
+    time_step: f64,
+    order: i32,
+    particles: usize,
+) -> XPyResult<f64> {
+    let levy = AsymmetricLevy::new(start_position, alpha, beta)?;
+    let result = levy.central_moment(duration, order, particles, time_step)?;
+    Ok(result)
+}
+
+/// Get the fractional raw moment of asymmetric Levy process.
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
+#[pyfunction]
+pub fn asymmetric_levy_frac_raw_moment(
+    start_position: f64,
+    alpha: f64,
+    beta: f64,
+    duration: f64,
+    time_step: f64,
+    order: f64,
+    particles: usize,
+) -> XPyResult<f64> {
+    let levy = AsymmetricLevy::new(start_position, alpha, beta)?;
+    let result = levy.frac_raw_moment(duration, order, particles, time_step)?;
+    Ok(result)
+}
+
+/// Get the fractional central moment of asymmetric Levy process.
+#[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
+#[pyfunction]
+pub fn asymmetric_levy_frac_central_moment(
+    start_position: f64,
+    alpha: f64,
+    beta: f64,
+    duration: f64,
+    time_step: f64,
+    order: f64,
+    particles: usize,
+) -> XPyResult<f64> {
+    let levy = AsymmetricLevy::new(start_position, alpha, beta)?;
+    let result = levy.frac_central_moment(duration, order, particles, time_step)?;
     Ok(result)
 }
