@@ -10,9 +10,7 @@ license = { text = "MIT" }
 keywords = [
     "stochastic-processes",
     "simulation",
-    "brownian-motion",
-    "levy-process",
-    "random-number-generator",
+    "random",
     "scientific-computing",
 ]
 classifiers = [
