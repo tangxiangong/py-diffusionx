@@ -30,9 +30,7 @@ classifiers = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/tangxiangong/py-diffusionx"
 Repository = "https://github.com/tangxiangong/py-diffusionx"
-Issues = "https://github.com/tangxiangong/py-diffusionx/issues"
 
 [tool.maturin]
 features = ["pyo3/extension-module"]
