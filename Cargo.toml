@@ -18,7 +18,7 @@ required-features = ["stub_gen"]
 stub_gen = ["pyo3-stub-gen"]
 
 [dependencies]
-diffusionx = "0.8.2"
+diffusionx = "0.10"
 gauss-quad = "0.2.4"
 num_cpus = "1.17"
 numpy = "0.27"
