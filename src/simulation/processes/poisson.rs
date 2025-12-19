@@ -42,7 +42,7 @@ pub fn poisson_raw_moment(
     order: i32,
     particles: usize,
 ) -> XPyResult<f64> {
-    let poisson = Poisson::new(lambda_)?;
+    let poisson: Poisson<f64, f64> = Poisson::new(lambda_)?;
     let result = poisson.raw_moment(duration, order, particles)?;
     Ok(result)
 }
@@ -56,7 +56,7 @@ pub fn poisson_central_moment(
     order: i32,
     particles: usize,
 ) -> XPyResult<f64> {
-    let poisson = Poisson::new(lambda_)?;
+    let poisson: Poisson<f64, f64> = Poisson::new(lambda_)?;
     let result = poisson.central_moment(duration, order, particles)?;
     Ok(result)
 }
@@ -70,7 +70,7 @@ pub fn poisson_frac_raw_moment(
     order: f64,
     particles: usize,
 ) -> XPyResult<f64> {
-    let poisson = Poisson::new(lambda_)?;
+    let poisson: Poisson<f64, f64> = Poisson::new(lambda_)?;
     let result = poisson.frac_raw_moment(duration, order, particles)?;
     Ok(result)
 }
@@ -84,7 +84,7 @@ pub fn poisson_frac_central_moment(
     order: f64,
     particles: usize,
 ) -> XPyResult<f64> {
-    let poisson = Poisson::new(lambda_)?;
+    let poisson: Poisson<f64, f64> = Poisson::new(lambda_)?;
     let result = poisson.frac_central_moment(duration, order, particles)?;
     Ok(result)
 }
@@ -93,7 +93,7 @@ pub fn poisson_frac_central_moment(
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn poisson_fpt(lambda_: f64, domain: (f64, f64), max_duration: f64) -> XPyResult<Option<f64>> {
-    let poisson = Poisson::new(lambda_)?;
+    let poisson: Poisson<f64, f64> = Poisson::new(lambda_)?;
     let result = poisson.fpt(domain, max_duration)?;
     Ok(result)
 }
@@ -108,7 +108,7 @@ pub fn poisson_fpt_raw_moment(
     order: i32,
     particles: usize,
 ) -> XPyResult<Option<f64>> {
-    let poisson = Poisson::new(lambda_)?;
+    let poisson: Poisson<f64, f64> = Poisson::new(lambda_)?;
     let fpt = FirstPassageTime::new(&poisson, domain)?;
     let result = fpt.raw_moment_p(order, particles, max_duration)?;
     Ok(result)
@@ -124,7 +124,7 @@ pub fn poisson_fpt_central_moment(
     order: i32,
     particles: usize,
 ) -> XPyResult<Option<f64>> {
-    let poisson = Poisson::new(lambda_)?;
+    let poisson: Poisson<f64, f64> = Poisson::new(lambda_)?;
     let fpt = FirstPassageTime::new(&poisson, domain)?;
     let result = fpt.central_moment_p(order, particles, max_duration)?;
     Ok(result)
@@ -134,7 +134,7 @@ pub fn poisson_fpt_central_moment(
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn poisson_occupation_time(lambda_: f64, domain: (f64, f64), duration: f64) -> XPyResult<f64> {
-    let poisson = Poisson::new(lambda_)?;
+    let poisson: Poisson<f64, f64> = Poisson::new(lambda_)?;
     let result = poisson.occupation_time(domain, duration)?;
     Ok(result)
 }
@@ -149,7 +149,7 @@ pub fn poisson_occupation_time_raw_moment(
     order: i32,
     particles: usize,
 ) -> XPyResult<f64> {
-    let poisson = Poisson::new(lambda_)?;
+    let poisson: Poisson<f64, f64> = Poisson::new(lambda_)?;
     let oc = OccupationTime::new(&poisson, domain, duration)?;
     let result = oc.raw_moment_p(order, particles)?;
     Ok(result)
@@ -165,7 +165,7 @@ pub fn poisson_occupation_time_central_moment(
     order: i32,
     particles: usize,
 ) -> XPyResult<f64> {
-    let poisson = Poisson::new(lambda_)?;
+    let poisson: Poisson<f64, f64> = Poisson::new(lambda_)?;
     let oc = OccupationTime::new(&poisson, domain, duration)?;
     let result = oc.central_moment_p(order, particles)?;
     Ok(result)
@@ -175,7 +175,7 @@ pub fn poisson_occupation_time_central_moment(
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn poisson_mean(lambda_: f64, duration: f64, particles: usize) -> XPyResult<f64> {
-    let poisson = Poisson::new(lambda_)?;
+    let poisson: Poisson<f64, f64> = Poisson::new(lambda_)?;
     let result = poisson.mean(duration, particles)?;
     Ok(result)
 }
@@ -184,7 +184,7 @@ pub fn poisson_mean(lambda_: f64, duration: f64, particles: usize) -> XPyResult<
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
 pub fn poisson_msd(lambda_: f64, duration: f64, particles: usize) -> XPyResult<f64> {
-    let poisson = Poisson::new(lambda_)?;
+    let poisson: Poisson<f64, f64> = Poisson::new(lambda_)?;
     let result = poisson.msd(duration, particles)?;
     Ok(result)
 }
