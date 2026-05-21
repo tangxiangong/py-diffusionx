@@ -980,7 +980,7 @@ class SubordinatedLangevin:
         self, duration: real, time_step: float = 0.01, particles: int = 10_000
     ) -> float:
         """
-        Calculate the mean of the Langevin process.
+        Calculate the mean of the Subordinated Langevin process.
 
         Args:
             duration (real): The total duration of the simulation.
@@ -988,19 +988,20 @@ class SubordinatedLangevin:
             particles (int, optional): Number of particles (positive integer) for ensemble averaging. Defaults to 10_000.
 
         Returns:
-            float: The mean of the Langevin process.
+            float: The mean of the Subordinated Langevin process.
         """
         duration = validate_positive_float(duration, "duration (motion duration)")
         particles = validate_particles(particles)
         time_step = validate_positive_float(time_step, "time_step")
 
-        return _core.langevin_mean(
+        return _core.subordinated_langevin_mean(
             self.drift_func,
             self.diffusion_func,
             self.start_position,
+            self.alpha,
             duration,
-            time_step,
             particles,
+            time_step,
         )
 
     def msd(
@@ -1010,7 +1011,7 @@ class SubordinatedLangevin:
         particles: int = 10_000,
     ) -> float:
         """
-        Calculate the mean squared displacement (MSD) of the Langevin process.
+        Calculate the mean squared displacement (MSD) of the Subordinated Langevin process.
 
         Args:
             duration (real): The total duration of the simulation.
@@ -1018,17 +1019,18 @@ class SubordinatedLangevin:
             particles (int, optional): Number of particles (positive integer) for ensemble averaging. Defaults to 10_000.
 
         Returns:
-            float: The mean squared displacement of the Langevin process.
+            float: The mean squared displacement of the Subordinated Langevin process.
         """
         duration = validate_positive_float(duration, "duration (motion duration)")
         particles = validate_particles(particles)
         time_step = validate_positive_float(time_step, "time_step")
 
-        return _core.langevin_msd(
+        return _core.subordinated_langevin_msd(
             self.drift_func,
             self.diffusion_func,
             self.start_position,
+            self.alpha,
             duration,
-            time_step,
             particles,
+            time_step,
         )

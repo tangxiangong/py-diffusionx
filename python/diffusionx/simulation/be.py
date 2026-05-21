@@ -84,14 +84,14 @@ class BrownianExcursion:
             )
             if isinstance(order, int)
             else (
-                _core.be_raw_moment(
+                _core.be_frac_raw_moment(
                     duration,
                     time_step,
                     order,
                     particles,
                 )
                 if not central
-                else _core.be_central_moment(
+                else _core.be_frac_central_moment(
                     duration,
                     time_step,
                     order,

@@ -213,6 +213,7 @@ class Poisson:
         validate_order(order)
         a, b = validate_domain(
             domain,
+            domain_type="poisson_occupation",
             process_name="Poisson Occupation raw moment",
         )
         particles = validate_particles(particles)

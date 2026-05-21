@@ -276,6 +276,10 @@ class Stable:
 
 class SkewStable(Stable):
     def __init__(self, alpha: real):
+        if alpha <= 0 or alpha > 1:
+            raise ValueError(
+                "Invalid alpha, must be positive real number between 0 and 1"
+            )
         super().__init__(alpha, 1.0, 1.0, 0.0)
         self.skewed = True
 

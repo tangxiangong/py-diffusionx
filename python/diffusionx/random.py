@@ -27,17 +27,8 @@ def _generate_random_values(
         else:
             raise ValueError(f"Invalid size {size}, expected positive integer")
     elif isinstance(size, tuple):
-        if _check_all_uint(size):
+        if _check_all_uint(size) and len(size) > 0:
             length = int(np.prod(size))
-            # Ensure length is positive, _check_all_uint should guarantee this if tuple not empty
-            if (
-                length == 0 and not size
-            ):  # Handle empty tuple for size if it should produce a single value
-                # This case might need specific definition, typical prod of empty is 1.
-                # For now, assuming _check_all_uint fails for empty or non-positive tuples.
-                # If _check_all_uint passes, length should be > 0.
-                pass  # No special handling for length == 0 if _check_all_uint passes.
-
             arr = array_generator(length, *func_args)
             return arr.reshape(size)
         else:

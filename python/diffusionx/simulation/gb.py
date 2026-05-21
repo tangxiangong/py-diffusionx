@@ -59,7 +59,6 @@ class GeometricBm:
         particles = validate_particles(particles)
         duration = validate_positive_float(duration, "duration")
         time_step = validate_positive_float(time_step, "time_step")
-        validate_bool(central, "central")
 
         return (
             (
