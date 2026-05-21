@@ -16,18 +16,17 @@ class OU:
     def __init__(
         self,
         theta: real,
-        mu: real,
         sigma: real,
         start_position: real = 0.0,
     ):
         """
         Initialize an Ornstein-Uhlenbeck (OU) process object.
-        dX_t = theta * (mu - X_t) dt + sigma * dW_t
+        dX_t = -theta * X_t dt + sigma * dW_t, X(0) = start_position
 
         Args:
             theta (real): Mean reversion rate (theta > 0).
             sigma (real): Volatility (sigma > 0).
-            start_position (real, optional): Starting position of the process. Defaults to mu.
+            start_position (real, optional): Starting position of the process. Defaults to 0.0.
 
         """
         self.theta = validate_positive_float(theta, "theta")
