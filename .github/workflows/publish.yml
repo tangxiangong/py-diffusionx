@@ -199,7 +199,7 @@ jobs:
         uses: PyO3/maturin-action@v1
         with:
           target: ${{ matrix.target == 'aarch64' && 'aarch64-apple-darwin' || 'x86_64-apple-darwin' }}
-          args: --release --out dist
+          args: --release --out dist --interpreter 3.13t
 
       - name: Upload wheels
         uses: actions/upload-artifact@v4
