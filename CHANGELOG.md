@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.3.0] - 2026-05-21
+
+### 🐛 Bug Fixes
+
+- *(python)* Correct wrong _core dispatch and domain validation bugs
+- *(python)* Remove non-functional mu parameter from OU
+- *(validation)* Harden stochastic API error handling
+
+### 📚 Documentation
+
+- Add CLAUDE.md and AGENTS.md agent guidance
+
 ## [0.1.2] - 2025-12-01
 
 ### 🚀 Features
