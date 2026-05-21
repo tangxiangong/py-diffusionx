@@ -1,9 +1,25 @@
-from . import random
-from .types import DType
+from math import isfinite
 from typing import Union
+
 import numpy as np
 
+from . import random
+from .types import DType
+
 real = Union[float, int]
+
+
+def _ensure_real(value: real, name: str) -> float:
+    if isinstance(value, bool) or not isinstance(value, (int, float)):
+        raise TypeError(f"{name} must be a real number, got {type(value).__name__}")
+    value = float(value)
+    if not isfinite(value):
+        raise ValueError(f"{name} must be finite, got {value}")
+    return value
+
+
+def _is_real(value: object) -> bool:
+    return isinstance(value, (int, float)) and not isinstance(value, bool)
 
 
 class Uniform:
@@ -22,6 +38,10 @@ class Uniform:
             end (bool, optional): whether to include the upper bound. Defaults to False.
             dtype (DType, optional): data type. Defaults to DType.FLOAT.
         """
+        low = _ensure_real(low, "low")
+        high = _ensure_real(high, "high")
+        if not isinstance(end, bool):
+            raise TypeError(f"end must be a boolean, got {type(end).__name__}")
         if low >= high:
             raise ValueError("Invalid bounds, low must be less than high")
         if dtype not in [DType.Float, DType.Int]:
@@ -51,6 +71,8 @@ class Normal:
             mu (real, optional): mean. Defaults to 0.0.
             sigma (real, optional): standard deviation. Defaults to 1.0. Positive real number.
         """
+        mu = _ensure_real(mu, "mu")
+        sigma = _ensure_real(sigma, "sigma")
         if sigma <= 0:
             raise ValueError("Invalid sigma, must be positive real number")
         self.mu = mu
@@ -71,7 +93,7 @@ class Normal:
         return Normal(-self.mu, self.sigma)
 
     def __add__(self, other):
-        if isinstance(other, int) or isinstance(other, float):
+        if _is_real(other):
             return Normal(self.mu + other, self.sigma)
         else:
             raise TypeError(
@@ -79,7 +101,7 @@ class Normal:
             )
 
     def __radd__(self, other):
-        if isinstance(other, int) or isinstance(other, float):
+        if _is_real(other):
             return Normal(other + self.mu, self.sigma)
         else:
             raise TypeError(
@@ -87,7 +109,7 @@ class Normal:
             )
 
     def __mul__(self, other):
-        if isinstance(other, int) or isinstance(other, float):
+        if _is_real(other):
             return Normal(self.mu * other, self.sigma * abs(other))
         else:
             raise TypeError(
@@ -95,7 +117,7 @@ class Normal:
             )
 
     def __rmul__(self, other):
-        if isinstance(other, int) or isinstance(other, float):
+        if _is_real(other):
             return Normal(other * self.mu, abs(other) * self.sigma)
         else:
             raise TypeError(
@@ -110,6 +132,7 @@ class Exponential:
         Args:
             scale (real, optional): scale parameter. Defaults to 1.0. Positive real number.
         """
+        scale = _ensure_real(scale, "scale")
         if scale <= 0:
             raise ValueError("Invalid scale, must be positive real number")
         self.scale = scale
@@ -133,6 +156,7 @@ class Poisson:
         Args:
             lambda_ (real, optional): Poisson distribution parameter, mean of the distribution. Defaults to 1.0. Positive real number.
         """
+        lambda_ = _ensure_real(lambda_, "lambda_")
         if lambda_ <= 0:
             raise ValueError("Invalid lambda, must be positive real number")
         self.lambda_ = lambda_
@@ -159,6 +183,10 @@ class Stable:
             sigma (real): scale parameter. Positive real number.
             mu (real): location parameter. Real number.
         """
+        alpha = _ensure_real(alpha, "alpha")
+        beta = _ensure_real(beta, "beta")
+        sigma = _ensure_real(sigma, "sigma")
+        mu = _ensure_real(mu, "mu")
         if alpha <= 0 or alpha > 2:
             raise ValueError(
                 "Invalid alpha, must be positive real number between 0 and 2"
@@ -194,6 +222,7 @@ class Stable:
         Args:
             alpha (real): stability index. Positive real number, between 0 and 1.
         """
+        alpha = _ensure_real(alpha, "alpha")
         if alpha <= 0 or alpha > 1:
             raise ValueError(
                 "Invalid alpha, must be positive real number between 0 and 1"
@@ -232,7 +261,7 @@ class Stable:
         return Stable(self.alpha, -self.beta, self.sigma, -self.mu)
 
     def __add__(self, other):
-        if isinstance(other, int) or isinstance(other, float):
+        if _is_real(other):
             return Stable(self.alpha, self.beta, self.sigma, self.mu + other)
         else:
             raise TypeError(
@@ -240,7 +269,7 @@ class Stable:
             )
 
     def __radd__(self, other):
-        if isinstance(other, int) or isinstance(other, float):
+        if _is_real(other):
             return Stable(self.alpha, self.beta, self.sigma, other + self.mu)
         else:
             raise TypeError(
@@ -248,7 +277,7 @@ class Stable:
             )
 
     def __mul__(self, other):
-        if isinstance(other, int) or isinstance(other, float):
+        if _is_real(other):
             # When multiplying a stable distribution by a scalar c,
             # new_sigma = sigma * |c|
             # new_mu = mu * c if alpha != 1
@@ -263,7 +292,7 @@ class Stable:
             )
 
     def __rmul__(self, other):
-        if isinstance(other, int) or isinstance(other, float):
+        if _is_real(other):
             # Similar to __mul__
             new_sigma = abs(other) * self.sigma
             new_mu = other * self.mu
@@ -276,6 +305,7 @@ class Stable:
 
 class SkewStable(Stable):
     def __init__(self, alpha: real):
+        alpha = _ensure_real(alpha, "alpha")
         if alpha <= 0 or alpha > 1:
             raise ValueError(
                 "Invalid alpha, must be positive real number between 0 and 1"

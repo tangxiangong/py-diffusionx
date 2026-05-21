@@ -1,3 +1,4 @@
+from math import isfinite
 from typing import Callable, Union
 
 import numpy as np
@@ -9,7 +10,23 @@ real = Union[float, int]
 
 
 def _check_all_uint(size: tuple[int, ...]) -> bool:
-    return all(isinstance(i, int) and i > 0 for i in size)
+    return all(isinstance(i, int) and not isinstance(i, bool) and i > 0 for i in size)
+
+
+def _ensure_real(value: real, name: str) -> float:
+    if isinstance(value, bool) or not isinstance(value, (int, float)):
+        raise TypeError(f"{name} must be a real number, got {type(value).__name__}")
+    value = float(value)
+    if not isfinite(value):
+        raise ValueError(f"{name} must be finite, got {value}")
+    return value
+
+
+def _ensure_integer(value: real, name: str) -> int:
+    value = _ensure_real(value, name)
+    if not value.is_integer():
+        raise ValueError(f"{name} must be integer-valued, got {value}")
+    return int(value)
 
 
 def _generate_random_values(
@@ -19,7 +36,7 @@ def _generate_random_values(
     func_args: tuple,
 ) -> Union[float, int, bool, np.ndarray]:
     """Helper function to generate single or multiple random values based on size."""
-    if isinstance(size, int):
+    if isinstance(size, int) and not isinstance(size, bool):
         if size == 1:
             return single_val_generator(*func_args)
         elif size > 0:  # Handles integers greater than 1
@@ -55,12 +72,11 @@ def randexp(
     Returns:
         float | np.ndarray: exponential random numbers
     """
+    scale = _ensure_real(scale, "scale")
     if scale <= 0:
         raise ValueError(f"Invalid scale {scale}, expected positive real number")
 
-    _scale = float(scale) if isinstance(scale, int) else scale
-
-    return _generate_random_values(size, _core.exp_rand, _core.exp_rands, (_scale,))
+    return _generate_random_values(size, _core.exp_rand, _core.exp_rands, (scale,))
 
 
 def uniform(
@@ -82,11 +98,13 @@ def uniform(
     Returns:
         real | np.ndarray: uniform random numbers
     """
-    # Basic validation for low and high should be in distribution.py's Uniform class __init__
-    # Here we mainly focus on generation.
+    if not isinstance(end, bool):
+        raise TypeError(f"end must be a boolean, got {type(end).__name__}")
     if dtype == DType.Float:
-        _low = float(low)
-        _high = float(high)
+        _low = _ensure_real(low, "low")
+        _high = _ensure_real(high, "high")
+        if _low >= _high:
+            raise ValueError("Invalid bounds, low must be less than high")
         return _generate_random_values(
             size,
             _core.uniform_rand_float,
@@ -94,17 +112,10 @@ def uniform(
             (_low, _high, end),
         )
     elif dtype == DType.Int:
-        # Ensure low and high are integers for integer uniform distribution
-        _low = int(low)
-        _high = int(high)
-        if _low >= _high and not (
-            end and _low == _high
-        ):  # allow low==high if end is true for single point
-            # More robust check might be needed if low==high allowed only if end=True
-            # Original _core.uniform_rand_int might handle this.
-            # For safety, let's assume low < high for int unless end=True allows single point.
-            # This validation is typically in the distribution class.
-            pass  # Assuming _core handles bounds checks for int as well.
+        _low = _ensure_integer(low, "low")
+        _high = _ensure_integer(high, "high")
+        if _low >= _high:
+            raise ValueError("Invalid bounds, low must be less than high")
         return _generate_random_values(
             size, _core.uniform_rand_int, _core.uniform_rands_int, (_low, _high, end)
         )
@@ -125,11 +136,10 @@ def randn(
     Returns:
         float | np.ndarray: normal random numbers
     """
-    if sigma <= 0:
+    _mu = _ensure_real(mu, "mu")
+    _sigma = _ensure_real(sigma, "sigma")
+    if _sigma <= 0:
         raise ValueError(f"Invalid sigma {sigma}, expected positive real number")
-
-    _mu = float(mu) if isinstance(mu, int) else mu
-    _sigma = float(sigma) if isinstance(sigma, int) else sigma
 
     return _generate_random_values(
         size, _core.normal_rand, _core.normal_rands, (_mu, _sigma)
@@ -146,10 +156,9 @@ def poisson(size: int | tuple[int, ...] = 1, lambda_: real = 1.0) -> real | np.n
     Returns:
         real | np.ndarray: Poisson random numbers
     """
-    if lambda_ <= 0:
+    _lambda = _ensure_real(lambda_, "lambda_")
+    if _lambda <= 0:
         raise ValueError(f"Invalid lambda {lambda_}, expected positive real number")
-
-    _lambda = float(lambda_) if isinstance(lambda_, int) else lambda_
 
     return _generate_random_values(
         size, _core.poisson_rand, _core.poisson_rands, (_lambda,)
@@ -174,19 +183,18 @@ def stable_rand(
     Returns:
         real | np.ndarray: stable random numbers
     """
-    if not (0 < alpha <= 2):  # More concise check
+    _alpha = _ensure_real(alpha, "alpha")
+    _beta = _ensure_real(beta, "beta")
+    _sigma = _ensure_real(sigma, "sigma")
+    _mu = _ensure_real(mu, "mu")
+    if not (0 < _alpha <= 2):
         raise ValueError(
             f"Invalid alpha {alpha}, expected positive real number between 0 (exclusive) and 2 (inclusive)"
         )
-    if not (-1 <= beta <= 1):
+    if not (-1 <= _beta <= 1):
         raise ValueError(f"Invalid beta {beta}, expected real number between -1 and 1")
-    if sigma <= 0:
+    if _sigma <= 0:
         raise ValueError(f"Invalid sigma {sigma}, expected positive real number")
-
-    _alpha = float(alpha) if isinstance(alpha, int) else alpha
-    _beta = float(beta) if isinstance(beta, int) else beta
-    _sigma = float(sigma) if isinstance(sigma, int) else sigma
-    _mu = float(mu) if isinstance(mu, int) else mu
 
     return _generate_random_values(
         size, _core.stable_rand, _core.stable_rands, (_alpha, _beta, _sigma, _mu)
@@ -203,19 +211,11 @@ def skew_stable_rand(alpha: real, size: int | tuple[int, ...] = 1) -> real | np.
     Returns:
         real | np.ndarray: skewed stable random numbers
     """
-    # The distribution.Stable.skew class method has validation 0 < alpha <= 1.
-    # This function is more general if it's just calling _core.skew_stable_rand.
-    # Assuming _core.skew_stable_rand implies beta=1, sigma=1, mu=0 based on common S_alpha(beta, sigma, mu) notation
-    # or perhaps a specific definition for "skew_stable_rand".
-    # Let's assume alpha validation is appropriate here as well based on context, or rely on _core.
-    if not (
-        0 < alpha <= 2
-    ):  # General alpha for stable, specific skew might have tighter bounds (e.g. (0,1] or (0,2])
+    _alpha = _ensure_real(alpha, "alpha")
+    if not (0 < _alpha <= 2):
         raise ValueError(
             f"Invalid alpha {alpha}, expected positive real number, typically (0,2]"
-        )  # Adjusted error msg based on typical stable alpha range. If skew_stable_rand has stricter alpha range, this needs to be more specific.
-
-    _alpha = float(alpha) if isinstance(alpha, int) else alpha
+        )
 
     return _generate_random_values(
         size, _core.skew_stable_rand, _core.skew_stable_rands, (_alpha,)
@@ -232,9 +232,8 @@ def bool_rand(size: tuple[int, ...] | int = 1, p: real = 0.5) -> bool | np.ndarr
     Returns:
         bool | np.ndarray: boolean random numbers
     """
-    if not (0 <= p <= 1):
+    _p = _ensure_real(p, "p")
+    if not (0 <= _p <= 1):
         raise ValueError(f"Invalid p {p}, probability must be between 0 and 1")
-
-    _p = float(p)  # _core.bool_rand expects float
 
     return _generate_random_values(size, _core.bool_rand, _core.bool_rands, (_p,))

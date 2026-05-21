@@ -1,4 +1,4 @@
-use crate::{XPyResult, simulation::PyArrayPair};
+use crate::{XPyError, XPyResult, simulation::PyArrayPair};
 use gauss_quad::GaussLegendre;
 use numpy::PyArrayMethods;
 use pyo3::prelude::*;
@@ -17,7 +17,7 @@ pub fn moment(
     duration: f64,
     time_step: f64,
     particles: usize,
-) -> f64 {
+) -> XPyResult<f64> {
     if central {
         central_moment(py, simulate_fn, order, duration, time_step, particles)
     } else {
@@ -33,29 +33,15 @@ pub fn mean(
     duration: f64,
     time_step: f64,
     particles: usize,
-) -> f64 {
+) -> XPyResult<f64> {
     let simulate = Arc::new(simulate_fn.clone_ref(py));
 
-    let value = (0..particles)
+    let values: XPyResult<Vec<f64>> = (0..particles)
         .into_par_iter()
-        .map(|_| {
-            Python::attach(|py| {
-                let (_, x) = simulate
-                    .call_method1(py, "simulate", (duration, time_step))
-                    .expect("Failed to call simulate method")
-                    .extract::<PyArrayPair<'_>>(py)
-                    .expect("Failed to extract simulate result");
+        .map(|_| endpoint(&simulate, duration, time_step))
+        .collect();
 
-                *x.to_vec()
-                    .expect("Failed to convert position array to Vec")
-                    .last()
-                    .ok_or("Failed to get last element")
-                    .unwrap()
-            })
-        })
-        .sum::<f64>();
-
-    value / particles as f64
+    Ok(values?.into_iter().sum::<f64>() / particles as f64)
 }
 
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
@@ -66,29 +52,24 @@ pub fn msd(
     duration: f64,
     time_step: f64,
     particles: usize,
-) -> f64 {
+) -> XPyResult<f64> {
     let simulate = Arc::new(simulate_fn.clone_ref(py));
 
-    let value = (0..particles)
+    let values: XPyResult<Vec<f64>> = (0..particles)
         .into_par_iter()
         .map(|_| {
-            Python::attach(|py| {
-                let (_, x) = simulate
-                    .call_method1(py, "simulate", (duration, time_step))
-                    .expect("Failed to call simulate method")
-                    .extract::<PyArrayPair<'_>>(py)
-                    .expect("Failed to extract simulate result");
-
-                let x_vec = x.to_vec().expect("Failed to convert position array to Vec");
-
-                let end = *x_vec.last().ok_or("Failed to get last element").unwrap();
-                let start = *x_vec.first().ok_or("Failed to get first element").unwrap();
-                (end - start) * (end - start)
-            })
+            let x_vec = simulate_positions(&simulate, duration, time_step)?;
+            let start = *x_vec
+                .first()
+                .ok_or_else(|| value_error("simulate returned no positions"))?;
+            let end = *x_vec
+                .last()
+                .ok_or_else(|| value_error("simulate returned no positions"))?;
+            Ok((end - start) * (end - start))
         })
-        .sum::<f64>();
+        .collect();
 
-    value / particles as f64
+    Ok(values?.into_iter().sum::<f64>() / particles as f64)
 }
 
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
@@ -101,40 +82,23 @@ pub fn tamsd(
     time_step: f64,
     quad_order: usize,
 ) -> XPyResult<f64> {
+    validate_tamsd_args(duration, delta, time_step, quad_order)?;
     let simulate = Arc::new(simulate_fn.clone_ref(py));
 
-    let legendre_quad = GaussLegendre::new(NonZero::new(quad_order).unwrap());
+    let legendre_quad = GaussLegendre::new(
+        NonZero::new(quad_order).ok_or_else(|| value_error("quad_order must be positive"))?,
+    );
     let nodes_weights_pairs = legendre_quad.into_node_weight_pairs();
     let nodes_weights = nodes_weights_transform(0.0, duration - delta, &nodes_weights_pairs);
-    let result = nodes_weights
+    let values: XPyResult<Vec<f64>> = nodes_weights
         .into_par_iter()
-        .map(|(node, weight)| -> f64 {
-            Python::attach(|py| {
-                let (_, x) = simulate
-                    .call_method1(py, "simulate", (node + delta, time_step))
-                    .expect("Failed to call simulate method")
-                    .extract::<PyArrayPair<'_>>(py)
-                    .expect("Failed to extract simulate result");
-
-                let x_vec = x.to_vec().expect("Failed to convert position array to Vec");
-
-                let slag_length = (delta / time_step).ceil() as usize;
-
-                let len = x_vec.len();
-                let end_position = x_vec.last();
-                let slag_position = x_vec.get(len - slag_length - 1);
-                if end_position.is_none() || slag_position.is_none() {
-                    panic!("Failed to get last element or slag position");
-                }
-                let end_position = *end_position.unwrap();
-                let slag_position = *slag_position.unwrap();
-
-                (end_position - slag_position) * (end_position - slag_position) * weight
-            })
+        .map(|(node, weight)| {
+            lagged_square_displacement(&simulate, node + delta, delta, time_step)
+                .map(|value| value * weight)
         })
-        .sum::<f64>()
-        / (duration - delta);
-    Ok(result)
+        .collect();
+
+    Ok(values?.into_iter().sum::<f64>() / (duration - delta))
 }
 
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
@@ -147,47 +111,32 @@ pub fn eatamsd(
     particles: usize,
     time_step: f64,
     quad_order: usize,
-) -> f64 {
+) -> XPyResult<f64> {
+    validate_tamsd_args(duration, delta, time_step, quad_order)?;
     let simulate = Arc::new(simulate_fn.clone_ref(py));
 
-    (0..particles)
+    let values: XPyResult<Vec<f64>> = (0..particles)
         .into_par_iter()
         .map(|_| {
-            let legendre_quad = GaussLegendre::new(NonZero::new(quad_order).unwrap());
+            let legendre_quad = GaussLegendre::new(
+                NonZero::new(quad_order)
+                    .ok_or_else(|| value_error("quad_order must be positive"))?,
+            );
             let nodes_weights_pairs = legendre_quad.into_node_weight_pairs();
             let nodes_weights =
                 nodes_weights_transform(0.0, duration - delta, &nodes_weights_pairs);
-            nodes_weights
+            let values: XPyResult<Vec<f64>> = nodes_weights
                 .into_par_iter()
-                .map(|(node, weight)| -> f64 {
-                    Python::attach(|py| {
-                        let (_, x) = simulate
-                            .call_method1(py, "simulate", (node + delta, time_step))
-                            .expect("Failed to call simulate method")
-                            .extract::<PyArrayPair<'_>>(py)
-                            .expect("Failed to extract simulate result");
-
-                        let x_vec = x.to_vec().expect("Failed to convert position array to Vec");
-
-                        let slag_length = (delta / time_step).ceil() as usize;
-
-                        let len = x_vec.len();
-                        let end_position = x_vec.last();
-                        let slag_position = x_vec.get(len - slag_length - 1);
-                        if end_position.is_none() || slag_position.is_none() {
-                            panic!("Failed to get last element or slag position");
-                        }
-                        let end_position = *end_position.unwrap();
-                        let slag_position = *slag_position.unwrap();
-
-                        (end_position - slag_position) * (end_position - slag_position) * weight
-                    })
+                .map(|(node, weight)| {
+                    lagged_square_displacement(&simulate, node + delta, delta, time_step)
+                        .map(|value| value * weight)
                 })
-                .sum::<f64>()
-                / (duration - delta)
+                .collect();
+            Ok(values?.into_iter().sum::<f64>() / (duration - delta))
         })
-        .sum::<f64>()
-        / particles as f64
+        .collect();
+
+    Ok(values?.into_iter().sum::<f64>() / particles as f64)
 }
 
 fn raw_moment(
@@ -197,31 +146,18 @@ fn raw_moment(
     duration: f64,
     time_step: f64,
     particles: usize,
-) -> f64 {
+) -> XPyResult<f64> {
     let simulate = Arc::new(simulate_fn.clone_ref(py));
 
-    let value = (0..particles)
+    let values: XPyResult<Vec<f64>> = (0..particles)
         .into_par_iter()
         .map(|_| {
-            Python::attach(|py| {
-                let (_, x) = simulate
-                    .call_method1(py, "simulate", (duration, time_step))
-                    .expect("Failed to call simulate method")
-                    .extract::<PyArrayPair<'_>>(py)
-                    .expect("Failed to extract simulate result");
-
-                let end = *x
-                    .to_vec()
-                    .expect("Failed to convert position array to Vec")
-                    .last()
-                    .ok_or("Failed to get last element")
-                    .unwrap();
-                if order == 1 { end } else { end.powi(order) }
-            })
+            let end = endpoint(&simulate, duration, time_step)?;
+            Ok(if order == 1 { end } else { end.powi(order) })
         })
-        .sum::<f64>();
+        .collect();
 
-    value / particles as f64
+    Ok(values?.into_iter().sum::<f64>() / particles as f64)
 }
 
 fn central_moment(
@@ -231,7 +167,7 @@ fn central_moment(
     duration: f64,
     time_step: f64,
     particles: usize,
-) -> f64 {
+) -> XPyResult<f64> {
     let mean = raw_moment(
         py,
         simulate_fn.clone_ref(py),
@@ -239,36 +175,90 @@ fn central_moment(
         duration,
         time_step,
         particles,
-    );
+    )?;
 
     let simulate = Arc::new(simulate_fn.clone_ref(py));
 
-    let value = (0..particles)
+    let values: XPyResult<Vec<f64>> = (0..particles)
         .into_par_iter()
         .map(|_| {
-            Python::attach(|py| {
-                let (_, x) = simulate
-                    .call_method1(py, "simulate", (duration, time_step))
-                    .expect("Failed to call simulate method")
-                    .extract::<PyArrayPair<'_>>(py)
-                    .expect("Failed to extract simulate result");
-
-                let end = *x
-                    .to_vec()
-                    .expect("Failed to convert position array to Vec")
-                    .last()
-                    .ok_or("Failed to get last element")
-                    .unwrap();
-                if order == 1 {
-                    end - mean
-                } else {
-                    (end - mean).powi(order)
-                }
+            let end = endpoint(&simulate, duration, time_step)?;
+            Ok(if order == 1 {
+                end - mean
+            } else {
+                (end - mean).powi(order)
             })
         })
-        .sum::<f64>();
+        .collect();
 
-    value / particles as f64
+    Ok(values?.into_iter().sum::<f64>() / particles as f64)
+}
+
+fn simulate_positions(simulate: &Py<PyAny>, duration: f64, time_step: f64) -> XPyResult<Vec<f64>> {
+    Python::attach(|py| {
+        let (_, x) = simulate
+            .call_method1(py, "simulate", (duration, time_step))
+            .map_err(|error| value_error(format!("Failed to call simulate method: {error}")))?
+            .extract::<PyArrayPair<'_>>(py)
+            .map_err(|error| value_error(format!("Failed to extract simulate result: {error}")))?;
+
+        x.to_vec().map_err(|error| {
+            value_error(format!("Failed to convert position array to Vec: {error}"))
+        })
+    })
+}
+
+fn endpoint(simulate: &Py<PyAny>, duration: f64, time_step: f64) -> XPyResult<f64> {
+    simulate_positions(simulate, duration, time_step)?
+        .last()
+        .copied()
+        .ok_or_else(|| value_error("simulate returned no positions"))
+}
+
+fn lagged_square_displacement(
+    simulate: &Py<PyAny>,
+    duration: f64,
+    delta: f64,
+    time_step: f64,
+) -> XPyResult<f64> {
+    let x_vec = simulate_positions(simulate, duration, time_step)?;
+    let lag_length = (delta / time_step).ceil() as usize;
+    let lag_index = x_vec.len().checked_sub(lag_length + 1).ok_or_else(|| {
+        value_error("simulate returned too few positions for the requested delta")
+    })?;
+    let end_position = *x_vec
+        .last()
+        .ok_or_else(|| value_error("simulate returned no positions"))?;
+    let lag_position = x_vec[lag_index];
+
+    Ok((end_position - lag_position) * (end_position - lag_position))
+}
+
+fn validate_tamsd_args(
+    duration: f64,
+    delta: f64,
+    time_step: f64,
+    quad_order: usize,
+) -> XPyResult<()> {
+    if quad_order == 0 {
+        return Err(value_error("quad_order must be positive"));
+    }
+    if !duration.is_finite() || !delta.is_finite() || !time_step.is_finite() {
+        return Err(value_error("duration, delta, and time_step must be finite"));
+    }
+    if duration <= 0.0 || delta <= 0.0 || time_step <= 0.0 {
+        return Err(value_error(
+            "duration, delta, and time_step must be positive",
+        ));
+    }
+    if delta >= duration {
+        return Err(value_error("delta must be less than duration"));
+    }
+    Ok(())
+}
+
+fn value_error(message: impl Into<String>) -> XPyError {
+    XPyError::ValueError(message.into())
 }
 
 fn nodes_weights_transform(

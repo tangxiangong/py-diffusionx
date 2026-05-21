@@ -1,3 +1,4 @@
+from math import isfinite
 from typing import Union
 
 real = Union[float, int]
@@ -5,6 +6,8 @@ real = Union[float, int]
 
 def ensure_float(value: real) -> float:
     """Ensure the input value is a float, converting from int if necessary."""
+    if isinstance(value, bool):
+        raise TypeError("Expected float or int, got bool")
     if isinstance(value, float):
         return value
     elif isinstance(value, int):
@@ -17,15 +20,21 @@ def ensure_float(value: real) -> float:
 
 def validate_order(order: int | float) -> None:
     """Validate that order is a non-negative integer or float."""
-    if not (isinstance(order, int) or isinstance(order, float)):
+    if isinstance(order, bool) or not (
+        isinstance(order, int) or isinstance(order, float)
+    ):
         raise TypeError(
             f"order must be an integer or float, got {type(order).__name__}"
         )
+    if not isfinite(float(order)):
+        raise ValueError(f"order must be finite, got {order}")
+    if order < 0:
+        raise ValueError(f"order must be non-negative, got {order}")
 
 
 def validate_positive_integer(val: int, name: str) -> int:
     """Validate that val is a positive integer."""
-    if not isinstance(val, int):
+    if isinstance(val, bool) or not isinstance(val, int):
         raise TypeError(f"{name} must be an integer, got {type(val).__name__}")
     if val <= 0:
         raise ValueError(f"{name} must be positive")
@@ -49,6 +58,8 @@ def validate_positive_float(value: real, param_name: str) -> float:
         float_value = ensure_float(value)
     except TypeError as e:
         raise TypeError(f"{param_name} must be a number. Error: {e}") from e
+    if not isfinite(float_value):
+        raise ValueError(f"{param_name} must be finite, got {float_value}")
     if float_value <= 0:
         raise ValueError(f"{param_name} must be positive, got {float_value}")
     return float_value
