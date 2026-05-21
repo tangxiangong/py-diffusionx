@@ -5,7 +5,7 @@ use pyo3::prelude::*;
 #[cfg(feature = "stub_gen")]
 use pyo3_stub_gen::derive::gen_stub_pyfunction;
 use rayon::prelude::*;
-use std::sync::Arc;
+use std::{num::NonZero, sync::Arc};
 
 #[cfg_attr(feature = "stub_gen", gen_stub_pyfunction)]
 #[pyfunction]
@@ -103,7 +103,7 @@ pub fn tamsd(
 ) -> XPyResult<f64> {
     let simulate = Arc::new(simulate_fn.clone_ref(py));
 
-    let legendre_quad = GaussLegendre::new(quad_order)?;
+    let legendre_quad = GaussLegendre::new(NonZero::new(quad_order).unwrap());
     let nodes_weights_pairs = legendre_quad.into_node_weight_pairs();
     let nodes_weights = nodes_weights_transform(0.0, duration - delta, &nodes_weights_pairs);
     let result = nodes_weights
@@ -153,8 +153,7 @@ pub fn eatamsd(
     (0..particles)
         .into_par_iter()
         .map(|_| {
-            let legendre_quad =
-                GaussLegendre::new(quad_order).expect("Failed to create legendre quad");
+            let legendre_quad = GaussLegendre::new(NonZero::new(quad_order).unwrap());
             let nodes_weights_pairs = legendre_quad.into_node_weight_pairs();
             let nodes_weights =
                 nodes_weights_transform(0.0, duration - delta, &nodes_weights_pairs);

@@ -1,7 +1,7 @@
 [package]
-name = "py-diffusionx"
 authors = ["xiangong tang <tangxiangong@gmail.com>"]
 edition = "2024"
+name = "py-diffusionx"
 version = "0.2.1"
 
 [lib]
@@ -18,12 +18,12 @@ required-features = ["stub_gen"]
 stub_gen = ["pyo3-stub-gen"]
 
 [dependencies]
-diffusionx = "0.11.1"
-gauss-quad = "0.2.4"
+diffusionx = "0.12"
+gauss-quad = "0.3"
 num_cpus = "1.17"
-numpy = "0.27"
-pyo3 = { version = "0.27.2", features = ["abi3-py311", "experimental-inspect"] }
-pyo3-stub-gen = { version = "0.17.2", optional = true }
-rand = "0.9"
-rayon = "1.11"
+numpy = "0.28"
+pyo3 = { version = "0.28", features = ["abi3-py311", "experimental-inspect"] }
+pyo3-stub-gen = { version = "0.22", optional = true }
+rand = "0.10"
+rayon = "1.12"
 thiserror = "2"
